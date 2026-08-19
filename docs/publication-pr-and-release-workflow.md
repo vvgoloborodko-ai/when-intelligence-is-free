@@ -6,9 +6,9 @@
 official close
 → Investment project `/publish-website`
 → sanitize and validate one cumulative JSON payload upstream
-→ create/update a private publication-only website PR
+→ create/update a publication-only website PR
 → website CI validates history/schema/firewall and builds
-→ CI uploads a seven-day restricted static preview artifact
+→ CI uploads a seven-day static preview artifact
 → principal reviews
 → production remains a separate principal action
 ```
@@ -19,10 +19,12 @@ that can read the website contract/schema, update
 website checkout, website Git history, npm, Cloudflare access, or preview
 runtime.
 
-The repository must be private/restricted before an unapproved publication is
-pushed. The publication workflow fails if GitHub reports a public repository,
-but that CI check is not a substitute for the upstream pre-push visibility
-check: a public PR would already disclose its contents.
+The website repository is intentionally public. The final publication JSON is
+sanitized and approved for public disclosure before it crosses the repository
+boundary, so it may be visible in its branch and PR before website production
+deployment. Raw investment data, intermediate exports, logs, snapshots,
+rejected payloads, and operational/private investment data never cross that
+boundary.
 
 ## Website CI
 
@@ -31,14 +33,13 @@ test, and build suite on every PR and on `main`.
 
 `.github/workflows/investments-publication-preview.yml` additionally:
 
-1. requires a private repository;
-2. checks out complete website history;
-3. rejects any PR that changes a path other than
+1. checks out complete website history;
+2. rejects any PR that changes a path other than
    `data/investments/publication.json`;
-4. validates the strict publication and append-only transition against the
+3. validates the strict publication and append-only transition against the
    PR's website base commit—not against an earlier unapproved draft on the PR;
-5. runs the regression tests and release build;
-6. uploads `dist/` plus safe release evidence as a restricted artifact retained
+4. runs the regression tests and release build;
+5. uploads `dist/` plus safe release evidence as an artifact retained
    for seven days.
 
 It has read-only repository permissions and contains no deploy step. The

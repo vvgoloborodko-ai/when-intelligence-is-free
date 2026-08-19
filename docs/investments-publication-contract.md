@@ -26,16 +26,18 @@ carries prior sanitized records forward and appends the new effective close.
 ## Handoff ownership
 
 The Investment project produces and locally sanitizes the payload, then uses
-GitHub API access to create or update a private/restricted website PR changing
-only `data/investments/publication.json`. It does not need a website checkout,
-website Git history, npm, Cloudflare access, or a local website preview.
+GitHub API access to create or update a website PR changing only
+`data/investments/publication.json`. The website repository is intentionally
+public; this final sanitized payload is approved for public disclosure before
+it crosses the repository boundary. The Investment project does not need a
+website checkout, website Git history, npm, Cloudflare access, or a local
+website preview.
 
 The website repository and its GitHub Actions workflows own exact validation,
 append-only comparison against complete website history, deterministic
-calculations, tests, the static build, and the seven-day restricted preview
-artifact. CI does not deploy production. Principal review and production are
-separate actions. If the repository is not private/restricted, no unapproved
-publication payload may be pushed to a branch or PR.
+calculations, tests, the static build, and the seven-day preview artifact. CI
+does not deploy production. Principal review and production are separate
+actions.
 
 ## Root object
 

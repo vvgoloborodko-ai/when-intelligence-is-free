@@ -18,7 +18,9 @@ machine-readable structural companion; the dependency-free JavaScript
 validator is authoritative for strict parsing, schema shape, cross-record
 semantics, transitions, firewall rules, and deterministic arithmetic.
 
-The upstream command opens or updates a private/restricted GitHub PR containing
-only this file change. Website CI—not the Investment project—uses complete
-website Git history, runs the validator/build, and produces the restricted
-review artifact. Production deployment is not part of that workflow.
+The upstream command opens or updates a GitHub PR containing only this file
+change. This repository is public because the file is already sanitized and
+approved for public disclosure before it crosses the repository boundary.
+Website CI—not the Investment project—uses complete website Git history, runs
+the validator/build, and produces the review artifact. Production deployment
+is not part of that workflow.

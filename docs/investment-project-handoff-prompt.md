@@ -21,12 +21,17 @@ managed-money framing, and “fund” applied to the practice. Never transfer ra
 exports, logs, snapshots, rejected payloads, or intermediate files.
 
 Validate the JSON against the schema where practical. With GitHub API access,
-create/update `investments/YYYY-MM-publication` and its PR in the private
-repository. The PR must change exactly one file:
+create/update `investments/YYYY-MM-publication` and its PR in the public
+repository `vvgoloborodko-ai/when-intelligence-is-free`. The PR must change
+exactly one file:
 
 data/investments/publication.json
 
-Stop before pushing if the repository is not private/restricted. Additional
+The command itself must complete every upstream step through creating or
+updating the PR. Do not require manual snapshots, transformations, uploads,
+branch management, or intermediate website files.
+
+The final sanitized JSON may be publicly visible in its branch/PR. Additional
 access is limited to GitHub read/write permission for the contract/schema,
 branch, file, and PR. Do not require a website checkout/history, npm,
 Cloudflare, or local preview.
