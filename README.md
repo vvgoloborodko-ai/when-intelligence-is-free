@@ -29,7 +29,7 @@ styling, client behavior, and monthly Investments data.
 - `logos/` — supplied identity sources. The build deploys only the optimized
   WebP logo, purpose-sized icon, and 1200×630 social preview.
 - `.github/workflows/` — general website CI plus the publication-only PR
-  validator and restricted preview-artifact build.
+  validator and preview-artifact build.
 - `dist/` — generated Cloudflare Pages output for `/`, `/research/`,
   `/investments/`, and `/advisory/`; never production-published by these
   scripts.
@@ -74,16 +74,20 @@ publication, then creates or updates a dedicated branch/PR changing only:
 data/investments/publication.json
 ```
 
+That single command completes every upstream step through opening or updating
+the PR; the operator does not manage snapshots, transforms, uploads, branches,
+or intermediate website files.
+
 The Investment project does not need a website checkout, website Git history,
 npm, Cloudflare access, or the ability to run a website preview. It needs only
 its canonical close sources plus GitHub read/write access sufficient to read
-the contract/schema and create or update the publication-only PR. The target
-repository must remain private/restricted before unapproved release data enters
-a branch.
+the contract/schema and create or update the publication-only PR. This website
+repository is intentionally public; the final sanitized publication JSON may
+be publicly visible in its branch and PR before production deployment.
 
 Website CI verifies that the PR changes exactly that one path, validates the
 incoming file against complete website history, derives all calculated values,
-runs tests, builds the static site, and uploads a seven-day restricted preview
+runs tests, builds the static site, and uploads a seven-day preview
 artifact. The principal reviews that artifact. Merge and production deployment
 are separate deliberate principal actions.
 
@@ -102,7 +106,7 @@ architecture.
 
 See `docs/investments-publication-contract.md` for the exact contract and
 `docs/investment-project-handoff-prompt.md` for the ready-to-paste upstream task.
-See `docs/publication-pr-and-release-workflow.md` for CI preview, privacy,
+See `docs/publication-pr-and-release-workflow.md` for CI preview,
 production separation, and rollback ownership.
 See `docs/preview-approval-notes.md` for the small set of proposed interface
 labels and unresolved production blockers that still require principal review.

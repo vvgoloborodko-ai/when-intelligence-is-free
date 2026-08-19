@@ -123,13 +123,13 @@ test("static routes select one server-rendered view and remain usable without Ja
   assert.ok(deployedLogo.byteLength < 100_000);
 });
 
-test("GitHub CI owns publication history checks, build, and restricted preview artifacts", () => {
+test("GitHub CI owns publication history checks, build, and preview artifacts", () => {
   assert.equal(nodeVersion.trim(), "22");
   assert.match(websiteWorkflow, /fetch-depth: 0/);
   assert.match(websiteWorkflow, /WIIF_PUBLICATION_BASE_REF/);
   assert.match(websiteWorkflow, /npm run check/);
   assert.match(publicationWorkflow, /data\/investments\/publication\.json/);
-  assert.match(publicationWorkflow, /github\.event\.repository\.private/);
+  assert.doesNotMatch(publicationWorkflow, /github\.event\.repository\.private|private\/restricted|restricted review/i);
   assert.match(publicationWorkflow, /git diff --name-only/);
   assert.match(publicationWorkflow, /WIIF_PUBLICATION_BASE_REF/);
   assert.match(publicationWorkflow, /npm run validate:publication/);

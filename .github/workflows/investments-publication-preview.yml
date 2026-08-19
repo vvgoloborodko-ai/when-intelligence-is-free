@@ -19,12 +19,6 @@ jobs:
     env:
       WIIF_PUBLICATION_BASE_REF: ${{ github.event.pull_request.base.sha }}
     steps:
-      - name: Reject public-repository preview exposure
-        if: ${{ !github.event.repository.private }}
-        run: |
-          echo "::error::Unapproved Investments data must not enter a public branch or PR. Use a private repository or an approved restricted handoff."
-          exit 1
-
       - name: Check out the publication branch with complete history
         uses: actions/checkout@v4
         with:
@@ -56,7 +50,7 @@ jobs:
       - name: Build the non-production review preview
         run: npm run build:release
 
-      - name: Upload restricted review artifact
+      - name: Upload review artifact
         uses: actions/upload-artifact@v4
         with:
           name: website-preview-pr-${{ github.event.pull_request.number }}
@@ -72,7 +66,7 @@ jobs:
           {
             echo '### Investments publication preview'
             echo ''
-            echo 'Download the restricted `website-preview-pr-${{ github.event.pull_request.number }}` artifact from this workflow run and open `investments/index.html`.'
+            echo 'Download the `website-preview-pr-${{ github.event.pull_request.number }}` artifact from this workflow run and open `investments/index.html`.'
             echo ''
             echo 'This workflow never deploys production. Merge/deployment remains a separate deliberate principal action.'
           } >> "$GITHUB_STEP_SUMMARY"
