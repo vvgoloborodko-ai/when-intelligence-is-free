@@ -1,0 +1,78 @@
+name: Investments publication preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - data/investments/publication.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: investments-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  publication-only-preview:
+    runs-on: ubuntu-latest
+    env:
+      WIIF_PUBLICATION_BASE_REF: ${{ github.event.pull_request.base.sha }}
+    steps:
+      - name: Reject public-repository preview exposure
+        if: ${{ !github.event.repository.private }}
+        run: |
+          echo "::error::Unapproved Investments data must not enter a public branch or PR. Use a private repository or an approved restricted handoff."
+          exit 1
+
+      - name: Check out the publication branch with complete history
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Require a publication-only PR
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          mapfile -t changed < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          if [[ "${#changed[@]}" -ne 1 || "${changed[0]}" != "data/investments/publication.json" ]]; then
+            printf '::error::Publication PR must change only data/investments/publication.json. Changed path: %s\n' "${changed[@]}"
+            exit 1
+          fi
+
+      - name: Use pinned Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      - name: Validate the sanitized publication and append-only history
+        run: npm run validate:publication
+
+      - name: Run website regression tests
+        run: npm test
+
+      - name: Build the non-production review preview
+        run: npm run build:release
+
+      - name: Upload restricted review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: website-preview-pr-${{ github.event.pull_request.number }}
+          path: |
+            dist
+            .release/release-evidence.json
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Record principal review instructions
+        run: |
+          {
+            echo '### Investments publication preview'
+            echo ''
+            echo 'Download the restricted `website-preview-pr-${{ github.event.pull_request.number }}` artifact from this workflow run and open `investments/index.html`.'
+            echo ''
+            echo 'This workflow never deploys production. Merge/deployment remains a separate deliberate principal action.'
+          } >> "$GITHUB_STEP_SUMMARY"
