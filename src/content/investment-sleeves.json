@@ -1,0 +1,53 @@
+[
+  {
+    "id": "physical-scarcity",
+    "name": "Physical scarcity",
+    "description": "Power, grid, cooling and the actuation chain: what the buildout physically consumes and cannot synthesise.",
+    "approved_range_decimal": {
+      "minimum": 0.2,
+      "maximum": 0.4
+    }
+  },
+  {
+    "id": "compute-platforms",
+    "name": "Compute & platforms",
+    "description": "Frontier silicon and the platforms that own the model layer. Real but depreciating: bought on drawdowns, held smaller.",
+    "approved_range_decimal": {
+      "minimum": 0.1,
+      "maximum": 0.25
+    }
+  },
+  {
+    "id": "survivors-tolls-second-wave",
+    "name": "Survivors, tolls & second wave",
+    "description": "Businesses AI feeds rather than eats: data moats, agent rails, machine identity, and oligopolies whose cost base AI cuts.",
+    "approved_range_decimal": {
+      "minimum": 0.05,
+      "maximum": 0.2
+    }
+  },
+  {
+    "id": "moonshots",
+    "name": "Moonshots",
+    "description": "Pre-scale, binary outcomes with 10× asymmetry. Deliberately capped: no single position above 1% of the book.",
+    "approved_range_decimal": {
+      "minimum": 0.02,
+      "maximum": 0.05
+    }
+  },
+  {
+    "id": "macro-scenario-bets",
+    "name": "Macro scenario bets",
+    "description": "Hard-money and real-asset expressions of the fiscal path funding the buildout. Bets, not hedges: they fall with the book in a reset.",
+    "approved_range_decimal": {
+      "minimum": 0.1,
+      "maximum": 0.25
+    }
+  },
+  {
+    "id": "reserve-optionality",
+    "name": "Reserve & optionality",
+    "description": "Cash and the put overlay. Dry powder for the drawdown the strategy is built to buy, plus the book's actual insurance.",
+    "approved_range_decimal": null
+  }
+]

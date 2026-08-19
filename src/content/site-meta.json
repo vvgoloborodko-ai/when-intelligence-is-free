@@ -1,0 +1,40 @@
+{
+  "canonical_origin": "https://whenintelligenceisfree.com",
+  "publication_url": "https://read.whenintelligenceisfree.com/",
+  "subscription_embed": {
+    "src": "https://read.whenintelligenceisfree.com/embed",
+    "title": "Subscribe to When Intelligence Is Free",
+    "fallback_label": "Subscribe directly on Substack"
+  },
+  "identity": {
+    "logo_path": "/assets/logo.webp",
+    "favicon_path": "/assets/logo-164.png",
+    "social_image_path": "/assets/social-preview.png",
+    "social_image_alt": "When Intelligence Is Free",
+    "social_image_width": 1200,
+    "social_image_height": 630
+  },
+  "thesis_url": "https://read.whenintelligenceisfree.com/p/thesis",
+  "surfaces": {
+    "home": {
+      "path": "/",
+      "title": "When Intelligence Is Free",
+      "description": "The price of thinking is collapsing, the way the price of electricity did a century ago. Very little of the value that followed went to the people selling it."
+    },
+    "research": {
+      "path": "/research/",
+      "title": "Research — When Intelligence Is Free",
+      "description": "When intelligence collapses in price, value doesn't stay in the intelligence layer."
+    },
+    "investments": {
+      "path": "/investments/",
+      "title": "Investments — When Intelligence Is Free",
+      "description": "A concentrated global strategy built on one rule: own what stays scarce when intelligence becomes abundant."
+    },
+    "advisory": {
+      "path": "/advisory/",
+      "title": "Advisory — When Intelligence Is Free",
+      "description": "I work with founders, companies and capital providers on decisions that sit between technology, market structure, product and capital: where value is moving, what becomes newly viable, where defensibility survives, and what to prioritize now."
+    }
+  }
+}

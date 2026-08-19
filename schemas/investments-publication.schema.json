@@ -1,0 +1,481 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whenintelligenceisfree.com/schemas/investments-publication.schema.json",
+  "title": "When Intelligence Is Free Investments publication",
+  "description": "The single sanitized, cumulative monthly handoff consumed from data/investments/publication.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "conventions",
+    "performance",
+    "releases",
+    "corrections"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "conventions": {
+      "$ref": "#/$defs/conventions"
+    },
+    "performance": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2400,
+      "items": {
+        "$ref": "#/$defs/performance_record"
+      }
+    },
+    "releases": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 1200,
+      "items": {
+        "$ref": "#/$defs/release_record"
+      }
+    },
+    "corrections": {
+      "type": "array",
+      "maxItems": 1200,
+      "items": {
+        "$ref": "#/$defs/correction"
+      }
+    }
+  },
+  "$defs": {
+    "period": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-(?:0[1-9]|1[0-2])$"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "fixed_six_decimal": {
+      "type": "string",
+      "pattern": "^-?(?:0|[1-9][0-9]{0,6})\\.[0-9]{6}$"
+    },
+    "weight_pct_nav": {
+      "type": "string",
+      "pattern": "^(?:(?:0|[1-9][0-9]?)\\.[0-9]{6}|100\\.000000)$"
+    },
+    "correction_id": {
+      "type": "string",
+      "minLength": 12,
+      "maxLength": 64,
+      "pattern": "^corr-[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$"
+    },
+    "sleeve_id": {
+      "enum": [
+        "physical-scarcity",
+        "compute-platforms",
+        "survivors-tolls-second-wave",
+        "moonshots",
+        "macro-scenario-bets",
+        "reserve-optionality"
+      ]
+    },
+    "conventions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inception_date",
+        "return_currency",
+        "benchmark",
+        "strategy_return_basis",
+        "audit_status",
+        "period_convention",
+        "drawdown_convention"
+      ],
+      "properties": {
+        "inception_date": {
+          "const": "2025-01-01"
+        },
+        "return_currency": {
+          "const": "USD"
+        },
+        "benchmark": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "series_identifier",
+            "return_basis"
+          ],
+          "properties": {
+            "name": {
+              "const": "Nasdaq-100"
+            },
+            "series_identifier": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "pattern": "^[A-Za-z0-9._:^/+\\-]+(?: [A-Za-z0-9._:^/+\\-]+)*$"
+            },
+            "return_basis": {
+              "enum": [
+                "price_return",
+                "total_return"
+              ]
+            }
+          }
+        },
+        "strategy_return_basis": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "basis",
+            "methodology_id",
+            "public_description"
+          ],
+          "properties": {
+            "basis": {
+              "const": "net"
+            },
+            "methodology_id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "pattern": "^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$"
+            },
+            "public_description": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 280,
+              "pattern": "^[^<>\\r\\n]+$"
+            }
+          }
+        },
+        "audit_status": {
+          "const": "unaudited"
+        },
+        "period_convention": {
+          "const": "official_calendar_month_close"
+        },
+        "drawdown_convention": {
+          "const": "month_end_series"
+        }
+      }
+    },
+    "performance_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "period",
+        "as_of_date",
+        "revision",
+        "strategy_return_pct",
+        "benchmark_return_pct"
+      ],
+      "properties": {
+        "period": {
+          "$ref": "#/$defs/period"
+        },
+        "as_of_date": {
+          "$ref": "#/$defs/date"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "strategy_return_pct": {
+          "$ref": "#/$defs/fixed_six_decimal"
+        },
+        "benchmark_return_pct": {
+          "$ref": "#/$defs/fixed_six_decimal"
+        },
+        "correction_id": {
+          "$ref": "#/$defs/correction_id"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "revision": {
+                "const": 1
+              }
+            },
+            "required": [
+              "revision"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "correction_id"
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "correction_id"
+            ]
+          }
+        }
+      ]
+    },
+    "composition_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sleeve_id",
+        "weight_pct_nav"
+      ],
+      "properties": {
+        "sleeve_id": {
+          "$ref": "#/$defs/sleeve_id"
+        },
+        "weight_pct_nav": {
+          "$ref": "#/$defs/weight_pct_nav"
+        }
+      }
+    },
+    "holding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "sleeve_id",
+        "weight_pct_nav"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^[^<>\\r\\n]+$"
+        },
+        "sleeve_id": {
+          "$ref": "#/$defs/sleeve_id"
+        },
+        "weight_pct_nav": {
+          "$ref": "#/$defs/weight_pct_nav"
+        }
+      }
+    },
+    "sleeve_attribution_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sleeve_id",
+        "effect_pp"
+      ],
+      "properties": {
+        "sleeve_id": {
+          "$ref": "#/$defs/sleeve_id"
+        },
+        "effect_pp": {
+          "$ref": "#/$defs/fixed_six_decimal"
+        }
+      }
+    },
+    "position_attribution_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "holding_name",
+        "effect_pp"
+      ],
+      "properties": {
+        "holding_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "^[^<>\\r\\n]+$"
+        },
+        "effect_pp": {
+          "$ref": "#/$defs/fixed_six_decimal"
+        }
+      }
+    },
+    "attribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "level",
+        "coverage",
+        "items"
+      ],
+      "properties": {
+        "level": {
+          "enum": [
+            "sleeve",
+            "position"
+          ]
+        },
+        "coverage": {
+          "enum": [
+            "complete",
+            "selected"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "level": {
+                "const": "sleeve"
+              }
+            },
+            "required": [
+              "level"
+            ]
+          },
+          "then": {
+            "properties": {
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/sleeve_attribution_item"
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "items": {
+                "items": {
+                  "$ref": "#/$defs/position_attribution_item"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "release_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "period",
+        "revision",
+        "composition",
+        "holdings",
+        "attribution"
+      ],
+      "properties": {
+        "period": {
+          "$ref": "#/$defs/period"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 999
+        },
+        "composition": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "$ref": "#/$defs/composition_item"
+          }
+        },
+        "holdings": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 200,
+          "items": {
+            "$ref": "#/$defs/holding"
+          }
+        },
+        "attribution": {
+          "$ref": "#/$defs/attribution"
+        },
+        "commentary": {
+          "$ref": "#/$defs/commentary"
+        },
+        "correction_id": {
+          "$ref": "#/$defs/correction_id"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "revision": {
+                "const": 1
+              }
+            },
+            "required": [
+              "revision"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "correction_id"
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "correction_id"
+            ]
+          }
+        }
+      ]
+    },
+    "commentary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "paragraphs"
+      ],
+      "properties": {
+        "paragraphs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 20,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "pattern": "^[^<>\\r\\n]+$"
+          }
+        }
+      }
+    },
+    "correction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "period",
+        "disclosed_on",
+        "reason"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/correction_id"
+        },
+        "period": {
+          "$ref": "#/$defs/period"
+        },
+        "disclosed_on": {
+          "$ref": "#/$defs/date"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 1000,
+          "pattern": "^[^<>\\r\\n]+$"
+        }
+      }
+    }
+  }
+}
