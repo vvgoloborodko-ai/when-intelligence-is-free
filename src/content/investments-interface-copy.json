@@ -35,10 +35,6 @@
   "holding": "Holding",
   "theme": "Theme",
   "percent_nav": "% NAV",
-  "corrections": "Corrections",
-  "changed": "Changed",
-  "not_published": "not published",
-  "removed": "removed",
   "complete_sleeve_attribution": "Complete sleeve attribution",
   "selected_sleeve_attribution": "Selected sleeve attribution",
   "complete_position_attribution": "Complete position attribution",
@@ -58,18 +54,5 @@
   "style_value": "Thematic, concentrated, long-biased with a hedging overlay",
   "leverage": "Leverage",
   "none": "None",
-  "benchmark": "Benchmark",
-  "change_labels": {
-    "as_of_date": "Official close date",
-    "strategy_return_pct": "Strategy monthly return",
-    "benchmark_return_pct": "Benchmark monthly return",
-    "weight_pct_nav": "Public weight",
-    "effect_pp": "Attribution effect",
-    "level": "Attribution level",
-    "coverage": "Attribution coverage",
-    "name": "Named holding",
-    "ticker": "Ticker",
-    "sleeve_id": "Public theme",
-    "paragraph": "Approved commentary"
-  }
+  "benchmark": "Benchmark"
 }

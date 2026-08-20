@@ -145,17 +145,11 @@ h1.surface-title{font-family:var(--serif);font-weight:700;font-size:clamp(27px,3
 .stale-flag{display:block;color:var(--neg);font-weight:600;margin-top:4px}
 .history{margin-top:28px;border-top:1px solid var(--line);padding-top:16px}
 .history summary{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);cursor:pointer;margin-bottom:14px}
-.approved-commentary{margin-top:20px;max-width:780px;color:var(--ink2)}
-.corrections{margin-top:28px;padding:18px 20px;border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:8px;background:var(--card)}
-.corrections h3{font-size:18px}
-.corrections ul{margin:10px 0 0 20px;color:var(--ink2);font-size:14px}
-.corrections li+li{margin-top:8px}
-.correction-changes{margin-top:6px}
-.correction-changes>span{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
-.correction-changes ul{margin-top:4px}
+.approved-commentary{margin-top:20px;color:var(--ink2)}
+.publication-commentary{width:100%;max-width:none;padding-top:20px;border-top:1px solid var(--line)}
 .comp-row:last-child{border-bottom:none}
 .substack .st{display:block}
-.facts dd,.approved-commentary,.corrections{overflow-wrap:anywhere}
+.facts dd,.approved-commentary{overflow-wrap:anywhere}
 .publication-chart,.publication-statgrid{margin-top:20px}
 .strategy-swatch{background:var(--amber-ink)}
 .benchmark-swatch{background:#7D8FA0}

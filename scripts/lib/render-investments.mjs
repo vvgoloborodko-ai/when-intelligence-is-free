@@ -300,33 +300,6 @@ function compositionBlock(derived, sleeves, publication, buildDate) {
   </section>`;
 }
 
-function correctionValue(change, value, { missing }) {
-  if (value === null) return missing;
-  if (change.unit === "percent" || change.unit === "percent_nav") return formatPct(Number(value), { adaptive: change.unit === "percent_nav" });
-  if (change.unit === "percentage_points") return formatPp(Number(value), { adaptive: true });
-  if (change.unit === "date") return displayDate(value);
-  return String(value);
-}
-
-function correctionMarkup(corrections, sleeves) {
-  if (!corrections.length) return "";
-  const sleeveNames = new Map(sleeves.map((sleeve) => [sleeve.id, sleeve.name]));
-  const items = corrections.map((correction) => {
-    const changes = correction.changes.map((change) => {
-      const label = COPY.change_labels[change.field] || change.field;
-      const subject = change.subject ? (sleeveNames.get(change.subject) || change.subject) : null;
-      if (change.unit === "text" && change.field === "paragraph") {
-        return `<li>${escapeHtml(label)}</li>`;
-      }
-      const before = correctionValue(change, change.before, { missing: COPY.not_published });
-      const after = correctionValue(change, change.after, { missing: COPY.removed });
-      return `<li>${escapeHtml(label)}${subject ? ` · ${escapeHtml(subject)}` : ""}: ${escapeHtml(before)} → ${escapeHtml(after)}</li>`;
-    }).join("");
-    return `<li><b>${escapeHtml(displayDate(correction.disclosed_on))} · ${escapeHtml(displayPeriod(correction.period))}</b> — ${escapeHtml(correction.reason)}<div class="correction-changes"><span>${escapeHtml(COPY.changed)}:</span><ul>${changes}</ul></div></li>`;
-  }).join("");
-  return `<div class="corrections"><h3>${escapeHtml(COPY.corrections)}</h3><ul>${items}</ul></div>`;
-}
-
 function renderCommentaryParagraph(paragraph, derived, benchmarkName) {
   const latestPerformance = derived.performanceRows.at(-1);
   const values = {
@@ -353,8 +326,8 @@ function attributionBlock(derived, sleeves, publication, buildDate) {
     : `<tr><td class="muted" colspan="2">${escapeHtml(emptyLabel)}</td></tr>`;
   const scopeLabel = COPY[`${derived.attribution.coverage}_${derived.attribution.level}_attribution`];
   const commentary = derived.latestRelease.commentary?.paragraphs?.length
-    ? `<div class="approved-commentary">${derived.latestRelease.commentary.paragraphs.map((paragraph) => `<p>${escapeHtml(renderCommentaryParagraph(paragraph, derived, publication.conventions.benchmark.name))}</p>`).join("")}</div>`
-    : `<div class="approved-commentary muted"><p>${escapeHtml(COPY.no_commentary)}</p></div>`;
+    ? `<div class="approved-commentary publication-commentary">${derived.latestRelease.commentary.paragraphs.map((paragraph) => `<p>${escapeHtml(renderCommentaryParagraph(paragraph, derived, publication.conventions.benchmark.name))}</p>`).join("")}</div>`
+    : `<div class="approved-commentary publication-commentary muted"><p>${escapeHtml(COPY.no_commentary)}</p></div>`;
 
   return `<section data-investments-block="attribution">
     <div class="wrap">
@@ -365,7 +338,6 @@ function attributionBlock(derived, sleeves, publication, buildDate) {
       </div>
       ${neutral.length ? `<div class="tblwrap publication-neutral-attribution"><table aria-labelledby="neutral-heading"><thead><tr><th id="neutral-heading">${escapeHtml(COPY.no_effect)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(neutral, "")}</tbody></table></div>` : ""}
       ${commentary}
-      ${correctionMarkup(derived.corrections, sleeves)}
     </div>
   </section>`;
 }

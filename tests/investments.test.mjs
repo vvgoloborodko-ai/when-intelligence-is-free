@@ -616,6 +616,7 @@ test("approved commentary derives benchmark name and monthly move tokens", () =>
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
   assert.match(rendered.attribution, /the Nasdaq-100 fell 1\.0% while the strategy was close to flat\./);
   assert.match(rendered.attribution, /cash, index puts and the debasement position/);
+  assert.match(rendered.attribution, /class="approved-commentary publication-commentary"/);
   publication.releases[0].commentary.paragraphs = ["Unknown {{typed_statistic}}."];
   assert.throws(() => assertValidPublication(publication), /unknown derived commentary token/i);
 });
@@ -650,11 +651,11 @@ test("renderer normalizes display zero and preserves very small public weights",
   assert.doesNotMatch(rendered.attribution, /−0\.0pp/);
 });
 
-test("rendered correction disclosure uses derived before and after primitives", () => {
-  const rendered = renderInvestments(correctedFixture(), sleeves, { buildDate: "2025-04-11" });
-  assert.match(rendered.attribution, /Changed:/);
-  assert.match(rendered.attribution, /Strategy monthly return/);
-  assert.match(rendered.attribution, /\+3\.0% → \+2\.5%/);
+test("correction integrity remains derived but is not rendered as a public section", () => {
+  const publication = correctedFixture();
+  const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-11" });
+  assert.equal(derivePublication(publication).corrections.length, 1);
+  assert.doesNotMatch(rendered.attribution, /Corrections|Changed:|Strategy monthly return/);
 });
 
 test("staleness is derived from the period rather than typed in the input", () => {
