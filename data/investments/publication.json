@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-20T06:05:00Z",
+  "generated_at": "2026-08-20T08:21:53Z",
   "conventions": {
     "inception_date": "2025-01-01",
     "return_currency": "USD",
@@ -260,7 +260,136 @@
           }
         ]
       }
+    },
+    {
+      "period": "2026-07",
+      "revision": 2,
+      "composition": [
+        {
+          "sleeve_id": "physical-scarcity",
+          "weight_pct_nav": "18.000000"
+        },
+        {
+          "sleeve_id": "compute-platforms",
+          "weight_pct_nav": "16.000000"
+        },
+        {
+          "sleeve_id": "survivors-tolls-second-wave",
+          "weight_pct_nav": "8.000000"
+        },
+        {
+          "sleeve_id": "moonshots",
+          "weight_pct_nav": "0.000000"
+        },
+        {
+          "sleeve_id": "macro-scenario-bets",
+          "weight_pct_nav": "30.000000"
+        },
+        {
+          "sleeve_id": "reserve-optionality",
+          "weight_pct_nav": "28.000000"
+        }
+      ],
+      "holdings": [
+        {
+          "name": "Alerian Energy Infrastructure ETF",
+          "ticker": "ENFR",
+          "sleeve_id": "physical-scarcity",
+          "weight_pct_nav": "7.000000"
+        },
+        {
+          "name": "Kinder Morgan Inc",
+          "ticker": "KMI",
+          "sleeve_id": "physical-scarcity",
+          "weight_pct_nav": "3.000000"
+        },
+        {
+          "name": "Alphabet Inc Class A",
+          "ticker": "GOOGL",
+          "sleeve_id": "compute-platforms",
+          "weight_pct_nav": "7.000000"
+        },
+        {
+          "name": "Tesla Inc",
+          "ticker": "TSLA",
+          "sleeve_id": "compute-platforms",
+          "weight_pct_nav": "7.000000"
+        },
+        {
+          "name": "RELX PLC Sponsored ADR",
+          "ticker": "RELX",
+          "sleeve_id": "survivors-tolls-second-wave",
+          "weight_pct_nav": "3.000000"
+        },
+        {
+          "name": "SailPoint Inc",
+          "ticker": "SAIL",
+          "sleeve_id": "survivors-tolls-second-wave",
+          "weight_pct_nav": "2.500000"
+        },
+        {
+          "name": "Sprott Physical Silver Trust",
+          "ticker": "PSLV",
+          "sleeve_id": "macro-scenario-bets",
+          "weight_pct_nav": "16.000000"
+        },
+        {
+          "name": "Strategy Inc",
+          "ticker": "MSTR",
+          "sleeve_id": "macro-scenario-bets",
+          "weight_pct_nav": "13.000000"
+        },
+        {
+          "name": "iShares USD Treasury Bond 0-1yr UCITS ETF",
+          "ticker": "IB01",
+          "sleeve_id": "reserve-optionality",
+          "weight_pct_nav": "12.000000"
+        }
+      ],
+      "attribution": {
+        "level": "sleeve",
+        "coverage": "complete",
+        "items": [
+          {
+            "sleeve_id": "physical-scarcity",
+            "effect_pp": "0.150000"
+          },
+          {
+            "sleeve_id": "compute-platforms",
+            "effect_pp": "-0.200000"
+          },
+          {
+            "sleeve_id": "survivors-tolls-second-wave",
+            "effect_pp": "0.050000"
+          },
+          {
+            "sleeve_id": "moonshots",
+            "effect_pp": "0.000000"
+          },
+          {
+            "sleeve_id": "macro-scenario-bets",
+            "effect_pp": "-0.250000"
+          },
+          {
+            "sleeve_id": "reserve-optionality",
+            "effect_pp": "-0.068035"
+          }
+        ]
+      },
+      "commentary": {
+        "paragraphs": [
+          "July was a hard month for AI hardware and a quiet one for us: the {{benchmark_name}} fell {{benchmark_month_abs_pct}} while the strategy was close to flat. The reserve and macro sleeves did that work — cash, index puts and the debasement position absorbed a semiconductor drawdown we were not chasing — and we began buying bottleneck infrastructure into the weakness. What the quarter's results changed is that AI revenue is now catching up with AI spending, while the debt funding that spending has become sharply more expensive. The honest weak link: bottleneck infrastructure sits under its band and the moonshot sleeve is empty, because the names passing our screen have not reached prices we will pay."
+        ]
+      },
+      "correction_id": "corr-2026-08-20-public-identifiers-commentary"
     }
   ],
-  "corrections": []
+  "corrections": [
+    {
+      "id": "corr-2026-08-20-public-identifiers-commentary",
+      "period": "2026-07",
+      "disclosed_on": "2026-08-20",
+      "reason": "Public holding identifiers and approved commentary were added after review."
+    }
+  ]
 }
