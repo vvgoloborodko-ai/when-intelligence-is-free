@@ -31,8 +31,8 @@ export function applyApprovedCopyChanges(source, ledger) {
     assertExactKeys(change, ["id", "approved_on", "from", "to"], label);
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(change.id) || ids.has(change.id)) throw new Error(`${label} must have a unique kebab-case id.`);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(change.approved_on)) throw new Error(`${label} must have a canonical approval date.`);
-    if (typeof change.from !== "string" || !change.from || typeof change.to !== "string" || !change.to || change.from === change.to) {
-      throw new Error(`${label} must define distinct non-empty from/to strings.`);
+    if (typeof change.from !== "string" || !change.from || typeof change.to !== "string" || change.from === change.to) {
+      throw new Error(`${label} must define a non-empty source and a distinct replacement string.`);
     }
     ids.add(change.id);
     const occurrences = output.split(change.from).length - 1;

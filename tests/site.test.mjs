@@ -46,6 +46,8 @@ test("approved content has one main landmark, valid view structure, and no embed
   assert.doesNotMatch(content, /<h4\b/);
   assert.match(content, /<h2 class="eyebrow approved-layout-17">Performance<\/h2>/);
   assert.match(content, /<h3 class="eyebrow approved-layout-17">Top holdings<\/h3>/);
+  assert.doesNotMatch(content, /mailto:|vlad@whenintelligenceisfree\.com|structure mock|internal review|Calendly embed \/ link renders here/i);
+  assert.match(content, /href="https:\/\/calendly\.com\/vlad-whenintelligenceisfree\/30min"/);
 });
 
 test("all source hash links resolve and IDs are unique", () => {
@@ -96,13 +98,14 @@ test("static routes select one server-rendered view and remain usable without Ja
     assert.equal((html.match(/aria-current="page"/g) || []).length, 1);
     assert.doesNotMatch(html, /href="#(?:home|research|investments|advisory)"/);
     assert.doesNotMatch(html, /class="substack"|Mock of the Substack embed/);
+    assert.doesNotMatch(html, /Subscribe directly on Substack|mailto:|vlad@whenintelligenceisfree\.com|structure mock|internal review|Calendly embed \/ link renders here/i);
     assert.match(html, /<img class="brand-logo" src="\/assets\/logo\.webp" width="38" height="38" alt="">/);
     assert.match(html, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-preview\.png">/);
     if (key === "advisory") {
       assert.doesNotMatch(html, /read\.whenintelligenceisfree\.com\/embed/);
+      assert.match(html, /href="https:\/\/calendly\.com\/vlad-whenintelligenceisfree\/30min"[^>]*>Start a conversation<\/a>/);
     } else {
       assert.match(html, /<iframe src="https:\/\/read\.whenintelligenceisfree\.com\/embed"[^>]*title="Subscribe to When Intelligence Is Free"><\/iframe>/);
-      assert.match(html, /href="https:\/\/read\.whenintelligenceisfree\.com\/"[^>]*>Subscribe directly on Substack<\/a>/);
     }
     const headingLevels = [...html.matchAll(/<h([1-6])\b/g)].map((match) => Number(match[1]));
     assert.equal(headingLevels[0], 1);
@@ -299,7 +302,7 @@ test("Git history selection skips identical blobs and chooses the last distinct 
   );
 });
 
-test("JSON Schema rejects unknown objects and mirrors the benchmark identifier rule", async () => {
+test("JSON Schema rejects unknown objects and mirrors identifier rules", async () => {
   const schema = JSON.parse(await readFile(new URL("../schemas/investments-publication.schema.json", import.meta.url), "utf8"));
   assert.equal(schema.additionalProperties, false);
   for (const [name, definition] of Object.entries(schema.$defs)) {
@@ -308,4 +311,7 @@ test("JSON Schema rejects unknown objects and mirrors the benchmark identifier r
   const identifierPattern = new RegExp(schema.$defs.conventions.properties.benchmark.properties.series_identifier.pattern);
   assert.equal(identifierPattern.test("NDX Index"), true);
   assert.equal(identifierPattern.test("NDX<script>"), false);
+  const tickerPattern = new RegExp(schema.$defs.holding.properties.ticker.pattern);
+  assert.equal(tickerPattern.test("BRK.B"), true);
+  assert.equal(tickerPattern.test("bad ticker"), false);
 });

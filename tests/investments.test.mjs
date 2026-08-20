@@ -91,6 +91,13 @@ test("unknown fields fail instead of being stripped", () => {
   assert.throws(() => assertValidPublication(publication), /unknown|quantity|forbidden/i);
 });
 
+test("public holding tickers are optional, strict, and preserved for rendering", () => {
+  const publication = fixture();
+  assert.equal(assertValidPublication(publication), publication);
+  publication.releases[0].holdings[0].ticker = "bad ticker";
+  assert.throws(() => assertValidPublication(publication), /ticker.*invalid string format/i);
+});
+
 test("duplicate JSON keys fail before ordinary parsing", () => {
   const duplicate = fixtureText.replace('  "schema_version": 1,', '  "schema_version": 1,\n  "schema_version": 1,');
   assert.throws(() => parsePublicationText(duplicate, { canonical: false }), /duplicate/i);
@@ -227,6 +234,7 @@ test("imperative and euphemistic advice fails in methodology prose and rendered 
 test("fund language remains permitted only inside disclosed instrument names", () => {
   const publication = fixture();
   publication.releases[0].holdings[0].name = "Example Index Fund";
+  publication.releases[0].holdings[0].ticker = "FUND";
   assert.doesNotThrow(() => assertValidPublication(publication));
   assert.doesNotThrow(() => assertRenderedFirewall("<div>Example Index Fund</div>", publication));
 
@@ -591,9 +599,25 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.match(rendered.composition, /Named holdings/);
   assert.match(rendered.composition, /aria-label="Physical scarcity/);
   assert.match(rendered.performance, /aria-labelledby="performance-history-heading"/);
+  assert.doesNotMatch(rendered.performance, /<details class="history" open>/);
+  assert.match(rendered.performance, /text-anchor="end">Mar 2025<\/text>/);
   assert.match(rendered.attribution, /Synthetic validator fixture only\./);
   assert.match(rendered.attribution, /Complete sleeve attribution/);
+  assert.match(rendered.composition, /class="holding-ticker">EXCO<\/span>/);
+  for (const removedFact of ["Return currency", "Return basis", "Audit status", "Official calendar-month close", "Drawdown"]) {
+    assert.doesNotMatch(rendered.facts, new RegExp(removedFact, "i"));
+  }
   assert.equal(escapeHtml('<script>alert("x")</script>'), "&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;");
+});
+
+test("approved commentary derives benchmark name and monthly move tokens", () => {
+  const publication = fixture();
+  publication.releases[0].commentary.paragraphs = ["July was a hard month for AI hardware and a quiet one for us: the {{benchmark_name}} fell {{benchmark_month_abs_pct}} while the strategy was close to flat. The reserve and macro sleeves did that work — cash, index puts and the debasement position absorbed a semiconductor drawdown we were not chasing — and we began buying bottleneck infrastructure into the weakness. What the quarter's results changed is that AI revenue is now catching up with AI spending, while the debt funding that spending has become sharply more expensive. The honest weak link: bottleneck infrastructure sits under its band and the moonshot sleeve is empty, because the names passing our screen have not reached prices we will pay."];
+  const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
+  assert.match(rendered.attribution, /the Nasdaq-100 fell 1\.0% while the strategy was close to flat\./);
+  assert.match(rendered.attribution, /cash, index puts and the debasement position/);
+  publication.releases[0].commentary.paragraphs = ["Unknown {{typed_statistic}}."];
+  assert.throws(() => assertValidPublication(publication), /unknown derived commentary token/i);
 });
 
 test("optional commentary absence and attribution scope remain explicit", () => {

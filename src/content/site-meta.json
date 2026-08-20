@@ -1,10 +1,8 @@
 {
   "canonical_origin": "https://whenintelligenceisfree.com",
-  "publication_url": "https://read.whenintelligenceisfree.com/",
   "subscription_embed": {
     "src": "https://read.whenintelligenceisfree.com/embed",
-    "title": "Subscribe to When Intelligence Is Free",
-    "fallback_label": "Subscribe directly on Substack"
+    "title": "Subscribe to When Intelligence Is Free"
   },
   "identity": {
     "logo_path": "/assets/logo.webp",

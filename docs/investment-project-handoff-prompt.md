@@ -9,7 +9,10 @@ sanitize there, and generate the cumulative payload defined by:
 
 Include reporting dates; Strategy and actual Nasdaq-100 monthly returns;
 composition as % NAV; sanitized named holdings and weights; required
-percentage-point attribution; and approved commentary only when safe. Populate
+percentage-point attribution; public tickers when supplied by the canonical
+holding source; and approved commentary only when safe. For commentary that
+quotes the benchmark or monthly benchmark move, use the contract's derived
+tokens rather than typing the statistic independently. Populate
 from existing methodology the exact benchmark series identifier and its
 price/total-return basis, plus the official net owner-return methodology ID and
 public deductions description. Do not ask the principal to define, invent, or

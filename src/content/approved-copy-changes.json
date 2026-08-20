@@ -6,6 +6,48 @@
       "approved_on": "2026-08-20",
       "from": "The price of thinking is collapsing, the way the price of electricity did a century ago. Very little of the value that followed went to the people selling it.",
       "to": "The price of thinking is collapsing, the way the price of electricity did a century ago. The biggest gains came from what cheap power made possible, not from selling the power itself."
+    },
+    {
+      "id": "remove-internal-review-strip-2026-08-20",
+      "approved_on": "2026-08-20",
+      "from": "<div class=\"mockstrip\">Structure mock · v2026-08-18 · internal review — not live</div>",
+      "to": ""
+    },
+    {
+      "id": "remove-subscribe-mock-note-2026-08-20",
+      "approved_on": "2026-08-20",
+      "from": "<p class=\"mono small muted\" style=\"margin-top:12px\">[ Mock of the Substack embed — the live iframe renders here on every subscribe touchpoint ]</p>",
+      "to": ""
+    },
+    {
+      "id": "advisory-calendly-link-2026-08-20",
+      "approved_on": "2026-08-20",
+      "from": "mailto:vlad@whenintelligenceisfree.com?subject=Working%20session",
+      "to": "https://calendly.com/vlad-whenintelligenceisfree/30min"
+    },
+    {
+      "id": "remove-advisory-email-button-2026-08-20",
+      "approved_on": "2026-08-20",
+      "from": "<a class=\"btn ghost\" href=\"mailto:vlad@whenintelligenceisfree.com\">vlad@whenintelligenceisfree.com</a>",
+      "to": ""
+    },
+    {
+      "id": "remove-calendly-placeholder-2026-08-20",
+      "approved_on": "2026-08-20",
+      "from": "<p class=\"mono small muted\" style=\"margin-top:10px\">[ Calendly embed / link renders here ]</p>",
+      "to": ""
+    },
+    {
+      "id": "remove-footer-email-link-2026-08-20",
+      "approved_on": "2026-08-20",
+      "from": "<a href=\"mailto:vlad@whenintelligenceisfree.com\">vlad@whenintelligenceisfree.com</a>",
+      "to": ""
+    },
+    {
+      "id": "remove-footer-mock-version-2026-08-20",
+      "approved_on": "2026-08-20",
+      "from": " &nbsp;·&nbsp; structure mock v2026-08-18",
+      "to": ""
     }
   ]
 }

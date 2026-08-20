@@ -93,13 +93,10 @@ function addSubscribeEmbeds(content, meta) {
   const embed = meta.subscription_embed;
   const replacement = () => `<div class="subscribe-embed">
         <iframe src="${escapeHtml(embed.src)}" width="480" height="320" frameborder="0" scrolling="no" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="${escapeHtml(embed.title)}"></iframe>
-        <p class="subscribe-fallback"><a href="${escapeHtml(meta.publication_url)}" target="_blank" rel="noopener">${escapeHtml(embed.fallback_label)}</a></p>
       </div>`;
   const replaced = replaceElementsByClass(content, "div", "substack", replacement);
   if (replaced.count !== 3) throw new Error(`Subscribe embed boundary expected 3 approved cards; found ${replaced.count}.`);
-  const mockNote = '<p class="mono small muted approved-layout-10">[ Mock of the Substack embed — the live iframe renders here on every subscribe touchpoint ]</p>';
-  if (!replaced.content.includes(mockNote)) throw new Error("Subscribe mock-note boundary was not found.");
-  return replaced.content.replace(mockNote, "");
+  return replaced.content;
 }
 
 function addBrandLogo(content, logoPath) {
@@ -290,8 +287,6 @@ export async function buildSite({ requirePublication = false, buildDate = proces
     publication: publicationEvidence,
     production_ready: false,
     production_blockers: [
-      "Mock-only review chrome and the Calendly placeholder remain preserved from the approved baseline.",
-      "The approved baseline exposes a plain email address; an approved anti-harvesting contact treatment is still required.",
       "No approved analytics configuration was supplied; production analytics and consent behavior remain a deliberate deployment decision.",
       "A known-good production deployment identifier and tested rollback procedure must be recorded before launch.",
       "Production release acceptance and principal approval have not occurred."

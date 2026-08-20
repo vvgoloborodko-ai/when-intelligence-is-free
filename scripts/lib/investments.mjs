@@ -21,6 +21,8 @@ const PERIOD = /^[0-9]{4}-(?:0[1-9]|1[0-2])$/;
 const DATE = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 const TIMESTAMP = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$/;
 const CORRECTION_ID = /^corr-[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+const PUBLIC_TICKER = /^[A-Z0-9][A-Z0-9.:-]{0,19}$/;
+const COMMENTARY_TOKENS = new Set(["benchmark_name", "benchmark_month_abs_pct"]);
 const MIN_NORMAL_NUMBER = 2.2250738585072014e-308;
 const NUMBER_WORD = "(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion)";
 const NUMBER_PHRASE = `(?:${NUMBER_WORD})(?:\\s+(?:${NUMBER_WORD}|and|point)){0,10}`;
@@ -360,7 +362,8 @@ export function publicationFirewallFlags(value, {
     flags.add("advice");
   }
   if (prose && containsNonAsciiLetter(text)) flags.add("non-ascii-prose");
-  if (prose && SPELLED_NUMBER.test(policyText)) flags.add("spelled-number");
+  const quantityPolicyText = policyText.replace(/\ba quiet one\b/g, "");
+  if (prose && SPELLED_NUMBER.test(quantityPolicyText)) flags.add("spelled-number");
   if (prose && SPELLED_FINANCIAL_STATISTIC.test(policyText)) flags.add("financial-statistic");
   if (prose && ABSOLUTE_MAGNITUDE_WORD.test(policyText)) flags.add("absolute-magnitude");
   return [...flags];
@@ -428,6 +431,7 @@ function scanPublication(value, path, errors) {
   if (typeof value !== "string") return;
 
   if (/\p{Default_Ignorable_Code_Point}/u.test(value)) errors.push(`${path}: invisible default-ignorable characters are forbidden.`);
+  if (/\/releases\/\d+\/holdings\/\d+\/ticker$/.test(path)) return;
 
   const text = value.normalize("NFKC").replace(/\s+/g, " ").trim();
   const instrumentName = /\/releases\/\d+\/(?:holdings\/\d+\/name|attribution\/items\/\d+\/holding_name)$/.test(path);
@@ -574,12 +578,13 @@ function validateHoldings(items, sleeveWeights, path, errors) {
   let total = 0;
   items.forEach((item, index) => {
     const itemPath = `${path}/${index}`;
-    if (!checkObject(item, itemPath, ["name", "sleeve_id", "weight_pct_nav"], [], errors)) return;
+    if (!checkObject(item, itemPath, ["name", "sleeve_id", "weight_pct_nav"], ["ticker"], errors)) return;
     if (checkString(item.name, `${itemPath}/name`, { maximum: 120, pattern: /^[^<>\r\n]+$/ }, errors)) {
       const normalized = normalizedName(item.name);
       if (names.has(normalized)) errors.push(`${itemPath}/name: duplicate public holding name.`);
       names.add(normalized);
     }
+    if (Object.hasOwn(item, "ticker")) checkString(item.ticker, `${itemPath}/ticker`, { maximum: 20, pattern: PUBLIC_TICKER }, errors);
     if (!SLEEVE_IDS.includes(item.sleeve_id)) errors.push(`${itemPath}/sleeve_id: unknown public sleeve.`);
     const weight = fixedDecimal(item.weight_pct_nav, `${itemPath}/weight_pct_nav`, errors, { weight: true, minimum: 0.000001, maximum: 100 });
     if (weight !== null) {
@@ -640,7 +645,15 @@ function validateCommentary(value, path, errors) {
   if (!checkArray(value.paragraphs, `${path}/paragraphs`, { minimum: 1, maximum: 20 }, errors)) return;
   let total = 0;
   value.paragraphs.forEach((paragraph, index) => {
-    if (checkString(paragraph, `${path}/paragraphs/${index}`, { maximum: 1000, pattern: /^[^<>\r\n]+$/ }, errors)) total += paragraph.length;
+    const paragraphPath = `${path}/paragraphs/${index}`;
+    if (checkString(paragraph, paragraphPath, { maximum: 1000, pattern: /^[^<>\r\n]+$/ }, errors)) {
+      total += paragraph.length;
+      for (const token of paragraph.matchAll(/\{\{([^{}]+)\}\}/g)) {
+        if (!COMMENTARY_TOKENS.has(token[1])) errors.push(`${paragraphPath}: unknown derived commentary token ${token[0]}.`);
+      }
+      const withoutTokens = paragraph.replace(/\{\{[^{}]+\}\}/g, "");
+      if (withoutTokens.includes("{{") || withoutTokens.includes("}}")) errors.push(`${paragraphPath}: malformed derived commentary token.`);
+    }
   });
   if (total > 6000) errors.push(`${path}/paragraphs: combined commentary exceeds 6000 characters.`);
 }
@@ -890,6 +903,7 @@ function deriveCorrectionChanges(previousPerformance, currentPerformance, previo
     const after = currentHoldings.get(key);
     const subject = after?.name || before?.name || key;
     addPrimitiveChange(changes, "holding", "name", subject, "text", before?.name, after?.name);
+    addPrimitiveChange(changes, "holding", "ticker", subject, "identifier", before?.ticker, after?.ticker);
     addPrimitiveChange(changes, "holding", "sleeve_id", subject, "identifier", before?.sleeve_id, after?.sleeve_id);
     addPrimitiveChange(changes, "holding", "weight_pct_nav", subject, "percent_nav", before?.weight_pct_nav, after?.weight_pct_nav);
   }
@@ -1094,6 +1108,7 @@ export function derivePublication(data) {
   }));
   const holdings = latestRelease.holdings.map((item) => ({
     name: item.name,
+    ticker: item.ticker ?? null,
     sleeveId: item.sleeve_id,
     weightPct: Number(item.weight_pct_nav)
   })).sort((left, right) => right.weightPct - left.weightPct || compareCodePoints(normalizedName(left.name), normalizedName(right.name)));

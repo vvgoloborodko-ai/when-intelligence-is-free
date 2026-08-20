@@ -218,9 +218,10 @@ appear once. `weight_pct_nav` is a fixed-six-decimal percent string. The sum
 must equal `100%` within `0.0001` percentage point.
 
 At least one named holding is required. Names are unique after Unicode
-normalization, case folding, and whitespace collapse. No ticker, ISIN,
-quantity, cost, account, broker, rank, absolute value, or top-holding flag is
-accepted. A holding is greater than zero, no holding or per-sleeve published
+normalization, case folding, and whitespace collapse. A holding may include one
+optional public `ticker`: 1–20 uppercase ASCII letters, digits, `.`, `:`, or
+`-`, beginning with a letter or digit. No ISIN, quantity, cost, account,
+broker, rank, absolute value, or top-holding flag is accepted. A holding is greater than zero, no holding or per-sleeve published
 holding subtotal may exceed its public sleeve weight, and all public holdings
 together may not exceed 100%. Display order, rank, and displayed holding total
 are derived.
@@ -278,6 +279,12 @@ claims, and forbidden public-data language fail. Omit commentary when approval
 or sanitization is uncertain. The surface then states that no approved
 Investments commentary was published for that close, so the disappearance of
 an optional disclosure is not silent.
+
+Two derived tokens are allowed inside approved commentary:
+`{{benchmark_name}}` and `{{benchmark_month_abs_pct}}`. The website replaces
+them from the same validated monthly performance primitives used by the chart
+and tables. This lets approved prose quote the benchmark and its rounded
+monthly move without independently typing a financial statistic.
 
 ## Corrections
 

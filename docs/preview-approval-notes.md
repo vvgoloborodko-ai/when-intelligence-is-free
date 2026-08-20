@@ -1,12 +1,12 @@
 # Preview approval notes
 
 The principal-approved `WIIF_Landing_v3_Mock_2026-08-18.html` remains the
-immutable visual/content baseline. Its public text, links, form labels, and
-line-ending-normalized SHA-256 are guarded before every build. The source
-baseline still contains its review-only subscription mock, while the generated
-preview now replaces each mock card with the principal-supplied Substack iframe
-and a plain canonical fallback link. The generated preview also uses the
-supplied optimized logo/icon/social assets.
+immutable historical visual/content baseline. Its line-ending-normalized
+SHA-256 is guarded before every build, and later principal-approved copy/link
+changes are recorded explicitly in `src/content/approved-copy-changes.json`.
+The generated site replaces each historical subscription mock with the
+principal-supplied Substack iframe and uses the supplied optimized
+logo/icon/social assets.
 
 The following Release-1 interface additions are explicit proposals for
 principal preview approval; none is authorized for production by this change:
@@ -62,10 +62,11 @@ invent them.
 
 Structural heading tags were corrected without changing their words or visual
 classes. The real Subscribe embed and supplied identity assets were explicitly
-provided for this iteration and are not treated as inferred copy changes.
+provided for this iteration and are not treated as inferred copy changes. The
+internal-review strip, subscription fallback link, email CTAs, Calendly
+placeholder, and mock version stamps were later removed by explicit principal
+instruction; the Advisory CTA now opens the approved Calendly URL.
 
-Production remains blocked on principal acceptance, removal/replacement of the
-mock review strip and version strings, the Calendly placeholder, an approved
-anti-harvesting contact treatment, an approved analytics/consent setup, and a
-recorded/tested known-good rollback target. The build and CI preview workflows
-do not deploy production.
+Production remains blocked on principal acceptance, an approved
+analytics/consent setup, and a recorded/tested known-good rollback target. The
+build and CI preview workflows do not deploy production.

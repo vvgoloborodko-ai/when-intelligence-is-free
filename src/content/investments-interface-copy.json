@@ -56,15 +56,9 @@
   "universe_value": "Global listed equities, ETFs, options",
   "style": "Style",
   "style_value": "Thematic, concentrated, long-biased with a hedging overlay",
-  "return_currency": "Return currency",
-  "return_basis": "Return basis",
-  "audit_status": "Audit status",
-  "unaudited": "Unaudited",
   "leverage": "Leverage",
   "none": "None",
   "benchmark": "Benchmark",
-  "official_period": "Official calendar-month close",
-  "drawdown": "Drawdown",
   "change_labels": {
     "as_of_date": "Official close date",
     "strategy_return_pct": "Strategy monthly return",
@@ -74,6 +68,7 @@
     "level": "Attribution level",
     "coverage": "Attribution coverage",
     "name": "Named holding",
+    "ticker": "Ticker",
     "sleeve_id": "Public theme",
     "paragraph": "Approved commentary"
   }

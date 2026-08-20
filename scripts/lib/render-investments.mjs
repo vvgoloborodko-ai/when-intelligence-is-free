@@ -62,6 +62,10 @@ function displayPeriod(period) {
   return `${MONTHS[month - 1]} ${year}`;
 }
 
+function chartLabelAnchor(index, lastIndex) {
+  return index === 0 ? "start" : index === lastIndex ? "end" : "middle";
+}
+
 function displayDate(date) {
   const [year, month, day] = date.split("-").map(Number);
   return `${day} ${MONTHS[month - 1]} ${year}`;
@@ -166,7 +170,7 @@ function chartMarkup(rows, conventions) {
   }).join("");
 
   const labelIndexes = [...new Set([0, Math.floor((rows.length - 1) / 3), Math.floor(((rows.length - 1) * 2) / 3), rows.length - 1])];
-  const labels = labelIndexes.map((index) => `<text x="${x(index).toFixed(2)}" y="${height - 10}" text-anchor="middle">${escapeHtml(displayPeriod(rows[index].period))}</text>`).join("");
+  const labels = labelIndexes.map((index) => `<text x="${x(index).toFixed(2)}" y="${height - 10}" text-anchor="${chartLabelAnchor(index, rows.length - 1)}">${escapeHtml(displayPeriod(rows[index].period))}</text>`).join("");
   const strategyPoints = rows.map((row, index) => `${x(index).toFixed(2)},${y(row.strategyCumulativePct).toFixed(2)}`).join(" ");
   const benchmarkPoints = rows.map((row, index) => `${x(index).toFixed(2)},${y(row.benchmarkCumulativePct).toFixed(2)}`).join(" ");
   const latest = rows.at(-1);
@@ -193,7 +197,7 @@ function performanceHistoryTable(rows, benchmarkName) {
     <td class="mono r ${tone(row.strategyCumulativePct)}">${escapeHtml(formatPct(row.strategyCumulativePct))}</td>
     <td class="mono r ${tone(row.benchmarkCumulativePct)}">${escapeHtml(formatPct(row.benchmarkCumulativePct))}</td>
   </tr>`).join("");
-  return `<details class="history" open>
+  return `<details class="history">
     <summary id="performance-history-heading">${escapeHtml(COPY.monthly_performance_history)}</summary>
     <div class="tblwrap"><table aria-labelledby="performance-history-heading">
       <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy_month)}</th><th class="r">${escapeHtml(copy(COPY.benchmark_month, { benchmark: benchmarkName }))}</th><th class="r">${escapeHtml(COPY.strategy_cumulative)}</th><th class="r">${escapeHtml(copy(COPY.benchmark_cumulative, { benchmark: benchmarkName }))}</th></tr></thead>
@@ -274,7 +278,7 @@ function compositionBlock(derived, sleeves, publication, buildDate) {
     </div>`;
   }).join("");
   const holdingRows = derived.holdings.map((holding) => `<tr>
-    <td>${escapeHtml(holding.name)}</td>
+    <td><div class="holding-identity"><span>${escapeHtml(holding.name)}</span>${holding.ticker ? `<span class="holding-ticker">${escapeHtml(holding.ticker)}</span>` : ""}</div></td>
     <td class="muted">${escapeHtml(sleeveCopy.get(holding.sleeveId).name)}</td>
     <td class="mono r">${escapeHtml(formatPct(holding.weightPct, { sign: false, adaptive: true }))}</td>
   </tr>`).join("");
@@ -323,6 +327,18 @@ function correctionMarkup(corrections, sleeves) {
   return `<div class="corrections"><h3>${escapeHtml(COPY.corrections)}</h3><ul>${items}</ul></div>`;
 }
 
+function renderCommentaryParagraph(paragraph, derived, benchmarkName) {
+  const latestPerformance = derived.performanceRows.at(-1);
+  const values = {
+    benchmark_name: benchmarkName,
+    benchmark_month_abs_pct: formatPct(Math.abs(latestPerformance.benchmarkMonthlyPct), { sign: false })
+  };
+  return paragraph.replace(/\{\{([^{}]+)\}\}/g, (_token, key) => {
+    if (!Object.hasOwn(values, key)) throw new Error(`Unknown derived commentary token: ${key}.`);
+    return values[key];
+  });
+}
+
 function attributionBlock(derived, sleeves, publication, buildDate) {
   const sleeveCopy = new Map(sleeves.map((sleeve) => [sleeve.id, sleeve]));
   const items = derived.attribution.items.map((item) => ({
@@ -337,7 +353,7 @@ function attributionBlock(derived, sleeves, publication, buildDate) {
     : `<tr><td class="muted" colspan="2">${escapeHtml(emptyLabel)}</td></tr>`;
   const scopeLabel = COPY[`${derived.attribution.coverage}_${derived.attribution.level}_attribution`];
   const commentary = derived.latestRelease.commentary?.paragraphs?.length
-    ? `<div class="approved-commentary">${derived.latestRelease.commentary.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}</div>`
+    ? `<div class="approved-commentary">${derived.latestRelease.commentary.paragraphs.map((paragraph) => `<p>${escapeHtml(renderCommentaryParagraph(paragraph, derived, publication.conventions.benchmark.name))}</p>`).join("")}</div>`
     : `<div class="approved-commentary muted"><p>${escapeHtml(COPY.no_commentary)}</p></div>`;
 
   return `<section data-investments-block="attribution">
@@ -362,13 +378,8 @@ function factsBlock(publication) {
       <div class="row"><dt>${escapeHtml(COPY.inception)}</dt><dd>${escapeHtml(displayInception(conventions.inception_date))}</dd></div>
       <div class="row"><dt>${escapeHtml(COPY.universe)}</dt><dd>${escapeHtml(COPY.universe_value)}</dd></div>
       <div class="row"><dt>${escapeHtml(COPY.style)}</dt><dd>${escapeHtml(COPY.style_value)}</dd></div>
-      <div class="row"><dt>${escapeHtml(COPY.return_currency)}</dt><dd>${escapeHtml(conventions.return_currency)}</dd></div>
-      <div class="row"><dt>${escapeHtml(COPY.return_basis)}</dt><dd>${escapeHtml(conventions.strategy_return_basis.public_description)}</dd></div>
-      <div class="row"><dt>${escapeHtml(COPY.audit_status)}</dt><dd>${escapeHtml(COPY.unaudited)}</dd></div>
       <div class="row"><dt>${escapeHtml(COPY.leverage)}</dt><dd>${escapeHtml(COPY.none)}</dd></div>
       <div class="row"><dt>${escapeHtml(COPY.benchmark)}</dt><dd>${escapeHtml(conventions.benchmark.name)} · ${escapeHtml(benchmarkBasisLabel(conventions.benchmark.return_basis))} · ${escapeHtml(conventions.benchmark.series_identifier)}</dd></div>
-      <div class="row"><dt>${escapeHtml(COPY.period)}</dt><dd>${escapeHtml(COPY.official_period)}</dd></div>
-      <div class="row"><dt>${escapeHtml(COPY.drawdown)}</dt><dd>${escapeHtml(COPY.month_end_series)}</dd></div>
     </dl>
   </aside>`;
 }
@@ -380,6 +391,7 @@ export function assertRenderedFirewall(html, publication) {
   let scan = html;
   const permittedInstrumentNames = [
     ...publication.releases.flatMap((release) => release.holdings.map((holding) => holding.name)),
+    ...publication.releases.flatMap((release) => release.holdings.map((holding) => holding.ticker).filter(Boolean)),
     ...publication.releases.flatMap((release) => release.attribution.level === "position"
       ? release.attribution.items.map((item) => item.holding_name)
       : [])

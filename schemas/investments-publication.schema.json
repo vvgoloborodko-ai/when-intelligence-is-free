@@ -255,6 +255,12 @@
           "maxLength": 120,
           "pattern": "^[^<>\\r\\n]+$"
         },
+        "ticker": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20,
+          "pattern": "^[A-Z0-9][A-Z0-9.:-]{0,19}$"
+        },
         "sleeve_id": {
           "$ref": "#/$defs/sleeve_id"
         },

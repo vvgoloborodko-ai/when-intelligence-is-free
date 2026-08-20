@@ -74,11 +74,13 @@
       "holdings": [
         {
           "name": "Example Compute Company",
+          "ticker": "EXCO",
           "sleeve_id": "compute-platforms",
           "weight_pct_nav": "5.000000"
         },
         {
           "name": "Example Grid Company",
+          "ticker": "EXGR",
           "sleeve_id": "physical-scarcity",
           "weight_pct_nav": "4.000000"
         }

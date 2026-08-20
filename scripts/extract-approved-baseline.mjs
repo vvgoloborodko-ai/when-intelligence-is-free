@@ -164,12 +164,12 @@ h1.surface-title{font-family:var(--serif);font-weight:700;font-size:clamp(27px,3
 .publication-range-note{margin-top:14px}
 .publication-holdings{margin-top:34px}
 .publication-holdings-table{margin-top:14px}
+.holding-identity{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
+.holding-ticker{display:inline-flex;align-items:center;min-height:20px;padding:1px 6px;border:1px solid #D6C69F;border-radius:4px;background:#FFF7E5;color:var(--amber-ink);font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.06em}
 .publication-attribution-grid{align-items:start}
 .publication-neutral-attribution{margin-top:16px;max-width:520px}
 .subscribe-embed{max-width:520px;margin:22px auto 0;text-align:center}
 .subscribe-embed iframe{display:block;width:480px;max-width:100%;height:320px;margin:0 auto;border:1px solid #EEE;background:#fff}
-.subscribe-fallback{margin-top:10px;font-family:var(--mono);font-size:12px}
-.subscribe-fallback a{color:var(--ink);text-underline-offset:3px}
 
 @media (max-width:640px){
   .chart{overflow-x:auto}
