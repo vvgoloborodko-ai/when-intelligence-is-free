@@ -10,6 +10,8 @@ styling, client behavior, and monthly Investments data.
 
 - `src/content/approved-public-content.html` — approved visible copy and
   semantic content, mechanically extracted from the baseline.
+- `src/content/approved-copy-changes.json` — exact principal-approved copy
+  replacements made after the immutable baseline, with approval dates.
 - `src/content/site-meta.json` — approved site name, canonical URLs, and a
   per-surface metadata grounded in approved copy.
 - `src/content/investment-sleeves.json` — approved public sleeve labels,

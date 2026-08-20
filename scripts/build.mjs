@@ -285,6 +285,7 @@ export async function buildSite({ requirePublication = false, buildDate = proces
     build_mode: hasPublication ? "sanitized-publication-preview" : "approved-baseline-preview",
     build_date: buildDate,
     approved_baseline_sha256: copyEvidence.baselineHash,
+    approved_copy_changes_sha256: copyEvidence.approvedCopyChangesHash,
     approved_investment_sleeves_sha256: copyEvidence.sleevesHash,
     publication: publicationEvidence,
     production_ready: false,

@@ -45,7 +45,7 @@ function correctedFixture(reason = "The source close was corrected after reconci
   return publication;
 }
 
-test("approved public copy remains identical to the immutable baseline", async () => {
+test("approved public copy equals the immutable baseline plus explicit approved changes", async () => {
   const result = await verifyApprovedCopy();
   assert.deepEqual(result.errors, []);
 });

@@ -1,10 +1,12 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { applyApprovedCopyChanges } from "./lib/approved-copy.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const BASELINE = resolve(ROOT, "WIIF_Landing_v3_Mock_2026-08-18.html");
 const CONTENT = resolve(ROOT, "src/content/approved-public-content.html");
+const COPY_CHANGES = resolve(ROOT, "src/content/approved-copy-changes.json");
 const STYLES = resolve(ROOT, "src/styles/site.css");
 const CLIENT = resolve(ROOT, "src/scripts/site.js");
 
@@ -218,7 +220,8 @@ function makeProgressiveClient(js) {
 
 const baseline = await readFile(BASELINE, "utf8");
 const css = capture(baseline, /<style>\s*([\s\S]*?)\s*<\/style>/, "styles");
-const body = capture(baseline, /<body>\s*([\s\S]*?)\s*<script>/, "body content");
+const copyChanges = JSON.parse(await readFile(COPY_CHANGES, "utf8"));
+const body = applyApprovedCopyChanges(capture(baseline, /<body>\s*([\s\S]*?)\s*<script>/, "body content"), copyChanges);
 const client = capture(baseline, /<script>\s*([\s\S]*?)\s*<\/script>\s*<\/body>/, "client script");
 const separated = separateInlineLayout(makeProgressive(markInvestmentBlocks(body)));
 

@@ -13,6 +13,8 @@ import { injectInvestments, renderInvestments } from "../scripts/lib/render-inve
 const contentUrl = new URL("../src/content/approved-public-content.html", import.meta.url);
 const publicationUrl = new URL("../data/investments/publication.json", import.meta.url);
 const content = await readFile(contentUrl, "utf8");
+const baseline = await readFile(new URL("../WIIF_Landing_v3_Mock_2026-08-18.html", import.meta.url), "utf8");
+const copyChanges = JSON.parse(await readFile(new URL("../src/content/approved-copy-changes.json", import.meta.url), "utf8"));
 const styles = await readFile(new URL("../src/styles/site.css", import.meta.url), "utf8");
 const client = await readFile(new URL("../src/scripts/site.js", import.meta.url), "utf8");
 const template = await readFile(new URL("../src/site.template.html", import.meta.url), "utf8");
@@ -25,6 +27,15 @@ const publicationWorkflow = await readFile(new URL("../.github/workflows/investm
 const nodeVersion = await readFile(new URL("../.node-version", import.meta.url), "utf8");
 const sleeves = JSON.parse(await readFile(new URL("../src/content/investment-sleeves.json", import.meta.url), "utf8"));
 const fixtureText = await readFile(new URL("./fixtures/investments-publication.valid.json", import.meta.url), "utf8");
+
+test("principal-approved hero replacement is explicit and synchronized with metadata", () => {
+  const change = copyChanges.changes.find(({ id }) => id === "home-hero-premise-2026-08-20");
+  assert.ok(change);
+  assert.match(baseline, new RegExp(change.from.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.doesNotMatch(baseline, new RegExp(change.to.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(content, new RegExp(change.to.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.equal(meta.surfaces.home.description, change.to);
+});
 
 test("approved content has one main landmark, valid view structure, and no embedded layout", () => {
   assert.equal((content.match(/<main\b/g) || []).length, 1);
