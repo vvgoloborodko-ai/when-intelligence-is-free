@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { buildSite } from "../scripts/build.mjs";
+import { buildSite, renderResearchIndex } from "../scripts/build.mjs";
 import { assertValidPublication, parsePublicationBytes, parsePublicationText } from "../scripts/lib/investments.mjs";
 import { previousDistinctPublicationText, selectPreviousDistinctPublicationText } from "../scripts/lib/publication-history.mjs";
 import { assertInvestmentsDirectory, assertStaticDirectory } from "../scripts/lib/repository-boundary.mjs";
@@ -27,6 +27,8 @@ const publicationWorkflow = await readFile(new URL("../.github/workflows/investm
 const nodeVersion = await readFile(new URL("../.node-version", import.meta.url), "utf8");
 const sleeves = JSON.parse(await readFile(new URL("../src/content/investment-sleeves.json", import.meta.url), "utf8"));
 const fixtureText = await readFile(new URL("./fixtures/investments-publication.valid.json", import.meta.url), "utf8");
+const workOrder = JSON.parse(await readFile(new URL("../src/content/v3-work-order.json", import.meta.url), "utf8"));
+const researchEssays = JSON.parse(await readFile(new URL("../src/content/research-essays.json", import.meta.url), "utf8"));
 
 test("principal-approved hero replacement is explicit and synchronized with metadata", () => {
   const change = copyChanges.changes.find(({ id }) => id === "home-hero-premise-2026-08-20");
@@ -79,6 +81,25 @@ test("external new-tab links carry safe relationship attributes", () => {
   for (const tag of tags) assert.match(tag, /rel="[^"]*noopener[^"]*"/);
 });
 
+test("Research index is data-driven and pipeline entries never render dates", () => {
+  const essays = structuredClone(researchEssays);
+  essays.published.push({
+    title: "Dummy published essay",
+    slug: "dummy-published",
+    url: "https://read.whenintelligenceisfree.com/p/dummy-published",
+    date: "2026-08",
+    route: "all",
+    standfirst: "Temporary acceptance-test standfirst."
+  });
+  essays.pipeline.push({ title: "Dummy pipeline title", route: "dummy" });
+  const html = renderResearchIndex(essays, workOrder);
+  assert.match(html, /Dummy published essay/);
+  assert.match(html, /Aug 2026/);
+  const pipeline = html.match(/<ul class="pipeline-essays">([\s\S]*?)<\/ul>/)[1];
+  assert.match(pipeline, /Dummy pipeline title/);
+  assert.doesNotMatch(pipeline, /<time|Aug 2026|\b\d{4}\b/);
+});
+
 test("static routes select one server-rendered view and remain usable without JavaScript", async () => {
   await buildSite({ buildDate: new Date().toISOString().slice(0, 10) });
   const subscribeTargets = {
@@ -100,10 +121,12 @@ test("static routes select one server-rendered view and remain usable without Ja
     assert.doesNotMatch(html, /class="substack"|Mock of the Substack embed/);
     assert.doesNotMatch(html, /Subscribe directly on Substack|mailto:|vlad@whenintelligenceisfree\.com|structure mock|internal review|Calendly embed \/ link renders here/i);
     assert.match(html, /<img class="brand-logo" src="\/assets\/logo\.webp" width="38" height="38" alt="">/);
-    assert.match(html, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-preview\.png">/);
+    assert.match(html, new RegExp(`<meta property="og:image" content="${meta.canonical_origin}${surface.social_image_path.replaceAll("/", "\\/")}">`));
+    assert.match(html, new RegExp(`<meta name="twitter:image" content="${meta.canonical_origin}${surface.social_image_path.replaceAll("/", "\\/")}">`));
+    assert.equal((html.match(new RegExp(workOrder.subscribe_promise.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length, 1);
     if (key === "advisory") {
       assert.doesNotMatch(html, /read\.whenintelligenceisfree\.com\/embed/);
-      assert.match(html, /href="https:\/\/calendly\.com\/vlad-whenintelligenceisfree\/30min"[^>]*>Start a conversation<\/a>/);
+      assert.equal((html.match(/href="https:\/\/calendly\.com\/vlad-whenintelligenceisfree\/30min"[^>]*>Start a conversation<\/a>/g) || []).length, 2);
     } else {
       assert.match(html, /<iframe src="https:\/\/read\.whenintelligenceisfree\.com\/embed"[^>]*title="Subscribe to When Intelligence Is Free"><\/iframe>/);
     }
@@ -125,14 +148,38 @@ test("static routes select one server-rendered view and remain usable without Ja
     assert.ok(structured);
     const structuredData = JSON.parse(structured[1]);
     assert.equal(structuredData.url, `${meta.canonical_origin}${surface.path}`);
+    if (key === "home") {
+      assert.match(html, /class="home-investments-proof"/);
+      assert.match(html, /\+63\.0%[\s\S]*\+34\.6%[\s\S]*31 July 2026/);
+      for (const route of ["substitute", "amplify", "reprice", "unlock"]) assert.match(html, new RegExp(`href="/research/#${route}"`));
+      assert.match(html, /Where the next giants come from\./);
+      assert.match(html, />Work with me →<\/a>/);
+    }
+    if (key === "research") {
+      assert.match(html, /class="research-index"/);
+      assert.match(html, /Working titles, in no fixed order\. The sequence follows the evidence\./);
+      for (const route of ["substitute", "amplify", "reprice", "unlock"]) assert.match(html, new RegExp(`id="${route}"`));
+      assert.doesNotMatch(html.match(/<ul class="pipeline-essays">([\s\S]*?)<\/ul>/)[1], /<time|\b\d{4}\b/);
+    }
+    if (key === "investments") {
+      assert.match(html, /July 2026 · close note/);
+      assert.match(html, /datetime="2026-07-31">31 July 2026/);
+      assert.match(html, /Show all 19 months/);
+      assert.ok(html.indexOf('data-investments-block="composition"') < html.indexOf('class="finetext"'));
+    }
   }
   assert.match(client, /data-initial-view/);
   assert.match(client, /aria-current/);
   assert.match(styles, /\.view\{display:none\}/);
   assert.match(styles, /\.view\.active\{display:block\}/);
-  const socialPreview = await readFile(new URL("../dist/assets/social-preview.png", import.meta.url));
-  assert.equal(socialPreview.readUInt32BE(16), 1200);
-  assert.equal(socialPreview.readUInt32BE(20), 630);
+  assert.equal(new Set(Object.values(meta.surfaces).map(({ title }) => title)).size, 4);
+  assert.equal(new Set(Object.values(meta.surfaces).map(({ description }) => description)).size, 4);
+  assert.equal(new Set(Object.values(meta.surfaces).map(({ social_image_path }) => social_image_path)).size, 4);
+  for (const surface of Object.values(meta.surfaces)) {
+    const socialPreview = await readFile(new URL(`../dist${surface.social_image_path}`, import.meta.url));
+    assert.equal(socialPreview.readUInt32BE(16), 1200);
+    assert.equal(socialPreview.readUInt32BE(20), 630);
+  }
   const deployedLogo = await readFile(new URL("../dist/assets/logo.webp", import.meta.url));
   assert.ok(deployedLogo.byteLength < 100_000);
 });
@@ -163,6 +210,10 @@ test("narrow-screen CSS protects navigation, charts, forms, prose, and hero gutt
   assert.match(styles, /\.substack input\{flex:1;min-width:0/);
   assert.match(styles, /\.hero\{padding-block:/);
   assert.match(styles, /\.essay-row\{align-items:flex-start;flex-direction:column/);
+  assert.match(styles, /@media \(max-width:767px\)/);
+  assert.match(styles, /\.history-desktop\{display:none\}/);
+  assert.match(styles, /\.history-mobile\{display:block\}/);
+  assert.doesNotMatch(styles, /@media \(max-width:[^)]+\)[\s\S]{0,300}table\{display:none/);
   assert.match(styles, /overflow-wrap:anywhere/);
   assert.doesNotMatch(styles, /body\s*\{[^}]*overflow-x\s*:\s*hidden/);
 });

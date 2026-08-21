@@ -165,6 +165,41 @@ h1.surface-title{font-family:var(--serif);font-weight:700;font-size:clamp(27px,3
 .subscribe-embed{max-width:520px;margin:22px auto 0;text-align:center}
 .subscribe-embed iframe{display:block;width:480px;max-width:100%;height:320px;margin:0 auto;border:1px solid #EEE;background:#fff}
 
+.home-investments-proof{padding:18px 0;background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.home-investments-proof p{font-family:var(--mono);font-size:12.5px;line-height:1.7;color:var(--ink2)}
+.home-investments-proof strong{font-weight:600}
+.home-investments-proof a{color:var(--ink);font-style:italic;text-decoration:none;border-bottom:2px solid var(--amber);white-space:nowrap}
+.mode[href]{color:inherit;text-decoration:none}
+.mode[href]:focus-visible{outline:2px solid var(--amber-ink);outline-offset:3px}
+.unlock-subcopy{font-family:var(--serif);font-weight:600;color:var(--unl)!important;margin-bottom:7px}
+.research-index-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:42px}
+.essay-index-row{display:flex;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.essay-index-row:first-child{border-top:1px solid var(--line)}
+.essay-index-copy{display:flex;flex-direction:column;gap:5px}
+.essay-index-title{font-family:var(--serif);font-weight:600;font-size:19px}
+.essay-index-standfirst{color:var(--ink2);font-size:14.5px;line-height:1.45}
+.essay-index-row time{flex:none;font-family:var(--mono);font-size:11.5px;color:var(--ink2);white-space:nowrap}
+.pipeline-intro{margin-bottom:13px}
+.pipeline-essays{display:flex;flex-wrap:wrap;gap:10px;list-style:none}
+.pipeline-essays li{font-family:var(--serif);font-weight:600;border:1px solid var(--line);border-radius:8px;background:var(--card);padding:12px 16px}
+.history-heading{font-family:var(--mono);font-size:12px;line-height:1.4;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-bottom:14px}
+.history-mobile{display:none}
+.mobile-history-archive{margin-top:14px}
+.mobile-history-archive summary{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink);cursor:pointer;padding:10px 0}
+.close-note-head{display:flex;justify-content:space-between;gap:16px;align-items:baseline}
+.close-note-head h3{font-size:24px;margin:0}
+.close-note-head time{display:block;margin-top:4px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.close-note-body{font-size:16px;line-height:1.65}
+.close-note-links{display:flex;flex-wrap:wrap;gap:12px 24px;margin-top:20px}
+.close-note-links a{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--amber);padding-bottom:2px}
+.advisory-second-cta{margin-top:28px}
+@media (max-width:767px){
+  .research-index-grid{grid-template-columns:1fr;gap:34px}
+  .essay-index-row{flex-direction:column;gap:7px}
+  .history-desktop{display:none}
+  .history-mobile{display:block}
+}
+
 @media (max-width:640px){
   .chart{overflow-x:auto}
   .chart svg{min-width:620px}

@@ -1,0 +1,104 @@
+# V3 branch test plan
+
+This plan applies to `codex/v3-copy-structure`. It is a draft review branch,
+not production approval. It does not change DNS, hosting, Cloudflare Pages, the
+Investments schema, or any published financial primitive.
+
+## Start the local preview
+
+From the repository root:
+
+```powershell
+git fetch origin
+git switch codex/v3-copy-structure
+npm run check
+npm run preview:release
+```
+
+Open `http://127.0.0.1:4173/`. Stop the preview with `Ctrl+C`.
+
+The automated check includes an in-memory synchronization regression: it
+advances a synthetic fixture's close date and one primitive return without
+writing that fixture into the repository, then confirms that Home and
+Investments render the same derived result and date.
+
+## Home
+
+Test at 1280 px and 380 px:
+
+1. Confirm the proof strip sits directly below the hero and above the map.
+2. Confirm its two cumulative returns and as-of date match Investments.
+3. Click Substitute, Amplify, Reprice, and Unlock. Each must open
+   `/research/#substitute`, `#amplify`, `#reprice`, or `#unlock` at the matching
+   pipeline item.
+4. Confirm Unlock alone carries “Where the next giants come from.”
+5. Confirm the biography link says “Work with me →” and opens `/advisory/`.
+
+## Research
+
+Open `http://127.0.0.1:4173/research/`:
+
+1. Confirm the Published and In the pipeline index appears beneath the phase
+   path.
+2. Published entries show title, standfirst, date, and link.
+3. Pipeline entries show titles only—no dates or numeric ordering.
+4. Load each anchor directly:
+   - `http://127.0.0.1:4173/research/#substitute`
+   - `http://127.0.0.1:4173/research/#amplify`
+   - `http://127.0.0.1:4173/research/#reprice`
+   - `http://127.0.0.1:4173/research/#unlock`
+
+For the data-edit acceptance test, add temporary dummy objects to a disposable
+copy of `src/content/research-essays.json`; do not commit them. Published
+objects use `title`, `slug`, `url`, `date`, `route`, and `standfirst`. Pipeline
+objects use only `title` and `route`. The automated suite performs this same
+test without changing the working file.
+
+## Investments
+
+Open `http://127.0.0.1:4173/investments/`:
+
+1. At 1280 px, confirm Monthly performance history shows the full table with no
+   expander.
+2. At 380 px, confirm the chart is followed by the latest six months and a
+   native “Show all 19 months” expander. Expand it and confirm the earlier
+   months appear.
+3. Confirm the close note heading is “July 2026 · close note”, its date is
+   “31 July 2026”, the existing body is unchanged, and the two links appear in
+   the required order.
+4. Confirm the standing disclaimer is below Composition and is not clipped at
+   either width.
+
+## Advisory and subscribe promise
+
+Open `http://127.0.0.1:4173/advisory/`. Confirm both “Start a conversation”
+buttons use the same Calendly target, with the second directly after Why me.
+
+Across `/`, `/research/`, `/investments/`, and `/advisory/`, confirm each
+subscribe ask says exactly:
+
+> Essays as they ship, a short note at every monthly close, and a full review each quarter.
+
+## Head tags and social cards
+
+Use View Source on each route and verify its distinct title, description,
+self-referential canonical URL, `og:image`, and `twitter:image`. The four local
+cards are:
+
+- `http://127.0.0.1:4173/assets/social-home.png`
+- `http://127.0.0.1:4173/assets/social-research.png`
+- `http://127.0.0.1:4173/assets/social-investments.png`
+- `http://127.0.0.1:4173/assets/social-advisory.png`
+
+Each is a 1200 × 630 PNG. External card validators require an HTTPS-accessible
+branch preview URL; local addresses cannot be fetched by those services.
+
+## Governance flags confirmed
+
+- Inception is already a required publication field at
+  `conventions.inception_date`; the current published value is `2025-01-01`.
+  This branch does not change it.
+- Performance, benchmark, proof-strip, composition, holdings, attribution, and
+  close-note dates all derive from `data/investments/publication.json`.
+- Current rendered financial blocks share the same close date; no mixed-date
+  figures appear in the same eyeline.

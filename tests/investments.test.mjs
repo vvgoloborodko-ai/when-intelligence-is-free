@@ -9,10 +9,11 @@ import {
   parsePublicationText,
   validatePublication
 } from "../scripts/lib/investments.mjs";
-import { assertRenderedFirewall, escapeHtml, renderInvestments } from "../scripts/lib/render-investments.mjs";
+import { assertRenderedFirewall, escapeHtml, renderHomeProofStrip, renderInvestments } from "../scripts/lib/render-investments.mjs";
 import { verifyApprovedCopy } from "../scripts/lib/approved-copy.mjs";
 
 const fixtureText = await readFile(new URL("./fixtures/investments-publication.valid.json", import.meta.url), "utf8");
+const canonicalPublicationText = await readFile(new URL("../data/investments/publication.json", import.meta.url), "utf8");
 const sleeves = JSON.parse(await readFile(new URL("../src/content/investment-sleeves.json", import.meta.url), "utf8"));
 
 function fixture() {
@@ -598,16 +599,61 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.match(rendered.facts, /Thematic, concentrated, long-biased with a hedging overlay/);
   assert.match(rendered.composition, /Named holdings/);
   assert.match(rendered.composition, /aria-label="Physical scarcity/);
-  assert.match(rendered.performance, /aria-labelledby="performance-history-heading"/);
-  assert.doesNotMatch(rendered.performance, /<details class="history" open>/);
+  assert.match(rendered.performance, /aria-labelledby="desktop-performance-history-heading"/);
+  assert.match(rendered.performance, /aria-labelledby="mobile-performance-history-heading"/);
+  assert.doesNotMatch(rendered.performance, /<details class="history"/);
   assert.match(rendered.performance, /text-anchor="end">Mar 2025<\/text>/);
   assert.match(rendered.attribution, /Synthetic validator fixture only\./);
   assert.match(rendered.attribution, /Complete sleeve attribution/);
+  assert.match(rendered.attribution, /March 2025 · close note/);
+  assert.match(rendered.attribution, /datetime="2025-03-31">31 March 2025/);
+  assert.match(rendered.attribution, /the-businesses-got-better-the-money/);
+  assert.match(rendered.attribution, />All close notes →<\/a>/);
   assert.match(rendered.composition, /class="holding-ticker">EXCO<\/span>/);
   for (const removedFact of ["Return currency", "Return basis", "Audit status", "Official calendar-month close", "Drawdown"]) {
     assert.doesNotMatch(rendered.facts, new RegExp(removedFact, "i"));
   }
   assert.equal(escapeHtml('<script>alert("x")</script>'), "&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;");
+});
+
+test("mobile history exposes six recent months and a data-derived full count", () => {
+  const publication = parsePublicationText(canonicalPublicationText);
+  const rendered = renderInvestments(publication, sleeves, { buildDate: "2026-08-21" });
+  assert.match(rendered.performance, /class="history history-desktop"/);
+  assert.match(rendered.performance, /class="history history-mobile"/);
+  assert.match(rendered.performance, /<summary id="mobile-history-archive-heading">Show all 19 months<\/summary>/);
+  const mobile = rendered.performance.match(/<div class="history history-mobile">([\s\S]*?)<div class="tblwrap publication-period-table">/)[1];
+  assert.equal((mobile.match(/<tr>/g) || []).length - 2, 19);
+  assert.match(mobile, /Feb 2026/);
+  assert.match(mobile, /Jul 2026/);
+});
+
+test("Home proof and Investments use the same changed publication primitives", () => {
+  const publication = fixture();
+  publication.generated_at = "2025-05-01T08:00:00Z";
+  publication.performance.push({
+    period: "2025-04",
+    as_of_date: "2025-04-30",
+    revision: 1,
+    strategy_return_pct: "4.000000",
+    benchmark_return_pct: "1.000000"
+  });
+  publication.releases[0].period = "2025-04";
+  publication.releases[0].attribution.items[0].effect_pp = "2.000000";
+  assert.doesNotThrow(() => assertValidPublication(publication));
+  const derived = derivePublication(publication);
+  const proof = renderHomeProofStrip(derived, publication, {
+    proof_lead: "The thesis, held as positions:",
+    proof_versus: "vs",
+    proof_since: "since",
+    proof_marked: "Marked monthly, as of",
+    proof_link: "See the book"
+  });
+  const investments = renderInvestments(publication, sleeves, { buildDate: "2025-05-01" });
+  assert.match(proof, /\+8\.2%/);
+  assert.match(investments.performance, /\+8\.2%/);
+  assert.match(proof, /30 April 2025/);
+  assert.match(investments.performance, /30 Apr 2025/);
 });
 
 test("approved commentary derives benchmark name and monthly move tokens", () => {
