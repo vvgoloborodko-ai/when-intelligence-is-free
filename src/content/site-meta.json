@@ -7,8 +7,6 @@
   "identity": {
     "logo_path": "/assets/logo.webp",
     "favicon_path": "/assets/logo-164.png",
-    "social_image_path": "/assets/social-preview.png",
-    "social_image_alt": "When Intelligence Is Free",
     "social_image_width": 1200,
     "social_image_height": 630
   },
@@ -17,22 +15,30 @@
     "home": {
       "path": "/",
       "title": "When Intelligence Is Free",
-      "description": "The price of thinking is collapsing, the way the price of electricity did a century ago. The biggest gains came from what cheap power made possible, not from selling the power itself."
+      "description": "The price of thinking is collapsing, the way the price of electricity did a century ago. The biggest gains came from what cheap power made possible, not from selling the power itself.",
+      "social_image_path": "/assets/social-home.png",
+      "social_image_alt": "When Intelligence Is Free — Home"
     },
     "research": {
       "path": "/research/",
       "title": "Research — When Intelligence Is Free",
-      "description": "When intelligence collapses in price, value doesn't stay in the intelligence layer."
+      "description": "When intelligence collapses in price, value doesn't stay in the intelligence layer.",
+      "social_image_path": "/assets/social-research.png",
+      "social_image_alt": "When Intelligence Is Free — Research"
     },
     "investments": {
       "path": "/investments/",
       "title": "Investments — When Intelligence Is Free",
-      "description": "A concentrated global strategy built on one rule: own what stays scarce when intelligence becomes abundant."
+      "description": "A concentrated global strategy built on one rule: own what stays scarce when intelligence becomes abundant.",
+      "social_image_path": "/assets/social-investments.png",
+      "social_image_alt": "When Intelligence Is Free — Investments"
     },
     "advisory": {
       "path": "/advisory/",
       "title": "Advisory — When Intelligence Is Free",
-      "description": "I work with founders, companies and capital providers on decisions that sit between technology, market structure, product and capital: where value is moving, what becomes newly viable, where defensibility survives, and what to prioritize now."
+      "description": "I work with founders, companies and capital providers on decisions that sit between technology, market structure, product and capital: where value is moving, what becomes newly viable, where defensibility survives, and what to prioritize now.",
+      "social_image_path": "/assets/social-advisory.png",
+      "social_image_alt": "When Intelligence Is Free — Advisory"
     }
   }
 }
