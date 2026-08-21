@@ -1,0 +1,28 @@
+{
+  "status": "draft",
+  "source": "Codex work order — whenintelligenceisfree.com v3",
+  "requested_on": "2026-08-21",
+  "home": {
+    "proof_lead": "The thesis, held as positions:",
+    "proof_versus": "vs",
+    "proof_since": "since",
+    "proof_marked": "Marked monthly, as of",
+    "proof_link": "See the book",
+    "advisory_link_label": "Work with me →",
+    "unlock_subcopy": "Where the next giants come from."
+  },
+  "research": {
+    "published_label": "Published",
+    "pipeline_label": "In the pipeline",
+    "pipeline_intro": "Working titles, in no fixed order. The sequence follows the evidence."
+  },
+  "investments": {
+    "close_note_suffix": "close note",
+    "read_full_note_label": "Read the full note →",
+    "read_full_note_url": "https://read.whenintelligenceisfree.com/p/the-businesses-got-better-the-money",
+    "all_close_notes_label": "All close notes →",
+    "all_close_notes_url": "https://read.whenintelligenceisfree.com/t/investments",
+    "show_all_months": "Show all {{count}} months"
+  },
+  "subscribe_promise": "Essays as they ship, a short note at every monthly close, and a full review each quarter."
+}

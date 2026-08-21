@@ -1,0 +1,30 @@
+{
+  "published": [
+    {
+      "title": "Who Gets Rich When Intelligence Is Free?",
+      "slug": "thesis",
+      "url": "https://read.whenintelligenceisfree.com/p/thesis",
+      "date": "2026-07",
+      "route": "all",
+      "standfirst": "When intelligence collapses in price, value doesn't stay in the intelligence layer."
+    }
+  ],
+  "pipeline": [
+    {
+      "title": "Substitute",
+      "route": "substitute"
+    },
+    {
+      "title": "Amplify",
+      "route": "amplify"
+    },
+    {
+      "title": "Reprice",
+      "route": "reprice"
+    },
+    {
+      "title": "Unlock",
+      "route": "unlock"
+    }
+  ]
+}
