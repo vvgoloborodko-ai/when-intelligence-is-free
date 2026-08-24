@@ -45,7 +45,7 @@ test("approved content has one main landmark, valid view structure, and no embed
   assert.doesNotMatch(content, /\sstyle=/);
   assert.doesNotMatch(content, /<span>\s*<span class="n">[\s\S]*?<h4>/);
   assert.doesNotMatch(content, /<h4\b/);
-  assert.match(content, /<h2 class="eyebrow approved-layout-17">Performance<\/h2>/);
+  assert.match(content, /<h2 class="eyebrow approved-layout-17">Performance history<\/h2>/);
   assert.match(content, /<h3 class="eyebrow approved-layout-17">Top holdings<\/h3>/);
   assert.doesNotMatch(content, /mailto:|vlad@whenintelligenceisfree\.com|structure mock|internal review|Calendly embed \/ link renders here/i);
   assert.match(content, /href="https:\/\/calendly\.com\/vlad-whenintelligenceisfree\/30min"/);

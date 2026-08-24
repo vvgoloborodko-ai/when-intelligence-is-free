@@ -5,16 +5,8 @@
   "home": {
     "proof_lead": "The thesis, held as positions:",
     "proof_versus": "vs",
-    "proof_since": "since",
-    "proof_marked": "Marked monthly, as of",
     "proof_link": "See the book",
-    "advisory_link_label": "Work with me →",
-    "unlock_subcopy": "Where the next giants come from."
-  },
-  "research": {
-    "published_label": "Published",
-    "pipeline_label": "In the pipeline",
-    "pipeline_intro": "Working titles, in no fixed order. The sequence follows the evidence."
+    "advisory_link_label": "Work with me →"
   },
   "investments": {
     "close_note_suffix": "close note",

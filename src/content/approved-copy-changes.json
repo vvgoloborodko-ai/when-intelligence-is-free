@@ -48,6 +48,12 @@
       "approved_on": "2026-08-20",
       "from": " &nbsp;·&nbsp; structure mock v2026-08-18",
       "to": ""
+    },
+    {
+      "id": "rename-investments-performance-section-2026-08-24",
+      "approved_on": "2026-08-24",
+      "from": ">Performance</div>",
+      "to": ">Performance history</div>"
     }
   ]
 }
