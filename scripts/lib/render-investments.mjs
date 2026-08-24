@@ -125,7 +125,7 @@ export function renderHomeProofStrip(derived, publication, labels) {
   const conventions = publication.conventions;
   return `<aside class="home-investments-proof">
     <div class="wrap">
-      <p>${escapeHtml(labels.proof_lead)} <strong class="${tone(summary.strategyCumulativePct)}">${escapeHtml(formatPct(summary.strategyCumulativePct))}</strong> ${escapeHtml(labels.proof_versus)} <strong class="${tone(summary.benchmarkCumulativePct)}">${escapeHtml(formatPct(summary.benchmarkCumulativePct))}</strong> ${escapeHtml(conventions.benchmark.name)} ${escapeHtml(labels.proof_since)} ${escapeHtml(displayInception(conventions.inception_date))}. ${escapeHtml(labels.proof_marked)} ${escapeHtml(displayDateLong(derived.asOfDate))}. <a href="/investments/">→ ${escapeHtml(labels.proof_link)}</a></p>
+      <p>${escapeHtml(labels.proof_lead)} <strong class="${tone(summary.strategyCumulativePct)}">${escapeHtml(formatPct(summary.strategyCumulativePct))}</strong> ${escapeHtml(labels.proof_versus)} <strong class="${tone(summary.benchmarkCumulativePct)}">${escapeHtml(formatPct(summary.benchmarkCumulativePct))}</strong> ${escapeHtml(conventions.benchmark.name)}. <a href="/investments/">→ ${escapeHtml(labels.proof_link)}</a></p>
     </div>
   </aside>`;
 }

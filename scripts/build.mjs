@@ -29,7 +29,6 @@ const CONTENT = resolve(ROOT, "src/content/approved-public-content.html");
 const META = resolve(ROOT, "src/content/site-meta.json");
 const SLEEVES = resolve(ROOT, "src/content/investment-sleeves.json");
 const V3_WORK_ORDER = resolve(ROOT, "src/content/v3-work-order.json");
-const RESEARCH_ESSAYS = resolve(ROOT, "src/content/research-essays.json");
 const STYLES = resolve(ROOT, "src/styles/site.css");
 const CLIENT = resolve(ROOT, "src/scripts/site.js");
 const STATIC = resolve(ROOT, "src/static");
@@ -118,84 +117,9 @@ function replaceMarker(content, marker, replacement) {
   return content.replace(token, replacement);
 }
 
-function displayEssayDate(value, months) {
-  if (!/^\d{4}-(?:0[1-9]|1[0-2])$/.test(value)) throw new Error(`Research essay date must be YYYY-MM: ${value}.`);
-  const [year, month] = value.split("-").map(Number);
-  return `${months[month - 1]} ${year}`;
-}
-
-function validateResearchEssays(essays) {
-  const routes = new Set(["all", "substitute", "amplify", "reprice", "unlock"]);
-  if (!essays || !Array.isArray(essays.published) || !Array.isArray(essays.pipeline) || Object.keys(essays).sort().join(",") !== "pipeline,published") {
-    throw new Error("Research essay index must contain exactly published and pipeline arrays.");
-  }
-  const ids = new Set();
-  for (const [index, item] of essays.published.entries()) {
-    const keys = Object.keys(item).sort().join(",");
-    if (keys !== "date,route,slug,standfirst,title,url") throw new Error(`Published essay ${index + 1} has an invalid shape.`);
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.slug)) throw new Error(`Published essay ${index + 1} has an invalid slug.`);
-    if (!routes.has(item.route)) throw new Error(`Published essay ${index + 1} has an invalid route.`);
-    if (!/^https:\/\/read\.whenintelligenceisfree\.com\//.test(item.url)) throw new Error(`Published essay ${index + 1} must use the canonical publication origin.`);
-    for (const field of ["title", "standfirst"]) if (typeof item[field] !== "string" || !item[field].trim() || /[<>\r\n]/.test(item[field])) throw new Error(`Published essay ${index + 1} has invalid ${field}.`);
-    displayEssayDate(item.date, ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]);
-  }
-  for (const [index, item] of essays.pipeline.entries()) {
-    if (Object.keys(item).sort().join(",") !== "route,title") throw new Error(`Pipeline essay ${index + 1} has an invalid shape.`);
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(item.route) || item.route === "all" || ids.has(item.route)) throw new Error(`Pipeline essay ${index + 1} has an invalid or duplicate route.`);
-    if (typeof item.title !== "string" || !item.title.trim() || /[<>\r\n]/.test(item.title)) throw new Error(`Pipeline essay ${index + 1} has an invalid title.`);
-    ids.add(item.route);
-  }
-  for (const route of ["substitute", "amplify", "reprice", "unlock"]) {
-    if (!ids.has(route)) throw new Error(`Pipeline essay index is missing the ${route} route anchor.`);
-  }
-}
-
-export function renderResearchIndex(essays, workOrder) {
-  validateResearchEssays(essays);
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const published = essays.published.map((item) => `<a class="essay-index-row" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">
-          <span class="essay-index-copy"><span class="essay-index-title">${escapeHtml(item.title)}</span><span class="essay-index-standfirst">${escapeHtml(item.standfirst)}</span></span>
-          <time datetime="${escapeHtml(item.date)}">${escapeHtml(displayEssayDate(item.date, months))}</time>
-        </a>`).join("\n");
-  const pipeline = essays.pipeline.map((item) => `<li id="${escapeHtml(item.route)}">${escapeHtml(item.title)}</li>`).join("");
-  return `<section class="research-index" aria-labelledby="research-index-heading">
-    <div class="wrap">
-      <div class="research-index-grid">
-        <div>
-          <h2 class="eyebrow" id="research-index-heading">${escapeHtml(workOrder.research.published_label)}</h2>
-          <div class="published-essays">${published}</div>
-        </div>
-        <div>
-          <h2 class="eyebrow">${escapeHtml(workOrder.research.pipeline_label)}</h2>
-          <p class="muted small pipeline-intro">${escapeHtml(workOrder.research.pipeline_intro)}</p>
-          <ul class="pipeline-essays">${pipeline}</ul>
-        </div>
-      </div>
-    </div>
-  </section>`;
-}
-
-function linkHomeRouteTiles(content, workOrder) {
-  const routes = ["substitute", "amplify", "reprice", "unlock"];
-  const transformed = replaceElementsByClass(content, "div", "mode", (index, element) => {
-    const route = routes[index];
-    if (!route) throw new Error("Unexpected fifth economic-gravity route tile.");
-    let linked = element.replace(/^<div\b/, `<a href="/research/#${route}"`).replace(/<\/div>$/, "</a>");
-    if (route === "unlock") {
-      const target = '<div class="q">Markets that were uneconomic until cognition got cheap.</div>';
-      if (!linked.includes(target)) throw new Error("Unlock subcopy insertion boundary was not found.");
-      linked = linked.replace(target, `<div class="q unlock-subcopy">${escapeHtml(workOrder.home.unlock_subcopy)}</div>\n          ${target}`);
-    }
-    return linked;
-  });
-  if (transformed.count !== 4) throw new Error(`Economic-gravity map expected four route tiles; found ${transformed.count}.`);
-  return transformed.content;
-}
-
-function applyV3WorkOrder(content, workOrder, essays, homeProof) {
+function applyV3WorkOrder(content, workOrder, homeProof) {
   if (workOrder?.status !== "draft") throw new Error("V3 work-order content must remain explicitly marked draft on the review branch.");
   let output = replaceMarker(content, "V3_HOME_PROOF", homeProof || "");
-  output = replaceMarker(output, "V3_RESEARCH_INDEX", renderResearchIndex(essays, workOrder));
   const advisoryCta = '<div class="hero-cta advisory-second-cta"><a class="btn" href="https://calendly.com/vlad-whenintelligenceisfree/30min" target="_blank" rel="noopener">Start a conversation</a></div>';
   output = replaceMarker(output, "V3_ADVISORY_CTA", advisoryCta);
   const oldAdvisoryLabel = ">Full story →</a>";
@@ -213,7 +137,7 @@ function applyV3WorkOrder(content, workOrder, essays, homeProof) {
     output = output.replaceAll(legacy, workOrder.subscribe_promise);
   }
   if (replacements !== 4) throw new Error(`Subscribe promise expected four replacement points; found ${replacements}.`);
-  return linkHomeRouteTiles(output, workOrder);
+  return output;
 }
 
 function addClass(tag, className) {
@@ -314,15 +238,13 @@ function assertNonSyntheticConventionSources(publication) {
 export async function buildSite({ requirePublication = false, buildDate = process.env.WIIF_BUILD_DATE || new Date().toISOString().slice(0, 10) } = {}) {
   if (!canonicalDate(buildDate)) throw new Error("Build date must be a real canonical YYYY-MM-DD date.");
   const copyEvidence = await assertApprovedCopy();
-  const [template, approvedContent, meta, sleeves, workOrder, researchEssays, workOrderText, researchEssaysText] = await Promise.all([
+  const [template, approvedContent, meta, sleeves, workOrder, workOrderText] = await Promise.all([
     readFile(TEMPLATE, "utf8"),
     readFile(CONTENT, "utf8"),
     readFile(META, "utf8").then(JSON.parse),
     readFile(SLEEVES, "utf8").then(JSON.parse),
     readFile(V3_WORK_ORDER, "utf8").then(JSON.parse),
-    readFile(RESEARCH_ESSAYS, "utf8").then(JSON.parse),
-    readFile(V3_WORK_ORDER, "utf8"),
-    readFile(RESEARCH_ESSAYS, "utf8")
+    readFile(V3_WORK_ORDER, "utf8")
   ]);
 
   let content = approvedContent;
@@ -365,7 +287,7 @@ export async function buildSite({ requirePublication = false, buildDate = proces
       ...derivedEvidence(rendered.derived)
     };
   }
-  content = applyV3WorkOrder(content, workOrder, researchEssays, homeProof);
+  content = applyV3WorkOrder(content, workOrder, homeProof);
   content = addSubscribeEmbeds(content, meta);
   content = addBrandLogo(content, meta.identity.logo_path);
 
@@ -403,7 +325,6 @@ export async function buildSite({ requirePublication = false, buildDate = proces
     approved_copy_changes_sha256: copyEvidence.approvedCopyChangesHash,
     approved_investment_sleeves_sha256: copyEvidence.sleevesHash,
     draft_v3_work_order_sha256: createHash("sha256").update(workOrderText.replace(/\r\n/g, "\n")).digest("hex"),
-    draft_research_essays_sha256: createHash("sha256").update(researchEssaysText.replace(/\r\n/g, "\n")).digest("hex"),
     publication: publicationEvidence,
     production_ready: false,
     production_blockers: [

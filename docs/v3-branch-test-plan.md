@@ -20,46 +20,27 @@ Open `http://127.0.0.1:4173/`. Stop the preview with `Ctrl+C`.
 The automated check includes an in-memory synchronization regression: it
 advances a synthetic fixture's close date and one primitive return without
 writing that fixture into the repository, then confirms that Home and
-Investments render the same derived result and date.
+Investments render the same derived cumulative result.
 
 ## Home
 
 Test at 1280 px and 380 px:
 
 1. Confirm the proof strip sits directly below the hero and above the map.
-2. Confirm its two cumulative returns and as-of date match Investments.
-3. Click Substitute, Amplify, Reprice, and Unlock. Each must open
-   `/research/#substitute`, `#amplify`, `#reprice`, or `#unlock` at the matching
-   pipeline item.
-4. Confirm Unlock alone carries “Where the next giants come from.”
+2. Confirm its two cumulative returns match Investments and that it does not
+   show the inception or as-of date phrase.
+3. Confirm Substitute, Amplify, Reprice, and Unlock remain static,
+   non-clickable tiles.
+4. Confirm there is no extra Unlock subcopy.
 5. Confirm the biography link says “Work with me →” and opens `/advisory/`.
-
-## Research
-
-Open `http://127.0.0.1:4173/research/`:
-
-1. Confirm the Published and In the pipeline index appears beneath the phase
-   path.
-2. Published entries show title, standfirst, date, and link.
-3. Pipeline entries show titles only—no dates or numeric ordering.
-4. Load each anchor directly:
-   - `http://127.0.0.1:4173/research/#substitute`
-   - `http://127.0.0.1:4173/research/#amplify`
-   - `http://127.0.0.1:4173/research/#reprice`
-   - `http://127.0.0.1:4173/research/#unlock`
-
-For the data-edit acceptance test, add temporary dummy objects to a disposable
-copy of `src/content/research-essays.json`; do not commit them. Published
-objects use `title`, `slug`, `url`, `date`, `route`, and `standfirst`. Pipeline
-objects use only `title` and `route`. The automated suite performs this same
-test without changing the working file.
 
 ## Investments
 
 Open `http://127.0.0.1:4173/investments/`:
 
-1. At 1280 px, confirm Monthly performance history shows the full table with no
-   expander.
+1. Confirm the section heading reads “Performance history”. At 1280 px, confirm
+   the underlying monthly data table remains available below the chart pending
+   a principal decision on the chart/table accessibility pair.
 2. At 380 px, confirm the chart is followed by the latest six months and a
    native “Show all 19 months” expander. Expand it and confirm the earlier
    months appear.

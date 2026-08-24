@@ -645,14 +645,12 @@ test("Home proof and Investments use the same changed publication primitives", (
   const proof = renderHomeProofStrip(derived, publication, {
     proof_lead: "The thesis, held as positions:",
     proof_versus: "vs",
-    proof_since: "since",
-    proof_marked: "Marked monthly, as of",
     proof_link: "See the book"
   });
   const investments = renderInvestments(publication, sleeves, { buildDate: "2025-05-01" });
   assert.match(proof, /\+8\.2%/);
   assert.match(investments.performance, /\+8\.2%/);
-  assert.match(proof, /30 April 2025/);
+  assert.doesNotMatch(proof, /January 2025|30 April 2025|Marked monthly/);
   assert.match(investments.performance, /30 Apr 2025/);
 });
 

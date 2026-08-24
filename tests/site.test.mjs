@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { buildSite, renderResearchIndex } from "../scripts/build.mjs";
+import { buildSite } from "../scripts/build.mjs";
 import { assertValidPublication, parsePublicationBytes, parsePublicationText } from "../scripts/lib/investments.mjs";
 import { previousDistinctPublicationText, selectPreviousDistinctPublicationText } from "../scripts/lib/publication-history.mjs";
 import { assertInvestmentsDirectory, assertStaticDirectory } from "../scripts/lib/repository-boundary.mjs";
@@ -28,7 +28,6 @@ const nodeVersion = await readFile(new URL("../.node-version", import.meta.url),
 const sleeves = JSON.parse(await readFile(new URL("../src/content/investment-sleeves.json", import.meta.url), "utf8"));
 const fixtureText = await readFile(new URL("./fixtures/investments-publication.valid.json", import.meta.url), "utf8");
 const workOrder = JSON.parse(await readFile(new URL("../src/content/v3-work-order.json", import.meta.url), "utf8"));
-const researchEssays = JSON.parse(await readFile(new URL("../src/content/research-essays.json", import.meta.url), "utf8"));
 
 test("principal-approved hero replacement is explicit and synchronized with metadata", () => {
   const change = copyChanges.changes.find(({ id }) => id === "home-hero-premise-2026-08-20");
@@ -81,25 +80,6 @@ test("external new-tab links carry safe relationship attributes", () => {
   for (const tag of tags) assert.match(tag, /rel="[^"]*noopener[^"]*"/);
 });
 
-test("Research index is data-driven and pipeline entries never render dates", () => {
-  const essays = structuredClone(researchEssays);
-  essays.published.push({
-    title: "Dummy published essay",
-    slug: "dummy-published",
-    url: "https://read.whenintelligenceisfree.com/p/dummy-published",
-    date: "2026-08",
-    route: "all",
-    standfirst: "Temporary acceptance-test standfirst."
-  });
-  essays.pipeline.push({ title: "Dummy pipeline title", route: "dummy" });
-  const html = renderResearchIndex(essays, workOrder);
-  assert.match(html, /Dummy published essay/);
-  assert.match(html, /Aug 2026/);
-  const pipeline = html.match(/<ul class="pipeline-essays">([\s\S]*?)<\/ul>/)[1];
-  assert.match(pipeline, /Dummy pipeline title/);
-  assert.doesNotMatch(pipeline, /<time|Aug 2026|\b\d{4}\b/);
-});
-
 test("static routes select one server-rendered view and remain usable without JavaScript", async () => {
   await buildSite({ buildDate: new Date().toISOString().slice(0, 10) });
   const subscribeTargets = {
@@ -150,16 +130,14 @@ test("static routes select one server-rendered view and remain usable without Ja
     assert.equal(structuredData.url, `${meta.canonical_origin}${surface.path}`);
     if (key === "home") {
       assert.match(html, /class="home-investments-proof"/);
-      assert.match(html, /\+63\.0%[\s\S]*\+34\.6%[\s\S]*31 July 2026/);
-      for (const route of ["substitute", "amplify", "reprice", "unlock"]) assert.match(html, new RegExp(`href="/research/#${route}"`));
-      assert.match(html, /Where the next giants come from\./);
+      assert.match(html, /\+63\.0%[\s\S]*\+34\.6%/);
+      assert.doesNotMatch(html, /since January 2025|Marked monthly, as of 31 July 2026/);
+      assert.equal((html.match(/<div class="mode /g) || []).length, 4);
+      assert.doesNotMatch(html, /href="\/research\/#(?:substitute|amplify|reprice|unlock)"/);
       assert.match(html, />Work with me →<\/a>/);
     }
     if (key === "research") {
-      assert.match(html, /class="research-index"/);
-      assert.match(html, /Working titles, in no fixed order\. The sequence follows the evidence\./);
-      for (const route of ["substitute", "amplify", "reprice", "unlock"]) assert.match(html, new RegExp(`id="${route}"`));
-      assert.doesNotMatch(html.match(/<ul class="pipeline-essays">([\s\S]*?)<\/ul>/)[1], /<time|\b\d{4}\b/);
+      assert.doesNotMatch(html, /class="research-index"|class="pipeline-essays"/);
     }
     if (key === "investments") {
       assert.match(html, /July 2026 · close note/);
