@@ -142,7 +142,8 @@ test("static routes select one server-rendered view and remain usable without Ja
     if (key === "investments") {
       assert.match(html, /July 2026 · close note/);
       assert.match(html, /datetime="2026-07-31">31 July 2026/);
-      assert.match(html, /Show all 19 months/);
+      assert.doesNotMatch(html, /Show all 19 months|class="history history-(?:desktop|mobile)"/);
+      assert.match(html, /class="visually-hidden publication-performance-data"/);
       assert.ok(html.indexOf('data-investments-block="composition"') < html.indexOf('class="finetext"'));
     }
   }
@@ -188,9 +189,7 @@ test("narrow-screen CSS protects navigation, charts, forms, prose, and hero gutt
   assert.match(styles, /\.substack input\{flex:1;min-width:0/);
   assert.match(styles, /\.hero\{padding-block:/);
   assert.match(styles, /\.essay-row\{align-items:flex-start;flex-direction:column/);
-  assert.match(styles, /@media \(max-width:767px\)/);
-  assert.match(styles, /\.history-desktop\{display:none\}/);
-  assert.match(styles, /\.history-mobile\{display:block\}/);
+  assert.match(styles, /\.visually-hidden\{position:absolute!important/);
   assert.doesNotMatch(styles, /@media \(max-width:[^)]+\)[\s\S]{0,300}table\{display:none/);
   assert.match(styles, /overflow-wrap:anywhere/);
   assert.doesNotMatch(styles, /body\s*\{[^}]*overflow-x\s*:\s*hidden/);
