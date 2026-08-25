@@ -1,5 +1,5 @@
 :root{
-  --paper:#F2F4F1; --card:#FBFCFA; --ink:#10231C; --ink2:#4A5C52; --line:#D9DFD8;
+  --paper:#FFF1E5; --card:#FBFCFA; --ink:#10231C; --ink2:#4A5C52; --line:#D9DFD8;
   --amber:#E8A013; --amber-ink:#8A5C05; --pos:#1E7D53; --neg:#B4463A;
   --sub:#B4463A; --amp:#1E7D53; --rep:#B97A1C; --unl:#3E6E8E;
   --subbg:#F6E7E4; --ampbg:#E3F0E8; --repbg:#F5EBD9; --unlbg:#E4EDF3;
@@ -12,7 +12,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 a{color:inherit}
 
 .mockstrip{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);background:#E7EBE6;border-bottom:1px solid var(--line);text-align:center;padding:6px 12px}
-.nav{position:sticky;top:0;z-index:50;background:rgba(242,244,241,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,241,229,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .nav-in{max-width:1080px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:26px}
 .wordmark{font-family:var(--serif);font-weight:700;font-size:17px;text-decoration:none;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:9px}
 .wordmark span{color:var(--amber-ink)}
