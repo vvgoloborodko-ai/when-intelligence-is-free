@@ -33,8 +33,10 @@ const STYLES = resolve(ROOT, "src/styles/site.css");
 const CLIENT = resolve(ROOT, "src/scripts/site.js");
 const STATIC = resolve(ROOT, "src/static");
 const IDENTITY_ASSETS = Object.freeze([
-  [resolve(ROOT, "logos/logo-web-328x328.webp"), "logo.webp"],
-  [resolve(ROOT, "logos/logo-web-164x164.png"), "logo-164.png"],
+  [resolve(ROOT, "logos/wiif_lighthouse_square_master_v2.svg"), "logo.svg"],
+  [resolve(ROOT, "logos/wiif_lighthouse_favicon_v2.ico"), "favicon.ico"],
+  [resolve(ROOT, "logos/wiif_lighthouse_square_v2_64.png"), "favicon-64.png"],
+  [resolve(ROOT, "logos/wiif_lighthouse_square_v2_180.png"), "apple-touch-icon.png"],
   [resolve(ROOT, "logos/social-home-1200x630.png"), "social-home.png"],
   [resolve(ROOT, "logos/social-research-1200x630.png"), "social-research.png"],
   [resolve(ROOT, "logos/social-investments-1200x630.png"), "social-investments.png"],

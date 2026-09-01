@@ -100,7 +100,7 @@ test("static routes select one server-rendered view and remain usable without Ja
     assert.doesNotMatch(html, /href="#(?:home|research|investments|advisory)"/);
     assert.doesNotMatch(html, /class="substack"|Mock of the Substack embed/);
     assert.doesNotMatch(html, /Subscribe directly on Substack|mailto:|vlad@whenintelligenceisfree\.com|structure mock|internal review|Calendly embed \/ link renders here/i);
-    assert.match(html, /<img class="brand-logo" src="\/assets\/logo\.webp" width="38" height="38" alt="">/);
+    assert.match(html, /<img class="brand-logo" src="\/assets\/logo\.svg" width="38" height="38" alt="">/);
     assert.match(html, new RegExp(`<meta property="og:image" content="${meta.canonical_origin}${surface.social_image_path.replaceAll("/", "\\/")}">`));
     assert.match(html, new RegExp(`<meta name="twitter:image" content="${meta.canonical_origin}${surface.social_image_path.replaceAll("/", "\\/")}">`));
     assert.equal((html.match(new RegExp(workOrder.subscribe_promise.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length, 1);
@@ -130,7 +130,7 @@ test("static routes select one server-rendered view and remain usable without Ja
     assert.equal(structuredData.url, `${meta.canonical_origin}${surface.path}`);
     if (key === "home") {
       assert.match(html, /class="home-investments-proof"/);
-      assert.match(html, /\+63\.0%[\s\S]*\+34\.6%/);
+      assert.match(html, /\+79\.2%[\s\S]*\+40\.2%/);
       assert.doesNotMatch(html, /since January 2025|Marked monthly, as of 31 July 2026/);
       assert.equal((html.match(/<div class="mode /g) || []).length, 4);
       assert.doesNotMatch(html, /href="\/research\/#(?:substitute|amplify|reprice|unlock)"/);
@@ -140,8 +140,10 @@ test("static routes select one server-rendered view and remain usable without Ja
       assert.doesNotMatch(html, /class="research-index"|class="pipeline-essays"/);
     }
     if (key === "investments") {
-      assert.match(html, /July 2026 · close note/);
-      assert.match(html, /datetime="2026-07-31">31 July 2026/);
+      assert.match(html, /August 2026 · close note/);
+      assert.match(html, /datetime="2026-08-31">31 August 2026/);
+      assert.match(html, /August was the month the regime bet paid\./);
+      assert.match(html, /href="https:\/\/read\.whenintelligenceisfree\.com\/p\/2608"/);
       assert.doesNotMatch(html, /Show all 19 months|class="history history-(?:desktop|mobile)"/);
       assert.match(html, /class="visually-hidden publication-performance-data"/);
       assert.ok(html.indexOf('data-investments-block="composition"') < html.indexOf('class="finetext"'));
@@ -159,7 +161,7 @@ test("static routes select one server-rendered view and remain usable without Ja
     assert.equal(socialPreview.readUInt32BE(16), 1200);
     assert.equal(socialPreview.readUInt32BE(20), 630);
   }
-  const deployedLogo = await readFile(new URL("../dist/assets/logo.webp", import.meta.url));
+  const deployedLogo = await readFile(new URL("../dist/assets/logo.svg", import.meta.url));
   assert.ok(deployedLogo.byteLength < 100_000);
 });
 

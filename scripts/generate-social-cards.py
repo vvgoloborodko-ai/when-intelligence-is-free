@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "logos"
-LOGO = Image.open(OUT / "logo-web-328x328.png").convert("RGBA")
+LOGO = Image.open(OUT / "wiif_lighthouse_square_v2_512.png").convert("RGBA")
 
 PAPER = "#F2F4F1"
 CARD = "#FBFCFA"

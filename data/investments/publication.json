@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-20T08:21:53Z",
+  "generated_at": "2026-09-01T09:49:24Z",
   "conventions": {
     "inception_date": "2025-01-01",
     "return_currency": "USD",
@@ -151,6 +151,13 @@
       "revision": 1,
       "strategy_return_pct": "-0.318035",
       "benchmark_return_pct": "-6.612917"
+    },
+    {
+      "period": "2026-08",
+      "as_of_date": "2026-08-31",
+      "revision": 1,
+      "strategy_return_pct": "9.954809",
+      "benchmark_return_pct": "4.183213"
     }
   ],
   "releases": [
@@ -382,6 +389,131 @@
         ]
       },
       "correction_id": "corr-2026-08-20-public-identifiers-commentary"
+    },
+    {
+      "period": "2026-08",
+      "revision": 1,
+      "composition": [
+        {
+          "sleeve_id": "physical-scarcity",
+          "weight_pct_nav": "17.224589"
+        },
+        {
+          "sleeve_id": "compute-platforms",
+          "weight_pct_nav": "12.912153"
+        },
+        {
+          "sleeve_id": "survivors-tolls-second-wave",
+          "weight_pct_nav": "7.749081"
+        },
+        {
+          "sleeve_id": "moonshots",
+          "weight_pct_nav": "2.184094"
+        },
+        {
+          "sleeve_id": "macro-scenario-bets",
+          "weight_pct_nav": "35.392407"
+        },
+        {
+          "sleeve_id": "reserve-optionality",
+          "weight_pct_nav": "24.537676"
+        }
+      ],
+      "holdings": [
+        {
+          "name": "Alerian Energy Infrastructure ETF",
+          "ticker": "ENFR",
+          "sleeve_id": "physical-scarcity",
+          "weight_pct_nav": "4.397763"
+        },
+        {
+          "name": "Kinder Morgan Inc",
+          "ticker": "KMI",
+          "sleeve_id": "physical-scarcity",
+          "weight_pct_nav": "2.942795"
+        },
+        {
+          "name": "Alphabet Inc Class A",
+          "ticker": "GOOGL",
+          "sleeve_id": "compute-platforms",
+          "weight_pct_nav": "6.195022"
+        },
+        {
+          "name": "Tesla Inc",
+          "ticker": "TSLA",
+          "sleeve_id": "compute-platforms",
+          "weight_pct_nav": "6.717131"
+        },
+        {
+          "name": "RELX PLC Sponsored ADR",
+          "ticker": "RELX",
+          "sleeve_id": "survivors-tolls-second-wave",
+          "weight_pct_nav": "1.995149"
+        },
+        {
+          "name": "SailPoint Inc",
+          "ticker": "SAIL",
+          "sleeve_id": "survivors-tolls-second-wave",
+          "weight_pct_nav": "3.002673"
+        },
+        {
+          "name": "Sprott Physical Silver Trust",
+          "ticker": "PSLV",
+          "sleeve_id": "macro-scenario-bets",
+          "weight_pct_nav": "15.977261"
+        },
+        {
+          "name": "Strategy Inc",
+          "ticker": "MSTR",
+          "sleeve_id": "macro-scenario-bets",
+          "weight_pct_nav": "19.415146"
+        },
+        {
+          "name": "iShares USD Treasury Bond 0-1yr UCITS ETF",
+          "ticker": "IB01",
+          "sleeve_id": "reserve-optionality",
+          "weight_pct_nav": "16.660456"
+        }
+      ],
+      "attribution": {
+        "level": "sleeve",
+        "coverage": "complete",
+        "items": [
+          {
+            "sleeve_id": "physical-scarcity",
+            "effect_pp": "-0.176926"
+          },
+          {
+            "sleeve_id": "compute-platforms",
+            "effect_pp": "1.183496"
+          },
+          {
+            "sleeve_id": "survivors-tolls-second-wave",
+            "effect_pp": "1.266557"
+          },
+          {
+            "sleeve_id": "moonshots",
+            "effect_pp": "0.191495"
+          },
+          {
+            "sleeve_id": "macro-scenario-bets",
+            "effect_pp": "8.841693"
+          },
+          {
+            "sleeve_id": "reserve-optionality",
+            "effect_pp": "-1.351506"
+          }
+        ]
+      },
+      "commentary": {
+        "paragraphs": [
+          "August was the month the regime bet paid.",
+          "The strategy returned {{strategy_month_pct}} against {{benchmark_month_pct}} for the {{benchmark_name}}, a {{strategy_month_excess_pp}} beat. Since inception, the numbers are {{strategy_since_inception_pct}} against {{benchmark_since_inception_pct}}.",
+          "Most of August's return came from the macro positions built for exactly this kind of financing regime. In late August, the US Treasury doubled the size of its long-end liquidity-support buybacks. Shortly afterward, Fed Chair Kevin Warsh's Jackson Hole speech pushed the market toward a September hike. Fiscal support for the long end arriving alongside a hawkish central bank was the collision those positions were designed to catch. They caught it.",
+          "At the same time, the AI buildout kept strengthening. Nvidia printed a record quarter, demand was still described as accelerating, and an initial Talen Energy rung filled after the generation thesis cleared our repricing test.",
+          "The financing read worked. The buildout thesis strengthened. And the book was positioned in time for both."
+        ]
+      }
     }
   ],
   "corrections": [

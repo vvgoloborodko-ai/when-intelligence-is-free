@@ -22,7 +22,15 @@ const DATE = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 const TIMESTAMP = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$/;
 const CORRECTION_ID = /^corr-[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 const PUBLIC_TICKER = /^[A-Z0-9][A-Z0-9.:-]{0,19}$/;
-const COMMENTARY_TOKENS = new Set(["benchmark_name", "benchmark_month_abs_pct"]);
+const COMMENTARY_TOKENS = new Set([
+  "benchmark_name",
+  "benchmark_month_abs_pct",
+  "strategy_month_pct",
+  "benchmark_month_pct",
+  "strategy_month_excess_pp",
+  "strategy_since_inception_pct",
+  "benchmark_since_inception_pct"
+]);
 const MIN_NORMAL_NUMBER = 2.2250738585072014e-308;
 const NUMBER_WORD = "(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion)";
 const NUMBER_PHRASE = `(?:${NUMBER_WORD})(?:\\s+(?:${NUMBER_WORD}|and|point)){0,10}`;

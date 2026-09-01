@@ -332,7 +332,15 @@ function renderCommentaryParagraph(paragraph, derived, benchmarkName) {
   const latestPerformance = derived.performanceRows.at(-1);
   const values = {
     benchmark_name: benchmarkName,
-    benchmark_month_abs_pct: formatPct(Math.abs(latestPerformance.benchmarkMonthlyPct), { sign: false })
+    benchmark_month_abs_pct: formatPct(Math.abs(latestPerformance.benchmarkMonthlyPct), { sign: false }),
+    strategy_month_pct: formatPct(latestPerformance.strategyMonthlyPct, { digits: 2 }),
+    benchmark_month_pct: formatPct(latestPerformance.benchmarkMonthlyPct, { digits: 2 }),
+    strategy_month_excess_pp: formatPp(
+      latestPerformance.strategyMonthlyPct - latestPerformance.benchmarkMonthlyPct,
+      { digits: 2 }
+    ),
+    strategy_since_inception_pct: formatPct(derived.summary.strategyCumulativePct),
+    benchmark_since_inception_pct: formatPct(derived.summary.benchmarkCumulativePct)
   };
   return paragraph.replace(/\{\{([^{}]+)\}\}/g, (_token, key) => {
     if (!Object.hasOwn(values, key)) throw new Error(`Unknown derived commentary token: ${key}.`);

@@ -607,7 +607,7 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.match(rendered.attribution, /Complete sleeve attribution/);
   assert.match(rendered.attribution, /March 2025 · close note/);
   assert.match(rendered.attribution, /datetime="2025-03-31">31 March 2025/);
-  assert.match(rendered.attribution, /the-businesses-got-better-the-money/);
+  assert.match(rendered.attribution, /read\.whenintelligenceisfree\.com\/p\/2608/);
   assert.match(rendered.attribution, />All close notes →<\/a>/);
   assert.match(rendered.composition, /class="holding-ticker">EXCO<\/span>/);
   for (const removedFact of ["Return currency", "Return basis", "Audit status", "Official calendar-month close", "Drawdown"]) {
@@ -621,9 +621,9 @@ test("monthly history is not visible but remains a full accessible chart equival
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2026-08-21" });
   assert.doesNotMatch(rendered.performance, /class="history history-(?:desktop|mobile)"|<details|<summary/);
   const accessible = rendered.performance.match(/<div class="visually-hidden publication-performance-data">([\s\S]*?)<div class="tblwrap publication-period-table">/)[1];
-  assert.equal((accessible.match(/<tr>/g) || []).length - 1, 19);
+  assert.equal((accessible.match(/<tr>/g) || []).length - 1, 20);
   assert.match(accessible, /Jan 2025/);
-  assert.match(accessible, /Jul 2026/);
+  assert.match(accessible, /Aug 2026/);
 });
 
 test("Home proof and Investments use the same changed publication primitives", () => {
@@ -652,12 +652,12 @@ test("Home proof and Investments use the same changed publication primitives", (
   assert.match(investments.performance, /30 Apr 2025/);
 });
 
-test("approved commentary derives benchmark name and monthly move tokens", () => {
+test("approved commentary derives benchmark, monthly, excess, and cumulative tokens", () => {
   const publication = fixture();
-  publication.releases[0].commentary.paragraphs = ["July was a hard month for AI hardware and a quiet one for us: the {{benchmark_name}} fell {{benchmark_month_abs_pct}} while the strategy was close to flat. The reserve and macro sleeves did that work — cash, index puts and the debasement position absorbed a semiconductor drawdown we were not chasing — and we began buying bottleneck infrastructure into the weakness. What the quarter's results changed is that AI revenue is now catching up with AI spending, while the debt funding that spending has become sharply more expensive. The honest weak link: bottleneck infrastructure sits under its band and the moonshot sleeve is empty, because the names passing our screen have not reached prices we will pay."];
+  publication.releases[0].commentary.paragraphs = ["The strategy returned {{strategy_month_pct}} against {{benchmark_month_pct}} for the {{benchmark_name}}, a {{strategy_month_excess_pp}} beat. Since inception, the numbers are {{strategy_since_inception_pct}} against {{benchmark_since_inception_pct}}."];
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
-  assert.match(rendered.attribution, /the Nasdaq-100 fell 1\.0% while the strategy was close to flat\./);
-  assert.match(rendered.attribution, /cash, index puts and the debasement position/);
+  assert.match(rendered.attribution, /returned \+3\.00% against −1\.00% for the Nasdaq-100, a \+4\.00pp beat\./);
+  assert.match(rendered.attribution, /Since inception, the numbers are \+4\.0% against \+2\.0%\./);
   assert.match(rendered.attribution, /class="approved-commentary publication-commentary"/);
   publication.releases[0].commentary.paragraphs = ["Unknown {{typed_statistic}}."];
   assert.throws(() => assertValidPublication(publication), /unknown derived commentary token/i);

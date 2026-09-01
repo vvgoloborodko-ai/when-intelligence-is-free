@@ -280,11 +280,14 @@ or sanitization is uncertain. The surface then states that no approved
 Investments commentary was published for that close, so the disappearance of
 an optional disclosure is not silent.
 
-Two derived tokens are allowed inside approved commentary:
-`{{benchmark_name}}` and `{{benchmark_month_abs_pct}}`. The website replaces
-them from the same validated monthly performance primitives used by the chart
-and tables. This lets approved prose quote the benchmark and its rounded
-monthly move without independently typing a financial statistic.
+The following derived tokens are allowed inside approved commentary:
+`{{benchmark_name}}`, `{{benchmark_month_abs_pct}}`,
+`{{strategy_month_pct}}`, `{{benchmark_month_pct}}`,
+`{{strategy_month_excess_pp}}`, `{{strategy_since_inception_pct}}`, and
+`{{benchmark_since_inception_pct}}`. The website replaces them from the same
+validated monthly performance primitives used by the chart and tables. This
+lets approved prose quote benchmark, monthly, excess, and since-inception
+figures without independently typing a financial statistic.
 
 ## Corrections
 

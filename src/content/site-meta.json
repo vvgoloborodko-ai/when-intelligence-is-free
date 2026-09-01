@@ -5,8 +5,9 @@
     "title": "Subscribe to When Intelligence Is Free"
   },
   "identity": {
-    "logo_path": "/assets/logo.webp",
-    "favicon_path": "/assets/logo-164.png",
+    "logo_path": "/assets/logo.svg",
+    "favicon_path": "/assets/favicon-64.png",
+    "apple_touch_icon_path": "/assets/apple-touch-icon.png",
     "social_image_width": 1200,
     "social_image_height": 630
   },
