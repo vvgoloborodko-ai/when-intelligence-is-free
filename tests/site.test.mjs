@@ -155,12 +155,11 @@ test("static routes select one server-rendered view and remain usable without Ja
   assert.match(styles, /\.view\.active\{display:block\}/);
   assert.equal(new Set(Object.values(meta.surfaces).map(({ title }) => title)).size, 4);
   assert.equal(new Set(Object.values(meta.surfaces).map(({ description }) => description)).size, 4);
-  assert.equal(new Set(Object.values(meta.surfaces).map(({ social_image_path }) => social_image_path)).size, 4);
-  for (const surface of Object.values(meta.surfaces)) {
-    const socialPreview = await readFile(new URL(`../dist${surface.social_image_path}`, import.meta.url));
-    assert.equal(socialPreview.readUInt32BE(16), 1200);
-    assert.equal(socialPreview.readUInt32BE(20), 630);
-  }
+  assert.deepEqual(new Set(Object.values(meta.surfaces).map(({ social_image_path }) => social_image_path)), new Set(["/assets/social-logo.png"]));
+  assert.deepEqual(new Set(Object.values(meta.surfaces).map(({ social_image_alt }) => social_image_alt)), new Set(["When Intelligence Is Free lighthouse logo"]));
+  const socialPreview = await readFile(new URL("../dist/assets/social-logo.png", import.meta.url));
+  assert.equal(socialPreview.readUInt32BE(16), 1200);
+  assert.equal(socialPreview.readUInt32BE(20), 630);
   const deployedLogo = await readFile(new URL("../dist/assets/logo.svg", import.meta.url));
   assert.ok(deployedLogo.byteLength < 100_000);
 });

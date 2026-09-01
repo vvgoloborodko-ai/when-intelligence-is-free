@@ -37,10 +37,7 @@ const IDENTITY_ASSETS = Object.freeze([
   [resolve(ROOT, "logos/wiif_lighthouse_favicon_v2.ico"), "favicon.ico"],
   [resolve(ROOT, "logos/wiif_lighthouse_square_v2_64.png"), "favicon-64.png"],
   [resolve(ROOT, "logos/wiif_lighthouse_square_v2_180.png"), "apple-touch-icon.png"],
-  [resolve(ROOT, "logos/social-home-1200x630.png"), "social-home.png"],
-  [resolve(ROOT, "logos/social-research-1200x630.png"), "social-research.png"],
-  [resolve(ROOT, "logos/social-investments-1200x630.png"), "social-investments.png"],
-  [resolve(ROOT, "logos/social-advisory-1200x630.png"), "social-advisory.png"]
+  [resolve(ROOT, "logos/social-logo-1200x630.png"), "social-logo.png"]
 ]);
 
 function isWithinWorkspace(path) {

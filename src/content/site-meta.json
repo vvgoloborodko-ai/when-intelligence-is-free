@@ -17,29 +17,29 @@
       "path": "/",
       "title": "When Intelligence Is Free",
       "description": "The price of thinking is collapsing, the way the price of electricity did a century ago. The biggest gains came from what cheap power made possible, not from selling the power itself.",
-      "social_image_path": "/assets/social-home.png",
-      "social_image_alt": "When Intelligence Is Free — Home"
+      "social_image_path": "/assets/social-logo.png",
+      "social_image_alt": "When Intelligence Is Free lighthouse logo"
     },
     "research": {
       "path": "/research/",
       "title": "Research — When Intelligence Is Free",
       "description": "When intelligence collapses in price, value doesn't stay in the intelligence layer.",
-      "social_image_path": "/assets/social-research.png",
-      "social_image_alt": "When Intelligence Is Free — Research"
+      "social_image_path": "/assets/social-logo.png",
+      "social_image_alt": "When Intelligence Is Free lighthouse logo"
     },
     "investments": {
       "path": "/investments/",
       "title": "Investments — When Intelligence Is Free",
       "description": "A concentrated global strategy built on one rule: own what stays scarce when intelligence becomes abundant.",
-      "social_image_path": "/assets/social-investments.png",
-      "social_image_alt": "When Intelligence Is Free — Investments"
+      "social_image_path": "/assets/social-logo.png",
+      "social_image_alt": "When Intelligence Is Free lighthouse logo"
     },
     "advisory": {
       "path": "/advisory/",
       "title": "Advisory — When Intelligence Is Free",
       "description": "I work with founders, companies and capital providers on decisions that sit between technology, market structure, product and capital: where value is moving, what becomes newly viable, where defensibility survives, and what to prioritize now.",
-      "social_image_path": "/assets/social-advisory.png",
-      "social_image_alt": "When Intelligence Is Free — Advisory"
+      "social_image_path": "/assets/social-logo.png",
+      "social_image_alt": "When Intelligence Is Free lighthouse logo"
     }
   }
 }
