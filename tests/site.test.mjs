@@ -180,6 +180,11 @@ test("GitHub CI owns publication history checks, build, and preview artifacts", 
   assert.doesNotMatch(publicationWorkflow, /deploy-pages|cloudflare|wrangler|production deploy/i);
 });
 
+test("local preview serves the lighthouse identity with browser-safe MIME types", () => {
+  assert.match(previewSource, /\["\.svg", "image\/svg\+xml"\]/);
+  assert.match(previewSource, /\["\.ico", "image\/x-icon"\]/);
+});
+
 test("narrow-screen CSS protects navigation, charts, forms, prose, and hero gutters", () => {
   assert.match(styles, /@media \(max-width:420px\)/);
   assert.match(styles, /grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
