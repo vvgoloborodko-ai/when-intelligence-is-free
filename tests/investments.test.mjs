@@ -609,11 +609,10 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.doesNotMatch(rendered.attribution, /Complete sleeve attribution/);
   assert.match(rendered.attribution, /March 2025 · close note/);
   assert.match(rendered.attribution, /class="close-note-title"/);
-  assert.match(rendered.attribution, /class="attribution-heading-band"/);
-  assert.match(rendered.attribution, /class="attribution-section"/);
   assert.match(rendered.attribution, /class="close-note-section"/);
+  assert.match(rendered.attribution, /<section data-investments-block="attribution">\s*<div class="wrap">\s*<div class="block-head"><h2 class="eyebrow">Sleeve attribution<\/h2>/);
+  assert.doesNotMatch(rendered.attribution, /attribution-heading-band|attribution-section/);
   assert.doesNotMatch(rendered.attribution, /close-note-date|<time|31 March 2025/);
-  assert.ok(rendered.attribution.indexOf("Sleeve attribution") < rendered.attribution.indexOf('class="attribution-section"'));
   assert.match(rendered.attribution, /read\.whenintelligenceisfree\.com\/p\/2608/);
   assert.match(rendered.attribution, />All close notes →<\/a>/);
   assert.match(rendered.composition, /class="holding-ticker">EXCO<\/span>/);

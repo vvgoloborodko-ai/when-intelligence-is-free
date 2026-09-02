@@ -145,7 +145,8 @@ test("static routes select one server-rendered view and remain usable without Ja
       assert.doesNotMatch(html, /close-note-date|<time|31 August 2026/);
       assert.match(html, />Sleeve attribution<\/h2>/);
       assert.doesNotMatch(html, /Complete sleeve attribution/);
-      assert.ok(html.indexOf(">Sleeve attribution</h2>") < html.indexOf('class="attribution-section"'));
+      assert.match(html, /<section data-investments-block="attribution">\s*<div class="wrap">\s*<div class="block-head"><h2 class="eyebrow">Sleeve attribution<\/h2>/);
+      assert.doesNotMatch(html, /attribution-heading-band|attribution-section/);
       assert.match(html, /<\/section>\s*<section class="close-note-section">/);
       assert.match(html, /August was the month the regime bet paid\./);
       assert.match(html, /href="https:\/\/read\.whenintelligenceisfree\.com\/p\/2608"/);
@@ -212,10 +213,12 @@ test("narrow-screen CSS protects navigation, charts, forms, prose, and hero gutt
   assert.match(styles, /\.performance-comparison-table table\{table-layout:fixed\}/);
   assert.match(styles, /\.performance-comparison-table\{overflow-x:visible\}/);
   assert.match(styles, /\.performance-period-column\{width:32%\}/);
-  assert.match(styles, /\.attribution-heading-band\{padding:60px 0 14px\}/);
-  assert.match(styles, /\.attribution-section\{border-top:1px solid var\(--line\);padding-top:18px\}/);
-  assert.match(styles, /\.close-note-section\{border-top:1px solid var\(--line\);padding:20px 0 60px\}/);
+  assert.match(styles, /section\{padding:60px 0\}/);
+  assert.match(styles, /section\+section\{border-top:1px solid var\(--line\)\}/);
+  assert.match(styles, /\.publication-attribution-grid\{margin-top:14px;align-items:start\}/);
+  assert.doesNotMatch(styles, /\.attribution-heading-band|\.attribution-section|\.close-note-section\{/);
   assert.match(styles, /\.close-note-title\{[^}]*color:var\(--amber-ink\)/);
+  assert.match(styles, /\.close-note-body\{margin-top:14px;/);
   assert.doesNotMatch(styles, /\.close-note-date/);
   assert.doesNotMatch(styles, /@media \(max-width:[^)]+\)[\s\S]{0,300}table\{display:none/);
   assert.match(styles, /overflow-wrap:anywhere/);

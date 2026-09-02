@@ -381,13 +381,9 @@ function attributionBlock(derived, sleeves, publication, buildDate) {
       </article>`
     : `<div class="approved-commentary publication-commentary muted"><p>${escapeHtml(COPY.no_commentary)}</p></div>`;
 
-  return `<div class="attribution-heading-band">
+  return `<section data-investments-block="attribution">
     <div class="wrap">
       <div class="block-head"><h2 class="eyebrow">${escapeHtml(scopeLabel)}</h2>${asOfMarkup(derived.asOfDate, derived.currentPeriod, buildDate, publication.conventions)}</div>
-    </div>
-  </div>
-  <section class="attribution-section" data-investments-block="attribution">
-    <div class="wrap">
       <div class="grid2 publication-attribution-grid">
         <div class="tblwrap"><table aria-labelledby="contributors-heading"><thead><tr><th id="contributors-heading">${escapeHtml(COPY.contributors)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(contributors, COPY.no_positive)}</tbody></table></div>
         <div class="tblwrap"><table aria-labelledby="detractors-heading"><thead><tr><th id="detractors-heading">${escapeHtml(COPY.detractors)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(detractors, COPY.no_negative)}</tbody></table></div>

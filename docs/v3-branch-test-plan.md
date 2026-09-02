@@ -43,11 +43,13 @@ Open `http://127.0.0.1:4173/investments/`:
    newest-first order. Expand “Show earlier months” and confirm the remaining
    Strategy / Nasdaq-100 / Excess series appears. At 380 px, both comparison
    tables must share column positions and fit without horizontal scrolling.
-2. Confirm “Sleeve attribution” sits above its separator. Confirm the close
-   note has a full-width section separator above it, its heading is
-   “July 2026 · close note”, there is no standalone date, the existing body is
-   unchanged, and the two links appear in the required order. The close-note
-   heading uses the gold header style.
+2. Confirm “Sleeve attribution” follows the same pattern as “Named holdings”:
+   the section separator comes first, then standard section spacing, the header,
+   and the tables without another separator. Confirm the close note has a
+   full-width section separator followed by standard section spacing. Its
+   heading is “July 2026 · close note”, the body starts after the normal header
+   margin, there is no standalone date, and the two links appear in the required
+   order. The close-note heading uses the gold header style.
 3. Confirm the standing disclaimer is below Composition and is not clipped at
    either width.
 
