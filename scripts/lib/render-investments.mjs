@@ -381,7 +381,7 @@ function attributionBlock(derived, sleeves, publication, buildDate) {
       </article>`
     : `<div class="approved-commentary publication-commentary muted"><p>${escapeHtml(COPY.no_commentary)}</p></div>`;
 
-  return `<section data-investments-block="attribution">
+  return `<div class="attribution-block" data-investments-block="attribution">
     <div class="wrap">
       <div class="block-head"><h2 class="eyebrow">${escapeHtml(scopeLabel)}</h2>${asOfMarkup(derived.asOfDate, derived.currentPeriod, buildDate, publication.conventions)}</div>
       <div class="grid2 publication-attribution-grid">
@@ -390,7 +390,7 @@ function attributionBlock(derived, sleeves, publication, buildDate) {
       </div>
       ${neutral.length ? `<div class="tblwrap publication-neutral-attribution"><table aria-labelledby="neutral-heading"><thead><tr><th id="neutral-heading">${escapeHtml(COPY.no_effect)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(neutral, "")}</tbody></table></div>` : ""}
     </div>
-  </section>
+  </div>
   <section class="close-note-section">
     <div class="wrap">${commentary}</div>
   </section>`;
