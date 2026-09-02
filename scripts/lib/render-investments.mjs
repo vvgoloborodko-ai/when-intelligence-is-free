@@ -216,28 +216,30 @@ function performanceHistoryRows(rows) {
     <td>${escapeHtml(displayPeriod(row.period))}</td>
     <td class="mono r ${tone(row.strategyMonthlyPct)}">${escapeHtml(formatPct(row.strategyMonthlyPct))}</td>
     <td class="mono r ${tone(row.benchmarkMonthlyPct)}">${escapeHtml(formatPct(row.benchmarkMonthlyPct))}</td>
-    <td class="mono r ${tone(row.strategyCumulativePct)}">${escapeHtml(formatPct(row.strategyCumulativePct))}</td>
-    <td class="mono r ${tone(row.benchmarkCumulativePct)}">${escapeHtml(formatPct(row.benchmarkCumulativePct))}</td>
+    <td class="mono r ${tone(row.strategyMonthlyPct - row.benchmarkMonthlyPct)}">${escapeHtml(formatPp(row.strategyMonthlyPct - row.benchmarkMonthlyPct))}</td>
   </tr>`).join("");
 }
 
 function performanceHistoryTable(rows, benchmarkName, labelledBy) {
-  return `<div class="tblwrap"><table aria-labelledby="${escapeHtml(labelledBy)}">
-    <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy_month)}</th><th class="r">${escapeHtml(copy(COPY.benchmark_month, { benchmark: benchmarkName }))}</th><th class="r">${escapeHtml(COPY.strategy_cumulative)}</th><th class="r">${escapeHtml(copy(COPY.benchmark_cumulative, { benchmark: benchmarkName }))}</th></tr></thead>
+  return `<div class="monthly-history-table"><table aria-labelledby="${escapeHtml(labelledBy)}">
+    <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.diff)}</th></tr></thead>
     <tbody>${performanceHistoryRows(rows)}</tbody>
   </table></div>`;
 }
 
-function accessiblePerformanceHistory(rows, benchmarkName) {
-  const headingId = "accessible-performance-history-heading";
-  return `<div class="visually-hidden publication-performance-data"><h3 id="${headingId}">${escapeHtml(COPY.monthly_performance_history)}</h3>${performanceHistoryTable(rows, benchmarkName, headingId)}</div>`;
+function performanceHistory(rows, benchmarkName) {
+  const headingId = "monthly-performance-history-heading";
+  return `<details class="history publication-monthly-history">
+    <summary id="${headingId}">${escapeHtml(COPY.monthly_performance_history)}</summary>
+    ${performanceHistoryTable(rows, benchmarkName, headingId)}
+  </details>`;
 }
 
 function performanceBlock(derived, publication, buildDate) {
   const { summary, performanceRows: rows, asOfDate, currentPeriod } = derived;
   const conventions = publication.conventions;
   const benchmarkName = conventions.benchmark.name;
-  const accessibleHistory = accessiblePerformanceHistory(rows, benchmarkName);
+  const monthlyHistory = performanceHistory(rows, benchmarkName);
   const periodRows = summary.windows.map((window) => {
     const label = window.kind === "current_month"
       ? COPY.month
@@ -270,11 +272,11 @@ function performanceBlock(derived, publication, buildDate) {
         <div class="stat"><div class="lbl">${escapeHtml(COPY.max_drawdown)}</div><div class="val ${tone(summary.maxDrawdownPct)}">${escapeHtml(formatPct(summary.maxDrawdownPct))}</div><div class="sub">${escapeHtml(COPY.month_end_series)}${summary.maxDrawdownPeriod ? ` · ${escapeHtml(displayPeriod(summary.maxDrawdownPeriod))}` : ""}</div></div>
       </div>
       ${chartMarkup(rows, conventions)}
-      ${accessibleHistory}
       <div class="tblwrap publication-period-table"><table aria-labelledby="performance-heading">
         <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.excess)}</th></tr></thead>
         <tbody>${periodRows}</tbody>
       </table></div>
+      ${monthlyHistory}
     </div>
   </section>`;
 }

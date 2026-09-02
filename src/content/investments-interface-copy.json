@@ -19,6 +19,7 @@
   "max_drawdown": "Max drawdown",
   "month_end_series": "month-end series",
   "strategy": "Strategy",
+  "diff": "Diff",
   "monthly_performance_history": "Monthly performance history",
   "period": "Period",
   "strategy_month": "Strategy month",

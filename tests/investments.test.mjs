@@ -599,9 +599,9 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.match(rendered.facts, /Thematic, concentrated, long-biased with a hedging overlay/);
   assert.match(rendered.composition, /Named holdings/);
   assert.match(rendered.composition, /aria-label="Physical scarcity/);
-  assert.match(rendered.performance, /class="visually-hidden publication-performance-data"/);
-  assert.match(rendered.performance, /aria-labelledby="accessible-performance-history-heading"/);
-  assert.doesNotMatch(rendered.performance, /<details class="history"/);
+  assert.match(rendered.performance, /<details class="history publication-monthly-history">/);
+  assert.match(rendered.performance, /aria-labelledby="monthly-performance-history-heading"/);
+  assert.doesNotMatch(rendered.performance, /<details class="history publication-monthly-history" open/);
   assert.match(rendered.performance, /text-anchor="end">Mar 2025<\/text>/);
   assert.match(rendered.attribution, /Synthetic validator fixture only\./);
   assert.match(rendered.attribution, /Complete sleeve attribution/);
@@ -616,14 +616,16 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.equal(escapeHtml('<script>alert("x")</script>'), "&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;");
 });
 
-test("monthly history is not visible but remains a full accessible chart equivalent", () => {
+test("monthly history is a collapsed full-series Strategy, benchmark, and Diff table", () => {
   const publication = parsePublicationText(canonicalPublicationText);
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2026-08-21" });
-  assert.doesNotMatch(rendered.performance, /class="history history-(?:desktop|mobile)"|<details|<summary/);
-  const accessible = rendered.performance.match(/<div class="visually-hidden publication-performance-data">([\s\S]*?)<div class="tblwrap publication-period-table">/)[1];
-  assert.equal((accessible.match(/<tr>/g) || []).length - 1, 20);
-  assert.match(accessible, /Jan 2025/);
-  assert.match(accessible, /Aug 2026/);
+  const history = rendered.performance.match(/<details class="history publication-monthly-history">([\s\S]*?)<\/details>/)[1];
+  assert.equal((history.match(/<tr>/g) || []).length - 1, 20);
+  assert.match(history, /Jan 2025/);
+  assert.match(history, /Aug 2026/);
+  assert.match(history, /<th class="r">Strategy<\/th><th class="r">Nasdaq-100<\/th><th class="r">Diff<\/th>/);
+  assert.match(history, /\+5\.4pp/);
+  assert.doesNotMatch(history, /Strategy cumulative|Nasdaq-100 cumulative/);
 });
 
 test("Home proof and Investments use the same changed publication primitives", () => {

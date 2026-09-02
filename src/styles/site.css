@@ -260,7 +260,15 @@ h1.surface-title{font-family:var(--serif);font-weight:700;font-size:clamp(27px,3
 .block-head .eyebrow{margin-bottom:0}
 .stale-flag{display:block;color:var(--neg);font-weight:600;margin-top:4px}
 .history{margin-top:28px;border-top:1px solid var(--line);padding-top:16px}
-.history summary{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);cursor:pointer;margin-bottom:14px}
+.history summary{display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);cursor:pointer;list-style:none;padding:4px 0}
+.history summary::-webkit-details-marker{display:none}
+.history summary::after{content:"+";flex:0 0 auto;font-size:18px;line-height:1;color:var(--amber-ink)}
+.history[open] summary{margin-bottom:14px}
+.history[open] summary::after{content:"−"}
+.monthly-history-table{width:100%;overflow:visible}
+.monthly-history-table table{table-layout:fixed}
+.monthly-history-table th:first-child,.monthly-history-table td:first-child{width:25%}
+.monthly-history-table th,.monthly-history-table td{width:25%}
 .approved-commentary{margin-top:20px;color:var(--ink2)}
 .publication-commentary{width:100%;max-width:none;padding-top:20px;border-top:1px solid var(--line)}
 .comp-row:last-child{border-bottom:none}
@@ -294,6 +302,9 @@ h1.surface-title{font-family:var(--serif);font-weight:700;font-size:clamp(27px,3
 @media (max-width:640px){
   .chart{overflow-x:auto}
   .chart svg{min-width:620px}
+  .history{margin-top:22px}
+  .monthly-history-table th,.monthly-history-table td{font-size:11.5px;padding:9px 3px 9px 0}
+  .monthly-history-table th{font-size:9.5px;letter-spacing:.04em}
 }
 @media (max-width:420px){
   [id]{scroll-margin-top:130px}

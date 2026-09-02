@@ -144,8 +144,9 @@ test("static routes select one server-rendered view and remain usable without Ja
       assert.match(html, /datetime="2026-08-31">31 August 2026/);
       assert.match(html, /August was the month the regime bet paid\./);
       assert.match(html, /href="https:\/\/read\.whenintelligenceisfree\.com\/p\/2608"/);
-      assert.doesNotMatch(html, /Show all 19 months|class="history history-(?:desktop|mobile)"/);
-      assert.match(html, /class="visually-hidden publication-performance-data"/);
+      assert.match(html, /<details class="history publication-monthly-history">/);
+      assert.match(html, /<th class="r">Strategy<\/th><th class="r">Nasdaq-100<\/th><th class="r">Diff<\/th>/);
+      assert.doesNotMatch(html, /<details class="history publication-monthly-history" open/);
       assert.ok(html.indexOf('data-investments-block="composition"') < html.indexOf('class="finetext"'));
     }
   }
@@ -162,6 +163,10 @@ test("static routes select one server-rendered view and remain usable without Ja
   assert.equal(socialPreview.readUInt32BE(20), 630);
   const deployedLogo = await readFile(new URL("../dist/assets/logo.svg", import.meta.url));
   assert.ok(deployedLogo.byteLength < 100_000);
+  const sitesWorker = await readFile(new URL("../dist/server/index.js", import.meta.url), "utf8");
+  assert.match(sitesWorker, /env\.ASSETS\.fetch\(request\)/);
+  const sitesInvestments = await readFile(new URL("../dist/client/investments/index.html", import.meta.url), "utf8");
+  assert.match(sitesInvestments, /<details class="history publication-monthly-history">/);
 });
 
 test("GitHub CI owns publication history checks, build, and preview artifacts", () => {
@@ -195,7 +200,8 @@ test("narrow-screen CSS protects navigation, charts, forms, prose, and hero gutt
   assert.match(styles, /\.substack input\{flex:1;min-width:0/);
   assert.match(styles, /\.hero\{padding-block:/);
   assert.match(styles, /\.essay-row\{align-items:flex-start;flex-direction:column/);
-  assert.match(styles, /\.visually-hidden\{position:absolute!important/);
+  assert.match(styles, /\.monthly-history-table table\{table-layout:fixed\}/);
+  assert.match(styles, /\.monthly-history-table\{width:100%;overflow:visible\}/);
   assert.doesNotMatch(styles, /@media \(max-width:[^)]+\)[\s\S]{0,300}table\{display:none/);
   assert.match(styles, /overflow-wrap:anywhere/);
   assert.doesNotMatch(styles, /body\s*\{[^}]*overflow-x\s*:\s*hidden/);

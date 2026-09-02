@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { access, copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { access, copyFile, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { constants } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,6 +31,7 @@ const SLEEVES = resolve(ROOT, "src/content/investment-sleeves.json");
 const V3_WORK_ORDER = resolve(ROOT, "src/content/v3-work-order.json");
 const STYLES = resolve(ROOT, "src/styles/site.css");
 const CLIENT = resolve(ROOT, "src/scripts/site.js");
+const SITES_WORKER = resolve(ROOT, "scripts/sites-worker.mjs");
 const STATIC = resolve(ROOT, "src/static");
 const IDENTITY_ASSETS = Object.freeze([
   [resolve(ROOT, "logos/wiif_lighthouse_square_master_v2.svg"), "logo.svg"],
@@ -316,6 +317,19 @@ export async function buildSite({ requirePublication = false, buildDate = proces
     await mkdir(pageDirectory, { recursive: true });
     await writeFile(resolve(pageDirectory, "index.html"), html, "utf8");
   }
+
+  const sitesClient = resolve(DIST, "client");
+  await mkdir(sitesClient, { recursive: true });
+  await Promise.all([
+    cp(resolve(DIST, "assets"), resolve(sitesClient, "assets"), { recursive: true }),
+    ...Object.values(meta.surfaces)
+      .filter(({ path }) => path !== "/")
+      .map(({ path }) => cp(resolve(DIST, path.slice(1)), resolve(sitesClient, path.slice(1)), { recursive: true })),
+    copyFile(resolve(DIST, "index.html"), resolve(sitesClient, "index.html")),
+    ...STATIC_OUTPUT_ALLOWLIST.map((name) => copyFile(resolve(DIST, name), resolve(sitesClient, name)))
+  ]);
+  await mkdir(resolve(DIST, "server"), { recursive: true });
+  await copyFile(SITES_WORKER, resolve(DIST, "server/index.js"));
 
   const evidence = {
     build_mode: hasPublication ? "sanitized-publication-preview" : "approved-baseline-preview",
