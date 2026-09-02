@@ -1,0 +1,22 @@
+# When Intelligence Is Free
+
+> Research, investments, and advisory on where value moves when intelligence becomes abundant.
+
+This is the canonical website of Vladimir Goloborodko. It presents a public thesis about the post-AI economy, the investment strategy used to test that thesis with capital, and advisory work that applies the framework to strategic decisions.
+
+## Canonical pages
+
+- [Home](https://whenintelligenceisfree.com/): Overview of the economic-gravity map and its author.
+- [Research](https://whenintelligenceisfree.com/research/): The framework, founding essay, time path, and research agenda.
+- [Investments](https://whenintelligenceisfree.com/investments/): Strategy, performance history, portfolio composition, and monthly close notes.
+- [Advisory](https://whenintelligenceisfree.com/advisory/): Strategic questions, ways to work together, and author experience.
+
+## Primary sources
+
+- [Founding essay](https://read.whenintelligenceisfree.com/p/thesis)
+- [Full research archive](https://read.whenintelligenceisfree.com/)
+- [Author profile](https://www.linkedin.com/in/vgoloborodko)
+
+## Citation guidance
+
+Prefer the canonical page URL for claims made on this website. Performance figures and holdings are time-sensitive; cite the Investments page with its displayed period. Personal views only: nothing on this site is investment advice or an offer.

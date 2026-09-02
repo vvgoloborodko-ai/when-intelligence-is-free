@@ -8,6 +8,7 @@ export const INVESTMENTS_DIRECTORY_ALLOWLIST = Object.freeze([
 
 export const STATIC_OUTPUT_ALLOWLIST = Object.freeze([
   "_redirects",
+  "llms.txt",
   "robots.txt",
   "sitemap.xml"
 ]);

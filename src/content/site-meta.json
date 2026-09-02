@@ -8,38 +8,54 @@
     "logo_path": "/assets/logo.svg",
     "favicon_path": "/assets/favicon-64.png",
     "apple_touch_icon_path": "/assets/apple-touch-icon.png",
-    "social_image_width": 1200,
-    "social_image_height": 630
+    "site_name": "When Intelligence Is Free",
+    "locale": "en_US"
+  },
+  "author": {
+    "name": "Vladimir Goloborodko",
+    "url": "https://whenintelligenceisfree.com/",
+    "same_as": [
+      "https://www.linkedin.com/in/vgoloborodko",
+      "https://read.whenintelligenceisfree.com"
+    ]
   },
   "thesis_url": "https://read.whenintelligenceisfree.com/p/thesis",
   "surfaces": {
     "home": {
       "path": "/",
-      "title": "When Intelligence Is Free",
+      "title": "When Intelligence Is Free — The Post-AI Economy",
       "description": "The price of thinking is collapsing, the way the price of electricity did a century ago. The biggest gains came from what cheap power made possible, not from selling the power itself.",
-      "social_image_path": "/assets/social-logo.png",
-      "social_image_alt": "When Intelligence Is Free lighthouse logo"
+      "social_image_path": "/assets/social-home.png",
+      "social_image_alt": "When Intelligence Is Free — Research, Investments, Advisory",
+      "social_image_width": 1728,
+      "social_image_height": 910
     },
     "research": {
       "path": "/research/",
       "title": "Research — When Intelligence Is Free",
       "description": "When intelligence collapses in price, value doesn't stay in the intelligence layer.",
-      "social_image_path": "/assets/social-logo.png",
-      "social_image_alt": "When Intelligence Is Free lighthouse logo"
+      "social_image_path": "/assets/social-research.png",
+      "social_image_alt": "Research — Where value moves when intelligence becomes abundant",
+      "social_image_width": 1200,
+      "social_image_height": 630
     },
     "investments": {
       "path": "/investments/",
       "title": "Investments — When Intelligence Is Free",
       "description": "A concentrated global strategy built on one rule: own what stays scarce when intelligence becomes abundant.",
-      "social_image_path": "/assets/social-logo.png",
-      "social_image_alt": "When Intelligence Is Free lighthouse logo"
+      "social_image_path": "/assets/social-investments.png",
+      "social_image_alt": "Investments — The thesis, held as positions",
+      "social_image_width": 1200,
+      "social_image_height": 630
     },
     "advisory": {
       "path": "/advisory/",
       "title": "Advisory — When Intelligence Is Free",
       "description": "I work with founders, companies and capital providers on decisions that sit between technology, market structure, product and capital: where value is moving, what becomes newly viable, where defensibility survives, and what to prioritize now.",
-      "social_image_path": "/assets/social-logo.png",
-      "social_image_alt": "When Intelligence Is Free lighthouse logo"
+      "social_image_path": "/assets/social-advisory.png",
+      "social_image_alt": "Advisory — Where AI changes enterprise value",
+      "social_image_width": 1200,
+      "social_image_height": 630
     }
   }
 }

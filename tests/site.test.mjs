@@ -21,6 +21,7 @@ const template = await readFile(new URL("../src/site.template.html", import.meta
 const meta = JSON.parse(await readFile(new URL("../src/content/site-meta.json", import.meta.url), "utf8"));
 const redirects = await readFile(new URL("../src/static/_redirects", import.meta.url), "utf8");
 const sitemap = await readFile(new URL("../src/static/sitemap.xml", import.meta.url), "utf8");
+const llms = await readFile(new URL("../src/static/llms.txt", import.meta.url), "utf8");
 const previewSource = await readFile(new URL("../scripts/preview.mjs", import.meta.url), "utf8");
 const websiteWorkflow = await readFile(new URL("../.github/workflows/website-ci.yml", import.meta.url), "utf8");
 const publicationWorkflow = await readFile(new URL("../.github/workflows/investments-publication-preview.yml", import.meta.url), "utf8");
@@ -103,6 +104,10 @@ test("static routes select one server-rendered view and remain usable without Ja
     assert.match(html, /<img class="brand-logo" src="\/assets\/logo\.svg" width="38" height="38" alt="">/);
     assert.match(html, new RegExp(`<meta property="og:image" content="${meta.canonical_origin}${surface.social_image_path.replaceAll("/", "\\/")}">`));
     assert.match(html, new RegExp(`<meta name="twitter:image" content="${meta.canonical_origin}${surface.social_image_path.replaceAll("/", "\\/")}">`));
+    assert.match(html, new RegExp(`<meta property="og:image:width" content="${surface.social_image_width}">`));
+    assert.match(html, new RegExp(`<meta property="og:image:height" content="${surface.social_image_height}">`));
+    assert.match(html, /<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">/);
+    assert.match(html, new RegExp(`<meta name="twitter:image:alt" content="${surface.social_image_alt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}">`));
     assert.equal((html.match(new RegExp(workOrder.subscribe_promise.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length, 1);
     if (key === "advisory") {
       assert.doesNotMatch(html, /read\.whenintelligenceisfree\.com\/embed/);
@@ -127,7 +132,9 @@ test("static routes select one server-rendered view and remain usable without Ja
     const structured = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
     assert.ok(structured);
     const structuredData = JSON.parse(structured[1]);
-    assert.equal(structuredData.url, `${meta.canonical_origin}${surface.path}`);
+    const structuredPage = structuredData["@graph"].find((entry) => entry["@type"] === "WebPage");
+    assert.equal(structuredPage.url, `${meta.canonical_origin}${surface.path}`);
+    assert.equal(structuredPage.author["@id"], `${meta.canonical_origin}/#author`);
     if (key === "home") {
       assert.match(html, /class="home-investments-proof"/);
       assert.match(html, /\+79\.2%[\s\S]*\+40\.2%/);
@@ -165,11 +172,15 @@ test("static routes select one server-rendered view and remain usable without Ja
   assert.match(styles, /\.view\.active\{display:block\}/);
   assert.equal(new Set(Object.values(meta.surfaces).map(({ title }) => title)).size, 4);
   assert.equal(new Set(Object.values(meta.surfaces).map(({ description }) => description)).size, 4);
-  assert.deepEqual(new Set(Object.values(meta.surfaces).map(({ social_image_path }) => social_image_path)), new Set(["/assets/social-logo.png"]));
-  assert.deepEqual(new Set(Object.values(meta.surfaces).map(({ social_image_alt }) => social_image_alt)), new Set(["When Intelligence Is Free lighthouse logo"]));
-  const socialPreview = await readFile(new URL("../dist/assets/social-logo.png", import.meta.url));
-  assert.equal(socialPreview.readUInt32BE(16), 1200);
-  assert.equal(socialPreview.readUInt32BE(20), 630);
+  assert.equal(new Set(Object.values(meta.surfaces).map(({ social_image_path }) => social_image_path)).size, 4);
+  assert.equal(new Set(Object.values(meta.surfaces).map(({ social_image_alt }) => social_image_alt)).size, 4);
+  for (const surface of Object.values(meta.surfaces)) {
+    const socialPreview = await readFile(new URL(`../dist${surface.social_image_path}`, import.meta.url));
+    assert.equal(socialPreview.readUInt32BE(16), surface.social_image_width);
+    assert.equal(socialPreview.readUInt32BE(20), surface.social_image_height);
+  }
+  assert.match(llms, /https:\/\/whenintelligenceisfree\.com\/research\//);
+  assert.match(llms, /Performance figures and holdings are time-sensitive/);
   const deployedLogo = await readFile(new URL("../dist/assets/logo.svg", import.meta.url));
   assert.ok(deployedLogo.byteLength < 100_000);
   const sitesWorker = await readFile(new URL("../dist/server/index.js", import.meta.url), "utf8");
@@ -266,7 +277,7 @@ test("repository boundaries reject extra Investments inputs and unlisted static 
     await writeFile(resolve(temporary, "README.md"), "safe\n", "utf8");
     await writeFile(resolve(temporary, "raw-nav.csv"), "must not cross boundary\n", "utf8");
     await assert.rejects(assertInvestmentsDirectory(temporary), /unexpected file/i);
-    for (const name of ["_redirects", "robots.txt", "sitemap.xml", "raw-export.json"]) {
+    for (const name of ["_redirects", "llms.txt", "robots.txt", "sitemap.xml", "raw-export.json"]) {
       await writeFile(resolve(staticTemporary, name), "safe fixture\n", "utf8");
     }
     await assert.rejects(assertStaticDirectory(staticTemporary), /unexpected file/i);

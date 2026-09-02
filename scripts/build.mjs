@@ -38,7 +38,10 @@ const IDENTITY_ASSETS = Object.freeze([
   [resolve(ROOT, "logos/wiif_lighthouse_favicon_v2.ico"), "favicon.ico"],
   [resolve(ROOT, "logos/wiif_lighthouse_square_v2_64.png"), "favicon-64.png"],
   [resolve(ROOT, "logos/wiif_lighthouse_square_v2_180.png"), "apple-touch-icon.png"],
-  [resolve(ROOT, "logos/social-logo-1200x630.png"), "social-logo.png"]
+  [resolve(ROOT, "logos/social-home-1728x910.png"), "social-home.png"],
+  [resolve(ROOT, "logos/social-research-1200x630.png"), "social-research.png"],
+  [resolve(ROOT, "logos/social-investments-1200x630.png"), "social-investments.png"],
+  [resolve(ROOT, "logos/social-advisory-1200x630.png"), "social-advisory.png"]
 ]);
 
 function isWithinWorkspace(path) {
@@ -202,26 +205,61 @@ function canonicalUrl(origin, path) {
 
 function structuredData(meta, key, surface) {
   const url = canonicalUrl(meta.canonical_origin, surface.path);
-  const data = key === "home"
-    ? {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      name: surface.title,
-      description: surface.description,
-      url
+  const websiteId = `${meta.canonical_origin}/#website`;
+  const authorId = `${meta.canonical_origin}/#author`;
+  const website = {
+    "@type": "WebSite",
+    "@id": websiteId,
+    name: meta.identity.site_name,
+    description: meta.surfaces.home.description,
+    url: canonicalUrl(meta.canonical_origin, meta.surfaces.home.path),
+    inLanguage: "en",
+    publisher: { "@id": authorId }
+  };
+  const author = {
+    "@type": "Person",
+    "@id": authorId,
+    name: meta.author.name,
+    url: meta.author.url,
+    sameAs: meta.author.same_as
+  };
+  const page = {
+    "@type": "WebPage",
+    "@id": `${url}#webpage`,
+    name: surface.title,
+    description: surface.description,
+    url,
+    inLanguage: "en",
+    isPartOf: { "@id": websiteId },
+    author: { "@id": authorId },
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      url: canonicalUrl(meta.canonical_origin, surface.social_image_path),
+      width: surface.social_image_width,
+      height: surface.social_image_height
     }
-    : {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      name: surface.title,
-      description: surface.description,
-      url,
-      isPartOf: {
-        "@type": "WebSite",
-        name: meta.surfaces.home.title,
-        url: canonicalUrl(meta.canonical_origin, meta.surfaces.home.path)
-      }
-    };
+  };
+  const graph = [website, author, page];
+  if (key !== "home") {
+    graph.push({
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: meta.identity.site_name,
+          item: canonicalUrl(meta.canonical_origin, meta.surfaces.home.path)
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: surface.title.split(" — ")[0],
+          item: url
+        }
+      ]
+    });
+  }
+  const data = { "@context": "https://schema.org", "@graph": graph };
   return JSON.stringify(data).replaceAll("<", "\\u003c");
 }
 
@@ -309,9 +347,14 @@ export async function buildSite({ requirePublication = false, buildDate = proces
     const html = injectTemplate(template, {
       TITLE: escapeHtml(surface.title),
       DESCRIPTION: escapeHtml(surface.description),
+      AUTHOR_NAME: escapeHtml(meta.author.name),
+      SITE_NAME: escapeHtml(meta.identity.site_name),
+      LOCALE: escapeHtml(meta.identity.locale),
       CANONICAL_URL: escapeHtml(canonicalUrl(meta.canonical_origin, surface.path)),
       SOCIAL_IMAGE_URL: escapeHtml(canonicalUrl(meta.canonical_origin, surface.social_image_path)),
       SOCIAL_IMAGE_ALT: escapeHtml(surface.social_image_alt),
+      SOCIAL_IMAGE_WIDTH: String(surface.social_image_width),
+      SOCIAL_IMAGE_HEIGHT: String(surface.social_image_height),
       STRUCTURED_DATA: structuredData(meta, key, surface),
       ASSET_VERSION: assetVersion,
       INITIAL_VIEW: escapeHtml(key),
