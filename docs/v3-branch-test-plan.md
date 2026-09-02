@@ -39,13 +39,14 @@ Test at 1280 px and 380 px:
 Open `http://127.0.0.1:4173/investments/`:
 
 1. Confirm the section heading reads “Performance history”. At both widths,
-   confirm “Monthly performance history” shows the latest three months in
+   confirm the unlabeled monthly table shows the latest three months in
    newest-first order. Expand “Show earlier months” and confirm the remaining
    Strategy / Nasdaq-100 / Excess series appears. At 380 px, both comparison
    tables must share column positions and fit without horizontal scrolling.
-2. Confirm the close note heading is “July 2026 · close note”, its date is
+2. Confirm “Sleeve attribution” sits above its separator. Confirm the close
+   note heading is “July 2026 · close note”, its date is
    “31 July 2026”, the existing body is unchanged, and the two links appear in
-   the required order.
+   the required order. The close-note heading and date use the gold header style.
 3. Confirm the standing disclaimer is below Composition and is not clipped at
    either width.
 

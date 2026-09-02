@@ -260,7 +260,6 @@ h1.surface-title{font-family:var(--serif);font-weight:700;font-size:clamp(27px,3
 .block-head .eyebrow{margin-bottom:0}
 .stale-flag{display:block;color:var(--neg);font-weight:600;margin-top:4px}
 .history{margin-top:28px;border-top:1px solid var(--line);padding-top:16px}
-.history-heading{font-family:var(--mono);font-size:12px;line-height:1.4;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-bottom:14px}
 .monthly-history-archive{margin-top:12px}
 .monthly-history-archive summary{display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink);cursor:pointer;list-style:none;padding:10px 0}
 .monthly-history-archive summary::-webkit-details-marker{display:none}
@@ -269,7 +268,10 @@ h1.surface-title{font-family:var(--serif);font-weight:700;font-size:clamp(27px,3
 .monthly-history-archive[open] summary::after{content:"−"}
 .performance-comparison-table{overflow-x:visible}
 .performance-comparison-table table{table-layout:fixed}
-.performance-comparison-table th,.performance-comparison-table td{width:25%}
+.performance-period-column{width:32%}
+.performance-strategy-column{width:21%}
+.performance-benchmark-column{width:26%}
+.performance-excess-column{width:21%}
 .approved-commentary{margin-top:20px;color:var(--ink2)}
 .publication-commentary{width:100%;max-width:none;padding-top:20px;border-top:1px solid var(--line)}
 .comp-row:last-child{border-bottom:none}
@@ -286,6 +288,7 @@ h1.surface-title{font-family:var(--serif);font-weight:700;font-size:clamp(27px,3
 .holding-identity{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
 .holding-ticker{display:inline-flex;align-items:center;min-height:20px;padding:1px 6px;border:1px solid #D6C69F;border-radius:4px;background:#FFF7E5;color:var(--amber-ink);font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.06em}
 .publication-attribution-grid{align-items:start}
+.attribution-block-head{padding-bottom:14px;border-bottom:1px solid var(--line)}
 .publication-neutral-attribution{margin-top:16px;max-width:520px}
 
 .home-investments-proof{padding:18px 0;background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -294,8 +297,8 @@ h1.surface-title{font-family:var(--serif);font-weight:700;font-size:clamp(27px,3
 .home-investments-proof a{color:var(--ink);font-style:italic;text-decoration:none;border-bottom:2px solid var(--amber);white-space:nowrap}
 .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;border:0!important}
 .close-note-head{display:flex;justify-content:space-between;gap:16px;align-items:baseline}
-.close-note-head h3{font-size:24px;margin:0}
-.close-note-head time{display:block;margin-top:4px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.close-note-title{font-family:var(--mono);font-size:12px;line-height:1.4;letter-spacing:.18em;text-transform:uppercase;color:var(--amber-ink);margin:0}
+.close-note-date{display:block;margin-top:4px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber-ink)}
 .close-note-body{font-size:16px;line-height:1.65}
 .close-note-links{display:flex;flex-wrap:wrap;gap:12px 24px;margin-top:20px}
 .close-note-links a{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink);text-decoration:none;border-bottom:2px solid var(--amber);padding-bottom:2px}

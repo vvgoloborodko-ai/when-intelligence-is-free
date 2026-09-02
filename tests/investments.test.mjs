@@ -600,12 +600,17 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.match(rendered.composition, /Named holdings/);
   assert.match(rendered.composition, /aria-label="Physical scarcity/);
   assert.match(rendered.performance, /<div class="history publication-monthly-history">/);
-  assert.match(rendered.performance, /aria-labelledby="monthly-performance-history-heading"/);
+  assert.match(rendered.performance, /aria-label="Monthly performance history"/);
+  assert.doesNotMatch(rendered.performance, /class="history-heading"/);
   assert.doesNotMatch(rendered.performance, /<details class="monthly-history-archive"/);
   assert.match(rendered.performance, /text-anchor="end">Mar 2025<\/text>/);
   assert.match(rendered.attribution, /Synthetic validator fixture only\./);
-  assert.match(rendered.attribution, /Complete sleeve attribution/);
+  assert.match(rendered.attribution, /Sleeve attribution/);
+  assert.doesNotMatch(rendered.attribution, /Complete sleeve attribution/);
   assert.match(rendered.attribution, /March 2025 · close note/);
+  assert.match(rendered.attribution, /class="close-note-title"/);
+  assert.match(rendered.attribution, /class="close-note-date"/);
+  assert.match(rendered.attribution, /class="block-head attribution-block-head"/);
   assert.match(rendered.attribution, /datetime="2025-03-31">31 March 2025/);
   assert.match(rendered.attribution, /read\.whenintelligenceisfree\.com\/p\/2608/);
   assert.match(rendered.attribution, />All close notes →<\/a>/);
@@ -673,7 +678,7 @@ test("optional commentary absence and attribution scope remain explicit", () => 
   delete publication.releases[0].commentary;
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
   assert.match(rendered.attribution, /No approved Investments commentary for this close\./);
-  assert.match(rendered.attribution, /Complete sleeve attribution/);
+  assert.match(rendered.attribution, /Sleeve attribution/);
 });
 
 test("rendered firewall scans screen-reader-visible attributes", () => {

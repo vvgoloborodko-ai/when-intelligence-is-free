@@ -238,14 +238,17 @@ function assertNonSyntheticConventionSources(publication) {
 export async function buildSite({ requirePublication = false, buildDate = process.env.WIIF_BUILD_DATE || new Date().toISOString().slice(0, 10) } = {}) {
   if (!canonicalDate(buildDate)) throw new Error("Build date must be a real canonical YYYY-MM-DD date.");
   const copyEvidence = await assertApprovedCopy();
-  const [template, approvedContent, meta, sleeves, workOrder, workOrderText] = await Promise.all([
+  const [template, approvedContent, meta, sleeves, workOrder, workOrderText, stylesText, clientText] = await Promise.all([
     readFile(TEMPLATE, "utf8"),
     readFile(CONTENT, "utf8"),
     readFile(META, "utf8").then(JSON.parse),
     readFile(SLEEVES, "utf8").then(JSON.parse),
     readFile(V3_WORK_ORDER, "utf8").then(JSON.parse),
-    readFile(V3_WORK_ORDER, "utf8")
+    readFile(V3_WORK_ORDER, "utf8"),
+    readFile(STYLES, "utf8"),
+    readFile(CLIENT, "utf8")
   ]);
+  const assetVersion = createHash("sha256").update(stylesText).update("\0").update(clientText).digest("hex").slice(0, 12);
 
   let content = approvedContent;
   let publicationEvidence = null;
@@ -310,6 +313,7 @@ export async function buildSite({ requirePublication = false, buildDate = proces
       SOCIAL_IMAGE_URL: escapeHtml(canonicalUrl(meta.canonical_origin, surface.social_image_path)),
       SOCIAL_IMAGE_ALT: escapeHtml(surface.social_image_alt),
       STRUCTURED_DATA: structuredData(meta, key, surface),
+      ASSET_VERSION: assetVersion,
       INITIAL_VIEW: escapeHtml(key),
       PUBLIC_CONTENT: routeContent.trim()
     });

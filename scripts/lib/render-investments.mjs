@@ -220,28 +220,29 @@ function performanceHistoryRows(rows) {
   </tr>`).join("");
 }
 
-function performanceHistoryTable(rows, benchmarkName, labelledBy) {
-  return `<div class="tblwrap performance-comparison-table monthly-history-table"><table aria-labelledby="${escapeHtml(labelledBy)}">
+const PERFORMANCE_COMPARISON_COLUMNS = `<colgroup><col class="performance-period-column"><col class="performance-strategy-column"><col class="performance-benchmark-column"><col class="performance-excess-column"></colgroup>`;
+
+function performanceHistoryTable(rows, benchmarkName, accessibleLabel) {
+  return `<div class="tblwrap performance-comparison-table monthly-history-table"><table aria-label="${escapeHtml(accessibleLabel)}">
+    ${PERFORMANCE_COMPARISON_COLUMNS}
     <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.excess)}</th></tr></thead>
     <tbody>${performanceHistoryRows(rows)}</tbody>
   </table></div>`;
 }
 
 function performanceHistory(rows, benchmarkName) {
-  const headingId = "monthly-performance-history-heading";
-  const archiveId = "monthly-performance-archive-heading";
   const newestFirst = [...rows].reverse();
   const recent = newestFirst.slice(0, 3);
   const older = newestFirst.slice(3);
+  const archiveLabel = copy(COPY.show_earlier_months, { count: older.length });
   const archive = older.length
     ? `<details class="monthly-history-archive">
-      <summary id="${archiveId}">${escapeHtml(copy(COPY.show_earlier_months, { count: older.length }))}</summary>
-      ${performanceHistoryTable(older, benchmarkName, `${headingId} ${archiveId}`)}
+      <summary>${escapeHtml(archiveLabel)}</summary>
+      ${performanceHistoryTable(older, benchmarkName, `${COPY.monthly_performance_history}, ${archiveLabel}`)}
     </details>`
     : "";
   return `<div class="history publication-monthly-history">
-    <h3 class="history-heading" id="${headingId}">${escapeHtml(COPY.monthly_performance_history)}</h3>
-    ${performanceHistoryTable(recent, benchmarkName, headingId)}
+    ${performanceHistoryTable(recent, benchmarkName, COPY.monthly_performance_history)}
     ${archive}
   </div>`;
 }
@@ -284,6 +285,7 @@ function performanceBlock(derived, publication, buildDate) {
       </div>
       ${chartMarkup(rows, conventions)}
       <div class="tblwrap performance-comparison-table publication-period-table"><table aria-labelledby="performance-heading">
+        ${PERFORMANCE_COMPARISON_COLUMNS}
         <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.excess)}</th></tr></thead>
         <tbody>${periodRows}</tbody>
       </table></div>
@@ -377,7 +379,7 @@ function attributionBlock(derived, sleeves, publication, buildDate) {
   const commentary = derived.latestRelease.commentary?.paragraphs?.length
     ? `<article class="approved-commentary publication-commentary" aria-labelledby="close-note-heading">
         <div class="close-note-head">
-          <div><h3 id="close-note-heading">${escapeHtml(displayPeriodLong(derived.currentPeriod))} · ${escapeHtml(V3.investments.close_note_suffix)}</h3><time datetime="${escapeHtml(derived.asOfDate)}">${escapeHtml(displayDateLong(derived.asOfDate))}</time></div>
+          <div><h3 class="close-note-title" id="close-note-heading">${escapeHtml(displayPeriodLong(derived.currentPeriod))} · ${escapeHtml(V3.investments.close_note_suffix)}</h3><time class="close-note-date" datetime="${escapeHtml(derived.asOfDate)}">${escapeHtml(displayDateLong(derived.asOfDate))}</time></div>
         </div>
         <div class="close-note-body">${derived.latestRelease.commentary.paragraphs.map((paragraph) => `<p>${escapeHtml(renderCommentaryParagraph(paragraph, derived, publication.conventions.benchmark.name))}</p>`).join("")}</div>
         <div class="close-note-links"><a href="${escapeHtml(V3.investments.read_full_note_url)}" target="_blank" rel="noopener">${escapeHtml(V3.investments.read_full_note_label)}</a><a href="${escapeHtml(V3.investments.all_close_notes_url)}" target="_blank" rel="noopener">${escapeHtml(V3.investments.all_close_notes_label)}</a></div>
@@ -386,7 +388,7 @@ function attributionBlock(derived, sleeves, publication, buildDate) {
 
   return `<section data-investments-block="attribution">
     <div class="wrap">
-      <div class="block-head"><h2 class="eyebrow">${escapeHtml(scopeLabel)}</h2>${asOfMarkup(derived.asOfDate, derived.currentPeriod, buildDate, publication.conventions)}</div>
+      <div class="block-head attribution-block-head"><h2 class="eyebrow">${escapeHtml(scopeLabel)}</h2>${asOfMarkup(derived.asOfDate, derived.currentPeriod, buildDate, publication.conventions)}</div>
       <div class="grid2 publication-attribution-grid">
         <div class="tblwrap"><table aria-labelledby="contributors-heading"><thead><tr><th id="contributors-heading">${escapeHtml(COPY.contributors)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(contributors, COPY.no_positive)}</tbody></table></div>
         <div class="tblwrap"><table aria-labelledby="detractors-heading"><thead><tr><th id="detractors-heading">${escapeHtml(COPY.detractors)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(detractors, COPY.no_negative)}</tbody></table></div>
