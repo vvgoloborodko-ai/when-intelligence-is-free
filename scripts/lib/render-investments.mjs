@@ -78,11 +78,6 @@ function displayDate(date) {
   return `${day} ${MONTHS[month - 1]} ${year}`;
 }
 
-function displayDateLong(date) {
-  const [year, month, day] = date.split("-").map(Number);
-  return `${day} ${MONTHS_LONG[month - 1]} ${year}`;
-}
-
 function displayInception(date, { short = false } = {}) {
   const [year, month] = date.split("-").map(Number);
   const monthName = short
@@ -379,23 +374,29 @@ function attributionBlock(derived, sleeves, publication, buildDate) {
   const commentary = derived.latestRelease.commentary?.paragraphs?.length
     ? `<article class="approved-commentary publication-commentary" aria-labelledby="close-note-heading">
         <div class="close-note-head">
-          <div><h3 class="close-note-title" id="close-note-heading">${escapeHtml(displayPeriodLong(derived.currentPeriod))} · ${escapeHtml(V3.investments.close_note_suffix)}</h3><time class="close-note-date" datetime="${escapeHtml(derived.asOfDate)}">${escapeHtml(displayDateLong(derived.asOfDate))}</time></div>
+          <h3 class="close-note-title" id="close-note-heading">${escapeHtml(displayPeriodLong(derived.currentPeriod))} · ${escapeHtml(V3.investments.close_note_suffix)}</h3>
         </div>
         <div class="close-note-body">${derived.latestRelease.commentary.paragraphs.map((paragraph) => `<p>${escapeHtml(renderCommentaryParagraph(paragraph, derived, publication.conventions.benchmark.name))}</p>`).join("")}</div>
         <div class="close-note-links"><a href="${escapeHtml(V3.investments.read_full_note_url)}" target="_blank" rel="noopener">${escapeHtml(V3.investments.read_full_note_label)}</a><a href="${escapeHtml(V3.investments.all_close_notes_url)}" target="_blank" rel="noopener">${escapeHtml(V3.investments.all_close_notes_label)}</a></div>
       </article>`
     : `<div class="approved-commentary publication-commentary muted"><p>${escapeHtml(COPY.no_commentary)}</p></div>`;
 
-  return `<section data-investments-block="attribution">
+  return `<div class="attribution-heading-band">
     <div class="wrap">
-      <div class="block-head attribution-block-head"><h2 class="eyebrow">${escapeHtml(scopeLabel)}</h2>${asOfMarkup(derived.asOfDate, derived.currentPeriod, buildDate, publication.conventions)}</div>
+      <div class="block-head"><h2 class="eyebrow">${escapeHtml(scopeLabel)}</h2>${asOfMarkup(derived.asOfDate, derived.currentPeriod, buildDate, publication.conventions)}</div>
+    </div>
+  </div>
+  <section class="attribution-section" data-investments-block="attribution">
+    <div class="wrap">
       <div class="grid2 publication-attribution-grid">
         <div class="tblwrap"><table aria-labelledby="contributors-heading"><thead><tr><th id="contributors-heading">${escapeHtml(COPY.contributors)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(contributors, COPY.no_positive)}</tbody></table></div>
         <div class="tblwrap"><table aria-labelledby="detractors-heading"><thead><tr><th id="detractors-heading">${escapeHtml(COPY.detractors)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(detractors, COPY.no_negative)}</tbody></table></div>
       </div>
       ${neutral.length ? `<div class="tblwrap publication-neutral-attribution"><table aria-labelledby="neutral-heading"><thead><tr><th id="neutral-heading">${escapeHtml(COPY.no_effect)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(neutral, "")}</tbody></table></div>` : ""}
-      ${commentary}
     </div>
+  </section>
+  <section class="close-note-section">
+    <div class="wrap">${commentary}</div>
   </section>`;
 }
 

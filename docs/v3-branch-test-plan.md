@@ -44,9 +44,10 @@ Open `http://127.0.0.1:4173/investments/`:
    Strategy / Nasdaq-100 / Excess series appears. At 380 px, both comparison
    tables must share column positions and fit without horizontal scrolling.
 2. Confirm “Sleeve attribution” sits above its separator. Confirm the close
-   note heading is “July 2026 · close note”, its date is
-   “31 July 2026”, the existing body is unchanged, and the two links appear in
-   the required order. The close-note heading and date use the gold header style.
+   note has a full-width section separator above it, its heading is
+   “July 2026 · close note”, there is no standalone date, the existing body is
+   unchanged, and the two links appear in the required order. The close-note
+   heading uses the gold header style.
 3. Confirm the standing disclaimer is below Composition and is not clipped at
    either width.
 

@@ -141,11 +141,12 @@ test("static routes select one server-rendered view and remain usable without Ja
     }
     if (key === "investments") {
       assert.match(html, /August 2026 · close note/);
-      assert.match(html, /datetime="2026-08-31">31 August 2026/);
       assert.match(html, /<h3 class="close-note-title"[^>]*>August 2026 · close note<\/h3>/);
-      assert.match(html, /<time class="close-note-date"/);
+      assert.doesNotMatch(html, /close-note-date|<time|31 August 2026/);
       assert.match(html, />Sleeve attribution<\/h2>/);
       assert.doesNotMatch(html, /Complete sleeve attribution/);
+      assert.ok(html.indexOf(">Sleeve attribution</h2>") < html.indexOf('class="attribution-section"'));
+      assert.match(html, /<\/section>\s*<section class="close-note-section">/);
       assert.match(html, /August was the month the regime bet paid\./);
       assert.match(html, /href="https:\/\/read\.whenintelligenceisfree\.com\/p\/2608"/);
       assert.match(html, /<div class="history publication-monthly-history">/);
@@ -211,9 +212,11 @@ test("narrow-screen CSS protects navigation, charts, forms, prose, and hero gutt
   assert.match(styles, /\.performance-comparison-table table\{table-layout:fixed\}/);
   assert.match(styles, /\.performance-comparison-table\{overflow-x:visible\}/);
   assert.match(styles, /\.performance-period-column\{width:32%\}/);
-  assert.match(styles, /\.attribution-block-head\{padding-bottom:14px;border-bottom:1px solid var\(--line\)\}/);
+  assert.match(styles, /\.attribution-heading-band\{padding:60px 0 14px\}/);
+  assert.match(styles, /\.attribution-section\{border-top:1px solid var\(--line\);padding-top:18px\}/);
+  assert.match(styles, /\.close-note-section\{border-top:1px solid var\(--line\);padding:20px 0 60px\}/);
   assert.match(styles, /\.close-note-title\{[^}]*color:var\(--amber-ink\)/);
-  assert.match(styles, /\.close-note-date\{[^}]*color:var\(--amber-ink\)/);
+  assert.doesNotMatch(styles, /\.close-note-date/);
   assert.doesNotMatch(styles, /@media \(max-width:[^)]+\)[\s\S]{0,300}table\{display:none/);
   assert.match(styles, /overflow-wrap:anywhere/);
   assert.doesNotMatch(styles, /body\s*\{[^}]*overflow-x\s*:\s*hidden/);
