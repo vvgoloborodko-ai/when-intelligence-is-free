@@ -39,9 +39,10 @@ Test at 1280 px and 380 px:
 Open `http://127.0.0.1:4173/investments/`:
 
 1. Confirm the section heading reads “Performance history”. At both widths,
-   confirm “Monthly performance history” is collapsed by default. Expand it
-   and confirm the complete monthly Strategy / Nasdaq-100 / Diff series appears.
-   At 380 px, the table must fit the viewport without horizontal scrolling.
+   confirm “Monthly performance history” shows the latest three months in
+   newest-first order. Expand “Show earlier months” and confirm the remaining
+   Strategy / Nasdaq-100 / Excess series appears. At 380 px, both comparison
+   tables must share column positions and fit without horizontal scrolling.
 2. Confirm the close note heading is “July 2026 · close note”, its date is
    “31 July 2026”, the existing body is unchanged, and the two links appear in
    the required order.

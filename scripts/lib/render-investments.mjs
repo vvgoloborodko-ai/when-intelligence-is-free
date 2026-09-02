@@ -221,18 +221,29 @@ function performanceHistoryRows(rows) {
 }
 
 function performanceHistoryTable(rows, benchmarkName, labelledBy) {
-  return `<div class="monthly-history-table"><table aria-labelledby="${escapeHtml(labelledBy)}">
-    <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.diff)}</th></tr></thead>
+  return `<div class="tblwrap performance-comparison-table monthly-history-table"><table aria-labelledby="${escapeHtml(labelledBy)}">
+    <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.excess)}</th></tr></thead>
     <tbody>${performanceHistoryRows(rows)}</tbody>
   </table></div>`;
 }
 
 function performanceHistory(rows, benchmarkName) {
   const headingId = "monthly-performance-history-heading";
-  return `<details class="history publication-monthly-history">
-    <summary id="${headingId}">${escapeHtml(COPY.monthly_performance_history)}</summary>
-    ${performanceHistoryTable(rows, benchmarkName, headingId)}
-  </details>`;
+  const archiveId = "monthly-performance-archive-heading";
+  const newestFirst = [...rows].reverse();
+  const recent = newestFirst.slice(0, 3);
+  const older = newestFirst.slice(3);
+  const archive = older.length
+    ? `<details class="monthly-history-archive">
+      <summary id="${archiveId}">${escapeHtml(copy(COPY.show_earlier_months, { count: older.length }))}</summary>
+      ${performanceHistoryTable(older, benchmarkName, `${headingId} ${archiveId}`)}
+    </details>`
+    : "";
+  return `<div class="history publication-monthly-history">
+    <h3 class="history-heading" id="${headingId}">${escapeHtml(COPY.monthly_performance_history)}</h3>
+    ${performanceHistoryTable(recent, benchmarkName, headingId)}
+    ${archive}
+  </div>`;
 }
 
 function performanceBlock(derived, publication, buildDate) {
@@ -272,7 +283,7 @@ function performanceBlock(derived, publication, buildDate) {
         <div class="stat"><div class="lbl">${escapeHtml(COPY.max_drawdown)}</div><div class="val ${tone(summary.maxDrawdownPct)}">${escapeHtml(formatPct(summary.maxDrawdownPct))}</div><div class="sub">${escapeHtml(COPY.month_end_series)}${summary.maxDrawdownPeriod ? ` · ${escapeHtml(displayPeriod(summary.maxDrawdownPeriod))}` : ""}</div></div>
       </div>
       ${chartMarkup(rows, conventions)}
-      <div class="tblwrap publication-period-table"><table aria-labelledby="performance-heading">
+      <div class="tblwrap performance-comparison-table publication-period-table"><table aria-labelledby="performance-heading">
         <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.excess)}</th></tr></thead>
         <tbody>${periodRows}</tbody>
       </table></div>

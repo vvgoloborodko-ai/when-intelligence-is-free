@@ -599,9 +599,9 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.match(rendered.facts, /Thematic, concentrated, long-biased with a hedging overlay/);
   assert.match(rendered.composition, /Named holdings/);
   assert.match(rendered.composition, /aria-label="Physical scarcity/);
-  assert.match(rendered.performance, /<details class="history publication-monthly-history">/);
+  assert.match(rendered.performance, /<div class="history publication-monthly-history">/);
   assert.match(rendered.performance, /aria-labelledby="monthly-performance-history-heading"/);
-  assert.doesNotMatch(rendered.performance, /<details class="history publication-monthly-history" open/);
+  assert.doesNotMatch(rendered.performance, /<details class="monthly-history-archive"/);
   assert.match(rendered.performance, /text-anchor="end">Mar 2025<\/text>/);
   assert.match(rendered.attribution, /Synthetic validator fixture only\./);
   assert.match(rendered.attribution, /Complete sleeve attribution/);
@@ -616,16 +616,19 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.equal(escapeHtml('<script>alert("x")</script>'), "&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;");
 });
 
-test("monthly history is a collapsed full-series Strategy, benchmark, and Diff table", () => {
+test("monthly history shows the latest three rows first and collapses the older Excess series", () => {
   const publication = parsePublicationText(canonicalPublicationText);
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2026-08-21" });
-  const history = rendered.performance.match(/<details class="history publication-monthly-history">([\s\S]*?)<\/details>/)[1];
-  assert.equal((history.match(/<tr>/g) || []).length - 1, 20);
+  const history = rendered.performance.slice(rendered.performance.indexOf('<div class="history publication-monthly-history">'));
+  assert.equal((history.match(/<tr>/g) || []).length - 2, 20);
   assert.match(history, /Jan 2025/);
   assert.match(history, /Aug 2026/);
-  assert.match(history, /<th class="r">Strategy<\/th><th class="r">Nasdaq-100<\/th><th class="r">Diff<\/th>/);
+  assert.match(history, /<th class="r">Strategy<\/th><th class="r">Nasdaq-100<\/th><th class="r">Excess<\/th>/);
   assert.match(history, /\+5\.4pp/);
-  assert.doesNotMatch(history, /Strategy cumulative|Nasdaq-100 cumulative/);
+  assert.match(history, /Show earlier months \(17\)/);
+  assert.ok(history.indexOf("Aug 2026") < history.indexOf("Jul 2026"));
+  assert.ok(history.indexOf("Jul 2026") < history.indexOf("Jun 2026"));
+  assert.ok(history.indexOf("Jun 2026") < history.indexOf("May 2026"));
 });
 
 test("Home proof and Investments use the same changed publication primitives", () => {
