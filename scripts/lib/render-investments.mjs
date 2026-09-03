@@ -137,7 +137,7 @@ function chartMarkup(rows, conventions) {
   const width = 660;
   const height = 260;
   const left = 60;
-  const right = 18;
+  const right = 68;
   const top = 18;
   const bottom = 38;
   const plotWidth = width - left - right;
@@ -191,6 +191,12 @@ function chartMarkup(rows, conventions) {
   const strategyPoints = rows.map((row, index) => `${x(index).toFixed(2)},${y(row.strategyCumulativePct).toFixed(2)}`).join(" ");
   const benchmarkPoints = rows.map((row, index) => `${x(index).toFixed(2)},${y(row.benchmarkCumulativePct).toFixed(2)}`).join(" ");
   const latest = rows.at(-1);
+  const latestX = x(rows.length - 1);
+  const endpointLabel = (value, series, color) => {
+    const valueY = y(value);
+    return `<g class="chart-end-label" data-series="${series}" aria-hidden="true"><circle cx="${latestX.toFixed(2)}" cy="${valueY.toFixed(2)}" r="3" fill="${color}"/><text x="${(latestX + 8).toFixed(2)}" y="${(valueY + 3.5).toFixed(2)}" fill="${color}" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="600">${escapeHtml(formatPct(value))}</text></g>`;
+  };
+  const endpointLabels = `${endpointLabel(latest.strategyCumulativePct, "strategy", "#8A5C05")}${endpointLabel(latest.benchmarkCumulativePct, "benchmark", "#607588")}`;
 
   const benchmarkName = conventions.benchmark.name;
   return `<div class="chart publication-chart">
@@ -202,6 +208,7 @@ function chartMarkup(rows, conventions) {
       <g font-family="IBM Plex Mono,monospace" font-size="10" fill="#4A5C52">${grid}${labels}</g>
       <polyline fill="none" stroke="#7D8FA0" stroke-width="2.25" stroke-dasharray="6 4" points="${benchmarkPoints}"/>
       <polyline fill="none" stroke="#8A5C05" stroke-width="2.75" points="${strategyPoints}"/>
+      ${endpointLabels}
     </svg>
   </div>`;
 }

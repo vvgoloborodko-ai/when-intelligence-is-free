@@ -607,6 +607,9 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.match(rendered.performance, /id="performance-cumulative-view" data-performance-view="cumulative" role="region" aria-label="Cumulative"/);
   assert.match(rendered.performance, /id="performance-monthly-view" data-performance-view="monthly" role="region" aria-label="Monthly"/);
   assert.match(rendered.performance, /aria-label="Monthly returns, Strategy versus Nasdaq-100, from Jan 2025 to the Mar 2025 close"/);
+  assert.equal((rendered.performance.match(/class="chart-end-label"/g) || []).length, 2);
+  assert.match(rendered.performance, /class="chart-end-label" data-series="strategy"[^>]*>[\s\S]*?>\+4\.0%<\/text>/);
+  assert.match(rendered.performance, /class="chart-end-label" data-series="benchmark"[^>]*>[\s\S]*?>\+2\.0%<\/text>/);
   assert.doesNotMatch(rendered.performance, /class="history-heading"/);
   assert.doesNotMatch(rendered.performance, /<details class="monthly-history-archive"/);
   assert.match(rendered.performance, /text-anchor="end">Mar 2025<\/text>/);
