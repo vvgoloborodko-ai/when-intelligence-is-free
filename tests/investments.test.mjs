@@ -684,8 +684,11 @@ test("Home proof and Investments use the same changed publication primitives", (
   const investments = renderInvestments(publication, sleeves, { buildDate: "2025-05-01" });
   assert.match(proof, /\+8\.2%/);
   assert.match(investments.performance, /\+8\.2%/);
+  assert.match(proof, /Nasdaq-100 since 1 Jan 2025\./);
   assert.doesNotMatch(proof, /January 2025|30 April 2025|Marked monthly/);
   assert.match(investments.performance, /30 Apr 2025/);
+  assert.match(investments.performance, /As of the official close · 30 Apr 2025 · unaudited · updated monthly/);
+  assert.doesNotMatch(investments.performance, /· net, unaudited/);
 });
 
 test("approved commentary derives benchmark, monthly, excess, and cumulative tokens", () => {

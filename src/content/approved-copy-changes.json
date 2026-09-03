@@ -54,6 +54,12 @@
       "approved_on": "2026-08-24",
       "from": ">Performance</div>",
       "to": ">Performance history</div>"
+    },
+    {
+      "id": "remove-net-from-official-close-label-2026-09-03",
+      "approved_on": "2026-09-03",
+      "from": "As of the official close · 31 Jul 2026 · net, unaudited",
+      "to": "As of the official close · 31 Jul 2026 · unaudited"
     }
   ]
 }

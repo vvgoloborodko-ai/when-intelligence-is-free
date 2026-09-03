@@ -139,6 +139,7 @@ test("static routes select one server-rendered view and remain usable without Ja
     if (key === "home") {
       assert.match(html, /class="home-investments-proof"/);
       assert.match(html, /\+79\.2%[\s\S]*\+40\.2%/);
+      assert.match(html, /Nasdaq-100 since 1 Jan 2025\./);
       assert.doesNotMatch(html, /since January 2025|Marked monthly, as of 31 July 2026/);
       assert.equal((html.match(/<div class="mode /g) || []).length, 4);
       assert.doesNotMatch(html, /href="\/research\/#(?:substitute|amplify|reprice|unlock)"/);

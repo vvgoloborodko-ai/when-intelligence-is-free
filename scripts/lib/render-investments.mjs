@@ -112,7 +112,7 @@ function asOfMarkup(asOfDate, period, buildDate, conventions) {
   const overdue = status.stale
     ? `<span class="stale-flag">${escapeHtml(COPY.update_overdue)} ${escapeHtml(displayDate(asOfDate))}</span>`
     : "";
-  return `<div class="asof">${escapeHtml(COPY.as_of)} · ${escapeHtml(displayDate(asOfDate))} · ${escapeHtml(conventions.strategy_return_basis.basis)}, ${escapeHtml(conventions.audit_status)} · ${escapeHtml(COPY.updated_monthly)}${overdue}</div>`;
+  return `<div class="asof">${escapeHtml(COPY.as_of)} · ${escapeHtml(displayDate(asOfDate))} · ${escapeHtml(conventions.audit_status)} · ${escapeHtml(COPY.updated_monthly)}${overdue}</div>`;
 }
 
 export function renderHomeProofStrip(derived, publication, labels) {
@@ -120,7 +120,7 @@ export function renderHomeProofStrip(derived, publication, labels) {
   const conventions = publication.conventions;
   return `<aside class="home-investments-proof">
     <div class="wrap">
-      <p>${escapeHtml(labels.proof_lead)} <strong class="${tone(summary.strategyCumulativePct)}">${escapeHtml(formatPct(summary.strategyCumulativePct))}</strong> ${escapeHtml(labels.proof_versus)} <strong class="${tone(summary.benchmarkCumulativePct)}">${escapeHtml(formatPct(summary.benchmarkCumulativePct))}</strong> ${escapeHtml(conventions.benchmark.name)}. <a href="/investments/">→ ${escapeHtml(labels.proof_link)}</a></p>
+      <p>${escapeHtml(labels.proof_lead)} <strong class="${tone(summary.strategyCumulativePct)}">${escapeHtml(formatPct(summary.strategyCumulativePct))}</strong> ${escapeHtml(labels.proof_versus)} <strong class="${tone(summary.benchmarkCumulativePct)}">${escapeHtml(formatPct(summary.benchmarkCumulativePct))}</strong> ${escapeHtml(conventions.benchmark.name)} since ${escapeHtml(displayDate(conventions.inception_date))}. <a href="/investments/">→ ${escapeHtml(labels.proof_link)}</a></p>
     </div>
   </aside>`;
 }
