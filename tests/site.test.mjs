@@ -9,6 +9,7 @@ import { assertValidPublication, parsePublicationBytes, parsePublicationText } f
 import { previousDistinctPublicationText, selectPreviousDistinctPublicationText } from "../scripts/lib/publication-history.mjs";
 import { assertInvestmentsDirectory, assertStaticDirectory } from "../scripts/lib/repository-boundary.mjs";
 import { injectInvestments, renderInvestments } from "../scripts/lib/render-investments.mjs";
+import sitesWorker, { isWhatsAppPreviewRequest, rewriteSocialPreviewForWhatsApp } from "../scripts/sites-worker.mjs";
 
 const contentUrl = new URL("../src/content/approved-public-content.html", import.meta.url);
 const publicationUrl = new URL("../data/investments/publication.json", import.meta.url);
@@ -209,6 +210,38 @@ test("GitHub CI owns publication history checks, build, and preview artifacts", 
 test("local preview serves the lighthouse identity with browser-safe MIME types", () => {
   assert.match(previewSource, /\["\.svg", "image\/svg\+xml"\]/);
   assert.match(previewSource, /\["\.ico", "image\/x-icon"\]/);
+});
+
+test("WhatsApp receives the logo card while Telegram keeps page-specific previews", async () => {
+  const researchHtml = await readFile(new URL("../dist/research/index.html", import.meta.url), "utf8");
+  const whatsappHtml = rewriteSocialPreviewForWhatsApp(researchHtml);
+  assert.match(whatsappHtml, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-logo\.png">/);
+  assert.match(whatsappHtml, /<meta property="og:image:width" content="1200">/);
+  assert.match(whatsappHtml, /<meta property="og:image:height" content="630">/);
+  assert.match(whatsappHtml, /<meta property="og:image:alt" content="When Intelligence Is Free lighthouse logo">/);
+  assert.doesNotMatch(whatsappHtml, /<meta property="og:image" content="[^\"]*social-research\.png">/);
+  assert.match(researchHtml, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-research\.png">/);
+  assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/research/", {
+    headers: { "User-Agent": "WhatsApp/2.26.1" }
+  })), true);
+  assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/research/", {
+    headers: { "User-Agent": "TelegramBot (like TwitterBot)" }
+  })), false);
+  const assets = {
+    fetch: async () => new Response(researchHtml, {
+      headers: { "Content-Type": "text/html; charset=utf-8" }
+    })
+  };
+  const whatsappResponse = await sitesWorker.fetch(new Request("https://whenintelligenceisfree.com/research/", {
+    headers: { "User-Agent": "WhatsApp/2.26.1" }
+  }), { ASSETS: assets });
+  assert.equal(whatsappResponse.headers.get("Vary"), "User-Agent");
+  assert.match(await whatsappResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-logo\.png">/);
+  const telegramResponse = await sitesWorker.fetch(new Request("https://whenintelligenceisfree.com/research/", {
+    headers: { "User-Agent": "TelegramBot (like TwitterBot)" }
+  }), { ASSETS: assets });
+  assert.equal(telegramResponse.headers.get("Vary"), "User-Agent");
+  assert.match(await telegramResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-research\.png">/);
 });
 
 test("narrow-screen CSS protects navigation, charts, forms, prose, and hero gutters", () => {
