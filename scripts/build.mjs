@@ -377,7 +377,10 @@ export async function buildSite({ requirePublication = false, buildDate = proces
     ...STATIC_OUTPUT_ALLOWLIST.map((name) => copyFile(resolve(DIST, name), resolve(sitesClient, name)))
   ]);
   await mkdir(resolve(DIST, "server"), { recursive: true });
-  await copyFile(SITES_WORKER, resolve(DIST, "server/index.js"));
+  await Promise.all([
+    copyFile(SITES_WORKER, resolve(DIST, "server/index.js")),
+    copyFile(SITES_WORKER, resolve(DIST, "_worker.js"))
+  ]);
 
   const evidence = {
     build_mode: hasPublication ? "sanitized-publication-preview" : "approved-baseline-preview",

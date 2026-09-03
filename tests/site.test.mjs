@@ -186,6 +186,8 @@ test("static routes select one server-rendered view and remain usable without Ja
   assert.ok(deployedLogo.byteLength < 100_000);
   const sitesWorker = await readFile(new URL("../dist/server/index.js", import.meta.url), "utf8");
   assert.match(sitesWorker, /env\.ASSETS\.fetch\(request\)/);
+  const pagesWorker = await readFile(new URL("../dist/_worker.js", import.meta.url), "utf8");
+  assert.equal(pagesWorker, sitesWorker);
   const sitesInvestments = await readFile(new URL("../dist/client/investments/index.html", import.meta.url), "utf8");
   assert.match(sitesInvestments, /<div class="history publication-monthly-history">/);
   assert.match(sitesInvestments, /\/assets\/site\.css\?v=[a-f0-9]{12}/);
