@@ -206,6 +206,80 @@ function chartMarkup(rows, conventions) {
   </div>`;
 }
 
+function monthlyChartMarkup(rows, conventions) {
+  const width = 660;
+  const height = 260;
+  const left = 60;
+  const right = 18;
+  const top = 18;
+  const bottom = 38;
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+  const values = [0, ...rows.flatMap((row) => [row.strategyMonthlyPct, row.benchmarkMonthlyPct])];
+  if (!values.every(Number.isFinite)) throw new Error("Investments monthly chart received a non-finite derived value.");
+  const rawMin = Math.min(...values);
+  const rawMax = Math.max(...values);
+  const step = niceStep(Math.max(rawMax - rawMin, 1) / 4);
+  let niceMin = Math.floor(rawMin / step) * step;
+  let niceMax = Math.ceil(rawMax / step) * step;
+  if (niceMin === niceMax) {
+    niceMin -= step;
+    niceMax += step;
+  }
+  const niceSpan = niceMax - niceMin;
+  if (![step, niceMin, niceMax, niceSpan].every(Number.isFinite) || step <= 0 || niceSpan <= 0) {
+    throw new Error("Investments monthly chart scale is not finite.");
+  }
+  const y = (value) => top + ((niceMax - value) / niceSpan) * plotHeight;
+  const ticks = [];
+  for (let index = 0; index <= 20; index += 1) {
+    const value = niceMin + index * step;
+    if (!Number.isFinite(value) || value > niceMax) break;
+    ticks.push(normalizeForDisplay(value, 6));
+  }
+  if (!ticks.length || ticks.length > 20) throw new Error("Investments monthly chart tick count is outside the deterministic limit.");
+
+  const grid = ticks.map((value) => {
+    const yy = y(value).toFixed(2);
+    const stroke = value === 0 ? "#A9B4AA" : "#E4E8E3";
+    const strokeWidth = value === 0 ? "1.5" : "1";
+    return `<line x1="${left}" y1="${yy}" x2="${width - right}" y2="${yy}" stroke="${stroke}" stroke-width="${strokeWidth}"/><text x="${left - 8}" y="${(Number(yy) + 4).toFixed(2)}" text-anchor="end">${escapeHtml(formatPct(value, { sign: true }))}</text>`;
+  }).join("");
+
+  const groupWidth = plotWidth / rows.length;
+  const barWidth = Math.min(12, Math.max(2, groupWidth * 0.32));
+  const barGap = Math.min(3, groupWidth * 0.08);
+  const zeroY = y(0);
+  const bar = (value, x, fill, series, period) => {
+    const valueY = y(value);
+    const barY = Math.min(zeroY, valueY);
+    const barHeight = Math.abs(zeroY - valueY);
+    return `<rect x="${x.toFixed(2)}" y="${barY.toFixed(2)}" width="${barWidth.toFixed(2)}" height="${barHeight.toFixed(2)}" rx="1" fill="${fill}" data-series="${series}" data-period="${escapeHtml(period)}"/>`;
+  };
+  const bars = rows.map((row, index) => {
+    const center = left + index * groupWidth + groupWidth / 2;
+    return `${bar(row.strategyMonthlyPct, center - barGap / 2 - barWidth, "#8A5C05", "strategy", row.period)}${bar(row.benchmarkMonthlyPct, center + barGap / 2, "#7D8FA0", "benchmark", row.period)}`;
+  }).join("");
+  const labels = rows.map((row, index) => {
+    const center = left + index * groupWidth + groupWidth / 2;
+    const month = Number(row.period.slice(5, 7));
+    return `<text x="${center.toFixed(2)}" y="${height - 10}" text-anchor="middle">${escapeHtml(MONTHS[month - 1])}</text>`;
+  }).join("");
+  const benchmarkName = conventions.benchmark.name;
+
+  return `<div class="chart publication-chart monthly-return-chart">
+    <div class="legend">
+      <span><span class="sw strategy-swatch"></span>${escapeHtml(COPY.strategy)}</span>
+      <span><span class="sw benchmark-swatch"></span>${escapeHtml(benchmarkName)}</span>
+    </div>
+    <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(copy(COPY.monthly_chart_label, { benchmark: benchmarkName, start_period: displayPeriod(rows[0].period), end_period: displayPeriod(rows.at(-1).period) }))}">
+      <g font-family="IBM Plex Mono,monospace" font-size="10" fill="#4A5C52">${grid}</g>
+      <g aria-hidden="true">${bars}</g>
+      <g font-family="IBM Plex Mono,monospace" font-size="9" fill="#4A5C52">${labels}</g>
+    </svg>
+  </div>`;
+}
+
 function performanceHistoryRows(rows) {
   return rows.map((row) => `<tr>
     <td>${escapeHtml(displayPeriod(row.period))}</td>
@@ -278,13 +352,22 @@ function performanceBlock(derived, publication, buildDate) {
         <div class="stat"><div class="lbl">${escapeHtml(COPY.excess)}</div><div class="val ${tone(summary.excessCumulativePp)}">${escapeHtml(formatPp(summary.excessCumulativePp))}</div><div class="sub">${escapeHtml(COPY.versus_reference)}</div></div>
         <div class="stat"><div class="lbl">${escapeHtml(COPY.max_drawdown)}</div><div class="val ${tone(summary.maxDrawdownPct)}">${escapeHtml(formatPct(summary.maxDrawdownPct))}</div><div class="sub">${escapeHtml(COPY.month_end_series)}${summary.maxDrawdownPeriod ? ` · ${escapeHtml(displayPeriod(summary.maxDrawdownPeriod))}` : ""}</div></div>
       </div>
-      ${chartMarkup(rows, conventions)}
-      <div class="tblwrap performance-comparison-table publication-period-table"><table aria-labelledby="performance-heading">
-        ${PERFORMANCE_COMPARISON_COLUMNS}
-        <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.excess)}</th></tr></thead>
-        <tbody>${periodRows}</tbody>
-      </table></div>
-      ${monthlyHistory}
+      <div class="performance-view-control" data-performance-view-control hidden role="group" aria-label="${escapeHtml(COPY.performance_view)}">
+        <button class="performance-view-button" type="button" data-performance-view-target="cumulative" aria-pressed="true" aria-controls="performance-cumulative-view">${escapeHtml(COPY.cumulative)}</button>
+        <button class="performance-view-button" type="button" data-performance-view-target="monthly" aria-pressed="false" aria-controls="performance-monthly-view">${escapeHtml(COPY.monthly)}</button>
+      </div>
+      <div class="performance-view performance-cumulative-view" id="performance-cumulative-view" data-performance-view="cumulative" role="region" aria-label="${escapeHtml(COPY.cumulative)}">
+        ${chartMarkup(rows, conventions)}
+        <div class="tblwrap performance-comparison-table publication-period-table"><table aria-labelledby="performance-heading">
+          ${PERFORMANCE_COMPARISON_COLUMNS}
+          <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.excess)}</th></tr></thead>
+          <tbody>${periodRows}</tbody>
+        </table></div>
+      </div>
+      <div class="performance-view performance-monthly-view" id="performance-monthly-view" data-performance-view="monthly" role="region" aria-label="${escapeHtml(COPY.monthly)}">
+        ${monthlyChartMarkup(rows, conventions)}
+        ${monthlyHistory}
+      </div>
     </div>
   </section>`;
 }

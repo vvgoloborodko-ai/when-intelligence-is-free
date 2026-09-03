@@ -160,6 +160,11 @@ test("static routes select one server-rendered view and remain usable without Ja
       assert.match(html, /August was the month the regime bet paid\./);
       assert.match(html, /href="https:\/\/read\.whenintelligenceisfree\.com\/p\/2608"/);
       assert.match(html, /<div class="history publication-monthly-history">/);
+      assert.match(html, /data-performance-view-control hidden role="group" aria-label="Performance view"/);
+      assert.match(html, /data-performance-view="cumulative" role="region" aria-label="Cumulative"/);
+      assert.match(html, /data-performance-view="monthly" role="region" aria-label="Monthly"/);
+      assert.doesNotMatch(html, /class="performance-view [^"]*"[^>]* hidden/);
+      assert.match(html, /class="chart publication-chart monthly-return-chart"/);
       assert.match(html, /<th class="r">Strategy<\/th><th class="r">Nasdaq-100<\/th><th class="r">Excess<\/th>/);
       assert.match(html, /Show earlier months \(17\)/);
       assert.doesNotMatch(html, />Monthly performance history<\/h3>/);
@@ -259,6 +264,9 @@ test("narrow-screen CSS protects navigation, charts, forms, prose, and hero gutt
   assert.match(styles, /\.essay-row\{align-items:flex-start;flex-direction:column/);
   assert.match(styles, /\.performance-comparison-table table\{table-layout:fixed\}/);
   assert.match(styles, /\.performance-comparison-table\{overflow-x:visible\}/);
+  assert.match(styles, /\.performance-view-control\[hidden\]\{display:none\}/);
+  assert.match(styles, /\.performance-view-button:focus-visible\{outline:2px solid var\(--amber-ink\)/);
+  assert.match(styles, /\.performance-view-control,\.monthly-return-chart\{display:none!important\}/);
   assert.match(styles, /\.performance-period-column\{width:32%\}/);
   assert.match(styles, /section\{padding:60px 0\}/);
   assert.match(styles, /section\+section\{border-top:1px solid var\(--line\)\}/);
@@ -272,6 +280,8 @@ test("narrow-screen CSS protects navigation, charts, forms, prose, and hero gutt
   assert.doesNotMatch(styles, /@media \(max-width:[^)]+\)[\s\S]{0,300}table\{display:none/);
   assert.match(styles, /overflow-wrap:anywhere/);
   assert.doesNotMatch(styles, /body\s*\{[^}]*overflow-x\s*:\s*hidden/);
+  assert.match(client, /matchMedia\('\(min-width: 641px\)'\)/);
+  assert.match(client, /event\.key==='ArrowRight'/);
 });
 
 test("valid publication replaces every hard-coded Investments data block", () => {

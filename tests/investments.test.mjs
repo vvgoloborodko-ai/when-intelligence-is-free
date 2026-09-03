@@ -601,6 +601,12 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.match(rendered.composition, /aria-label="Physical scarcity/);
   assert.match(rendered.performance, /<div class="history publication-monthly-history">/);
   assert.match(rendered.performance, /aria-label="Monthly performance history"/);
+  assert.match(rendered.performance, /data-performance-view-control hidden role="group" aria-label="Performance view"/);
+  assert.match(rendered.performance, /data-performance-view-target="cumulative" aria-pressed="true"/);
+  assert.match(rendered.performance, /data-performance-view-target="monthly" aria-pressed="false"/);
+  assert.match(rendered.performance, /id="performance-cumulative-view" data-performance-view="cumulative" role="region" aria-label="Cumulative"/);
+  assert.match(rendered.performance, /id="performance-monthly-view" data-performance-view="monthly" role="region" aria-label="Monthly"/);
+  assert.match(rendered.performance, /aria-label="Monthly returns, Strategy versus Nasdaq-100, from Jan 2025 to the Mar 2025 close"/);
   assert.doesNotMatch(rendered.performance, /class="history-heading"/);
   assert.doesNotMatch(rendered.performance, /<details class="monthly-history-archive"/);
   assert.match(rendered.performance, /text-anchor="end">Mar 2025<\/text>/);
@@ -621,6 +627,24 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
     assert.doesNotMatch(rendered.facts, new RegExp(removedFact, "i"));
   }
   assert.equal(escapeHtml('<script>alert("x")</script>'), "&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;");
+});
+
+test("monthly chart derives one grouped bar pair and one abbreviated label for every performance row", () => {
+  const publication = fixture();
+  const derived = derivePublication(publication);
+  const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
+  const chartStart = rendered.performance.indexOf('<div class="chart publication-chart monthly-return-chart">');
+  const chartEnd = rendered.performance.indexOf("</svg>", chartStart);
+  const chart = rendered.performance.slice(chartStart, chartEnd);
+  assert.ok(chartStart >= 0 && chartEnd > chartStart);
+  assert.equal((chart.match(/<rect /g) || []).length, derived.performanceRows.length * 2);
+  assert.equal((chart.match(/stroke-width="1\.5"/g) || []).length, 1);
+  assert.doesNotMatch(chart, /(?:NaN|Infinity)/);
+  for (const row of derived.performanceRows) {
+    assert.equal((chart.match(new RegExp(`data-period="${row.period}"`, "g")) || []).length, 2);
+    const abbreviatedMonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][Number(row.period.slice(5, 7)) - 1];
+    assert.match(chart, new RegExp(`>${abbreviatedMonth}<\\/text>`));
+  }
 });
 
 test("monthly history shows the latest three rows first and collapses the older Excess series", () => {
