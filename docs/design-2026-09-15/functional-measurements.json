@@ -1,0 +1,357 @@
+{
+  "checks": "Native navigation; local and repeated Subscribe; keyboard performance control; five no-JS routes; thesis redirect",
+  "results": [
+    {
+      "route": "home",
+      "width": 1440,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "investments",
+      "width": 1440,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": [
+        {
+          "tag": "H3",
+          "rect": {
+            "x": 80,
+            "y": 1867.328125,
+            "width": 616,
+            "height": 30.234375,
+            "top": 1867.328125,
+            "right": 696,
+            "bottom": 1897.5625,
+            "left": 80
+          }
+        },
+        {
+          "tag": "TBODY",
+          "rect": {
+            "x": 80,
+            "y": 1955.5625,
+            "width": 616,
+            "height": 313.84375,
+            "top": 1955.5625,
+            "right": 696,
+            "bottom": 2269.40625,
+            "left": 80
+          }
+        },
+        {
+          "tag": "H3",
+          "rect": {
+            "x": 785,
+            "y": 1867.328125,
+            "width": 575,
+            "height": 30.234375,
+            "top": 1867.328125,
+            "right": 1360,
+            "bottom": 1897.5625,
+            "left": 785
+          }
+        },
+        {
+          "tag": "TBODY",
+          "rect": {
+            "x": 785,
+            "y": 1955.5625,
+            "width": 575,
+            "height": 313.84375,
+            "top": 1955.5625,
+            "right": 1360,
+            "bottom": 2269.40625,
+            "left": 785
+          }
+        }
+      ]
+    },
+    {
+      "route": "advisory",
+      "width": 1440,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "about",
+      "width": 1440,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "research",
+      "width": 1440,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "home",
+      "width": 768,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "investments",
+      "width": 768,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": [
+        {
+          "tag": "H3",
+          "rect": {
+            "x": 24,
+            "y": 1739.03125,
+            "width": 348,
+            "height": 27,
+            "top": 1739.03125,
+            "right": 372,
+            "bottom": 1766.03125,
+            "left": 24
+          }
+        },
+        {
+          "tag": "TBODY",
+          "rect": {
+            "x": 24,
+            "y": 1824.03125,
+            "width": 348,
+            "height": 288.625,
+            "top": 1824.03125,
+            "right": 372,
+            "bottom": 2112.65625,
+            "left": 24
+          }
+        },
+        {
+          "tag": "H3",
+          "rect": {
+            "x": 421,
+            "y": 1739.03125,
+            "width": 323,
+            "height": 27,
+            "top": 1739.03125,
+            "right": 744,
+            "bottom": 1766.03125,
+            "left": 421
+          }
+        },
+        {
+          "tag": "TBODY",
+          "rect": {
+            "x": 421,
+            "y": 1824.03125,
+            "width": 323,
+            "height": 288.625,
+            "top": 1824.03125,
+            "right": 744,
+            "bottom": 2112.65625,
+            "left": 421
+          }
+        }
+      ]
+    },
+    {
+      "route": "advisory",
+      "width": 768,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "about",
+      "width": 768,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "research",
+      "width": 768,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "home",
+      "width": 390,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "investments",
+      "width": 390,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": [
+        {
+          "tag": "H3",
+          "rect": {
+            "x": 20,
+            "y": 1998.265625,
+            "width": 350,
+            "height": 30.234375,
+            "top": 1998.265625,
+            "right": 370,
+            "bottom": 2028.5,
+            "left": 20
+          }
+        },
+        {
+          "tag": "TBODY",
+          "rect": {
+            "x": 20,
+            "y": 2048.5,
+            "width": 350,
+            "height": 333.0625,
+            "top": 2048.5,
+            "right": 370,
+            "bottom": 2381.5625,
+            "left": 20
+          }
+        },
+        {
+          "tag": "H3",
+          "rect": {
+            "x": 20,
+            "y": 2422.0625,
+            "width": 350,
+            "height": 30.234375,
+            "top": 2422.0625,
+            "right": 370,
+            "bottom": 2452.296875,
+            "left": 20
+          }
+        },
+        {
+          "tag": "TBODY",
+          "rect": {
+            "x": 20,
+            "y": 2506.296875,
+            "width": 350,
+            "height": 304.5625,
+            "top": 2506.296875,
+            "right": 370,
+            "bottom": 2810.859375,
+            "left": 20
+          }
+        }
+      ]
+    },
+    {
+      "route": "advisory",
+      "width": 390,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "about",
+      "width": 390,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "research",
+      "width": 390,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "home",
+      "width": 320,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "investments",
+      "width": 320,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": [
+        {
+          "tag": "H3",
+          "rect": {
+            "x": 20,
+            "y": 2065.859375,
+            "width": 280,
+            "height": 30.234375,
+            "top": 2065.859375,
+            "right": 300,
+            "bottom": 2096.09375,
+            "left": 20
+          }
+        },
+        {
+          "tag": "TBODY",
+          "rect": {
+            "x": 20,
+            "y": 2116.09375,
+            "width": 280,
+            "height": 359.65625,
+            "top": 2116.09375,
+            "right": 300,
+            "bottom": 2475.75,
+            "left": 20
+          }
+        },
+        {
+          "tag": "H3",
+          "rect": {
+            "x": 20,
+            "y": 2516.25,
+            "width": 280,
+            "height": 60.46875,
+            "top": 2516.25,
+            "right": 300,
+            "bottom": 2576.71875,
+            "left": 20
+          }
+        },
+        {
+          "tag": "TBODY",
+          "rect": {
+            "x": 20,
+            "y": 2630.71875,
+            "width": 280,
+            "height": 331.15625,
+            "top": 2630.71875,
+            "right": 300,
+            "bottom": 2961.875,
+            "left": 20
+          }
+        }
+      ]
+    },
+    {
+      "route": "advisory",
+      "width": 320,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "about",
+      "width": 320,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    },
+    {
+      "route": "research",
+      "width": 320,
+      "overflow": false,
+      "overflowElements": [],
+      "portfolio": []
+    }
+  ]
+}

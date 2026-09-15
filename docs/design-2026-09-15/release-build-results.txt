@@ -1,0 +1,5 @@
+
+> when-intelligence-is-free@0.1.0 build:release
+> node scripts/build.mjs --require-publication
+
+Built C:\Users\User\Documents\GitHub\when-intelligence-is-free\dist (sanitized-publication-preview).

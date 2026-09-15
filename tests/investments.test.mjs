@@ -9,7 +9,7 @@ import {
   parsePublicationText,
   validatePublication
 } from "../scripts/lib/investments.mjs";
-import { assertRenderedFirewall, escapeHtml, renderHomeProofStrip, renderInvestments } from "../scripts/lib/render-investments.mjs";
+import { assertRenderedFirewall, escapeHtml, renderHomeProofStrip, renderInvestments, topPublishedHoldings } from "../scripts/lib/render-investments.mjs";
 import { verifyApprovedCopy } from "../scripts/lib/approved-copy.mjs";
 
 const fixtureText = await readFile(new URL("./fixtures/investments-publication.valid.json", import.meta.url), "utf8");
@@ -83,7 +83,7 @@ test("an all-positive series has no invented max-drawdown period", () => {
   assert.equal(derived.summary.maxDrawdownPct, 0);
   assert.equal(derived.summary.maxDrawdownPeriod, null);
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
-  assert.match(rendered.performance, /Max drawdown[\s\S]*?\+?0\.0%[\s\S]*?month-end series<\/div>/);
+  assert.match(rendered.performance, /0\.0%[\s\S]*?Max drawdown · month-end/);
 });
 
 test("unknown fields fail instead of being stripped", () => {
@@ -590,14 +590,14 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.match(rendered.performance, /Monthly performance history/);
   assert.match(rendered.performance, /31 Mar 2025/);
   assert.match(rendered.performance, /\+4\.0%/);
-  assert.match(rendered.performance, />Month<\/td>/);
+  assert.match(rendered.performance, />1 month<\/td>/);
   assert.match(rendered.performance, />3 months<\/td>/);
   assert.match(rendered.performance, />12 months<\/td>/);
   assert.doesNotMatch(rendered.performance, /YTD/);
   assert.match(rendered.composition, /Example Compute Company/);
-  assert.match(rendered.facts, /Global listed equities, ETFs, options/);
-  assert.match(rendered.facts, /Thematic, concentrated, long-biased with a hedging overlay/);
-  assert.match(rendered.composition, /Named holdings/);
+  assert.match(rendered.facts, /Global equities, ETFs and options/);
+  assert.match(rendered.facts, /Concentrated, long-biased/);
+  assert.match(rendered.composition, /Top 5 published positions/);
   assert.match(rendered.composition, /aria-label="Physical scarcity/);
   assert.match(rendered.performance, /<div class="history publication-monthly-history">/);
   assert.match(rendered.performance, /aria-label="Monthly performance history"/);
@@ -614,18 +614,10 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.doesNotMatch(rendered.performance, /<details class="monthly-history-archive"/);
   assert.match(rendered.performance, /text-anchor="end">Mar 2025<\/text>/);
   assert.match(rendered.attribution, /Synthetic validator fixture only\./);
-  assert.match(rendered.attribution, /Sleeve attribution/);
   assert.doesNotMatch(rendered.attribution, /Complete sleeve attribution/);
-  assert.match(rendered.attribution, /March 2025 · close note/);
-  assert.match(rendered.attribution, /class="close-note-title"/);
   assert.match(rendered.attribution, /class="close-note-section"/);
-  assert.match(rendered.attribution, /<div class="attribution-block" data-investments-block="attribution">\s*<div class="wrap">\s*<div class="block-head"><h2 class="eyebrow">Sleeve attribution<\/h2>/);
-  assert.doesNotMatch(rendered.attribution, /<section[^>]*data-investments-block="attribution"/);
   assert.doesNotMatch(rendered.attribution, /attribution-heading-band|attribution-section/);
   assert.doesNotMatch(rendered.attribution, /close-note-date|<time|31 March 2025/);
-  assert.match(rendered.attribution, /read\.whenintelligenceisfree\.com\/p\/2608/);
-  assert.match(rendered.attribution, />All close notes →<\/a>/);
-  assert.match(rendered.composition, /class="holding-ticker">EXCO<\/span>/);
   for (const removedFact of ["Return currency", "Return basis", "Audit status", "Official calendar-month close", "Drawdown"]) {
     assert.doesNotMatch(rendered.facts, new RegExp(removedFact, "i"));
   }
@@ -657,7 +649,7 @@ test("monthly history shows the latest three rows first and collapses the older 
   assert.equal((history.match(/<tr>/g) || []).length - 2, 20);
   assert.match(history, /Jan 2025/);
   assert.match(history, /Aug 2026/);
-  assert.match(history, /<th class="r">Strategy<\/th><th class="r">Nasdaq-100<\/th><th class="r">Excess<\/th>/);
+  assert.match(history, /<th class="r">Strategy · net<\/th><th class="r">Nasdaq-100<\/th><th class="r">Difference<\/th>/);
   assert.match(history, /\+5\.4pp/);
   assert.match(history, /Show earlier months \(17\)/);
   assert.ok(history.indexOf("Aug 2026") < history.indexOf("Jul 2026"));
@@ -687,7 +679,8 @@ test("Home proof and Investments use the same changed publication primitives", (
   const investments = renderInvestments(publication, sleeves, { buildDate: "2025-05-01" });
   assert.match(proof, /\+8\.2%/);
   assert.match(investments.performance, /\+8\.2%/);
-  assert.match(proof, /Nasdaq-100 since 1 Jan 2025\./);
+  assert.match(proof, /Nasdaq-100 · price return/);
+  assert.match(proof, /1 Jan 2025–30 Apr 2025 · USD · unaudited/);
   assert.doesNotMatch(proof, /January 2025|30 April 2025|Marked monthly/);
   assert.match(investments.performance, /30 Apr 2025/);
   assert.match(investments.performance, /As of the official close · 30 Apr 2025 · unaudited · updated monthly/);
@@ -705,12 +698,11 @@ test("approved commentary derives benchmark, monthly, excess, and cumulative tok
   assert.throws(() => assertValidPublication(publication), /unknown derived commentary token/i);
 });
 
-test("optional commentary absence and attribution scope remain explicit", () => {
+test("optional commentary absence remains explicit", () => {
   const publication = fixture();
   delete publication.releases[0].commentary;
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
   assert.match(rendered.attribution, /No approved Investments commentary for this close\./);
-  assert.match(rendered.attribution, /Sleeve attribution/);
 });
 
 test("rendered firewall scans screen-reader-visible attributes", () => {
@@ -731,7 +723,6 @@ test("renderer normalizes display zero and preserves very small public weights",
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
   assert.doesNotMatch(rendered.performance, /−0\.0%/);
   assert.match(rendered.composition, /0\.000001%/);
-  assert.match(rendered.attribution, /−0\.04pp/);
   assert.doesNotMatch(rendered.attribution, /−0\.0pp/);
 });
 
@@ -749,4 +740,61 @@ test("staleness is derived from the period rather than typed in the input", () =
   assert.doesNotMatch(fresh.performance, /Update overdue/);
   assert.match(stale.performance, /Update overdue/);
   assert.throws(() => renderInvestments(publication, sleeves, { buildDate: "not-a-date" }), /canonical YYYY-MM-DD/i);
+});
+
+test("top five ranks full precision, restores source tie order, and never mutates derived holdings", () => {
+  const holdings = [
+    {name:'Alpha',weightPct:10.000001}, {name:'Zulu',weightPct:10.000001},
+    {name:'Higher',weightPct:10.000002}, {name:'Largest',weightPct:30},
+    {name:'Fourth',weightPct:8}, {name:'Sixth',weightPct:7}
+  ];
+  const derived = {holdings,latestRelease:{holdings:[holdings[1],holdings[0],...holdings.slice(2)]}};
+  const before = structuredClone(derived);
+  assert.deepEqual(topPublishedHoldings(derived).map(h=>h.name), ['Largest','Higher','Zulu','Alpha','Fourth']);
+  assert.deepEqual(derived,before);
+  assert.equal(topPublishedHoldings({...derived,holdings:[]}).length,0);
+  assert.equal(topPublishedHoldings({...derived,holdings:holdings.slice(0,2)}).length,2);
+});
+
+test("canonical holdings limit only presentation while the full source remains in derived evidence", () => {
+  const publication = parsePublicationText(canonicalPublicationText);
+  const rendered = renderInvestments(publication,sleeves,{buildDate:'2026-09-15'});
+  const source = rendered.derived.latestRelease.holdings;
+  assert.equal(rendered.derived.holdings.length,source.length);
+  assert.deepEqual(topPublishedHoldings(rendered.derived).map(h=>h.name),
+    [...source].sort((a,b)=>Number(b.weight_pct_nav)-Number(a.weight_pct_nav)).slice(0,5).map(h=>h.name));
+  assert.equal((rendered.composition.match(/<tr/g)||[]).length,6+Math.min(5,source.length)+1);
+  assert.doesNotMatch(rendered.composition,/77\.3%|Published positions cover/);
+});
+
+test("current commentary uses two safe paragraphs and only a verified matching review URL", () => {
+  const publication = fixture();
+  publication.generated_at='2026-09-01T08:00:00Z';
+  for(let month=3;month<20;month++) {
+    const date=new Date(Date.UTC(2025,month+1,0));
+    const asOf=date.toISOString().slice(0,10);
+    publication.performance.push({...publication.performance.at(-1),period:asOf.slice(0,7),as_of_date:asOf});
+  }
+  publication.releases[0].period='2026-08';
+  publication.releases[0].commentary.paragraphs=['First approved paragraph.','The strategy returned {{strategy_month_pct}}.','Third approved paragraph.'];
+  const august = renderInvestments(publication,sleeves,{buildDate:'2026-09-15'});
+  assert.match(august.attribution,/Read the August investment review ↗/);
+  assert.match(august.attribution,/href="https:\/\/read.whenintelligenceisfree.com\/p\/2608"/);
+  assert.equal((august.attribution.match(/<div class="close-note-body">([\s\S]*?)<\/div>/)[1].match(/<p>/g)||[]).length,2);
+  const later = structuredClone(publication);
+  later.generated_at='2026-10-01T08:00:00Z';
+  later.performance.push({...later.performance.at(-1),period:'2026-09',as_of_date:'2026-09-30'});
+  later.releases.push({...structuredClone(later.releases.at(-1)),period:'2026-09'});
+  const september=renderInvestments(later,sleeves,{buildDate:'2026-10-02'});
+  assert.match(september.attribution,/September 2026 review/);
+  assert.match(september.attribution,/Read investment reviews ↗/);
+  assert.match(september.attribution,/href="https:\/\/read.whenintelligenceisfree.com\/t\/investments"/);
+  assert.doesNotMatch(september.attribution,/\/p\/2608/);
+});
+
+test("approved instrument header does not weaken the public-data firewall", () => {
+  const publication=fixture();
+  assert.doesNotThrow(()=>assertRenderedFirewall('<th>Company or fund</th>',publication));
+  assert.throws(()=>assertRenderedFirewall('<p>Our fund</p>',publication),/firewall rejected/);
+  assert.throws(()=>assertRenderedFirewall('<p>2026 USD</p>',publication),/firewall rejected/);
 });

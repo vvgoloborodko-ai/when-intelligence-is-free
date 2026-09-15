@@ -1,0 +1,7 @@
+15 September 2026
+Node 22.23.2: node scripts/check.mjs
+62 tests passed; 0 failed.
+Approved copy, repository boundaries and publication valid.
+Build succeeded.
+Browser QA: all five routes at 1440,768,390,320px passed, including no-JS.
+Network capture: 13 route/width combinations; no overflow; real fonts loaded; native embed background transparent and scrollHeight=150.

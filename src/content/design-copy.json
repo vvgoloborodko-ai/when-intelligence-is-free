@@ -1,0 +1,436 @@
+{
+  "_notes": "Authoritative static UI copy. Dynamic investment values, names, dates, conventions and commentary come from the repository publication pipeline. Text in reference PNGs yields to this file and IMPLEMENTATION-SPEC.md. Body line arrays are desktop composition hints; allow natural wrapping on narrow screens.",
+  "site": {
+    "name": "When Intelligence Is Free",
+    "language": "en",
+    "author": "Vladimir Goloborodko"
+  },
+  "links": {
+    "home": "/",
+    "investments": "/investments/",
+    "advisory": "/advisory/",
+    "about": "/about/",
+    "foundingEssay": "https://read.whenintelligenceisfree.com/p/thesis",
+    "capitalCycleEssay": "https://read.whenintelligenceisfree.com/p/time-path",
+    "calendly": "https://calendly.com/vlad-whenintelligenceisfree/30min",
+    "substack": "https://read.whenintelligenceisfree.com/",
+    "investmentArchive": "https://read.whenintelligenceisfree.com/t/investments",
+    "linkedin": "https://www.linkedin.com/in/vgoloborodko",
+    "verifiedAugust2026Review": "https://read.whenintelligenceisfree.com/p/2608"
+  },
+  "shared": {
+    "navigation": [
+      {
+        "label": "Research",
+        "href": "/"
+      },
+      {
+        "label": "Investments",
+        "href": "/investments/"
+      },
+      {
+        "label": "Advisory",
+        "href": "/advisory/"
+      },
+      {
+        "label": "About",
+        "href": "/about/"
+      },
+      {
+        "label": "Subscribe",
+        "href": "#subscribe"
+      }
+    ],
+    "authorBio": "Investor, founder and consulting partner spanning Fortune 500 transformation, brokerage product leadership and fintech venture building.",
+    "subscription": {
+      "headingLines": [
+        "Follow the thesis and",
+        "the decisions it changes"
+      ],
+      "body": "Get new research on emerging opportunities, evidence that changes the outlook and the reasoning behind portfolio moves.",
+      "iframeSrc": "https://read.whenintelligenceisfree.com/embed?transparent=1&light=1",
+      "iframeTitle": "Subscribe to When Intelligence Is Free",
+      "width": 480,
+      "height": 150
+    },
+    "footer": {
+      "copyright": "© {currentYear} When Intelligence Is Free",
+      "legal": "Personal views · Not investment advice or an offer",
+      "social": [
+        {
+          "label": "Substack ↗",
+          "link": "substack"
+        },
+        {
+          "label": "LinkedIn ↗",
+          "link": "linkedin"
+        }
+      ]
+    }
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Research",
+      "headingLines": [
+        "When Intelligence Is Free,",
+        "what will you wish",
+        "you owned?"
+      ],
+      "italicAmberLine": 2,
+      "bodyLines": [
+        "AI transforms the economy while eroding the profits of businesses we own today.",
+        "I research where those profits move next and how to invest through the transition."
+      ],
+      "cta": null
+    },
+    "framework": {
+      "id": "framework",
+      "eyebrow": "The next decade · Where to look",
+      "heading": "Four ways value moves",
+      "items": [
+        {
+          "id": "substitute",
+          "label": "Substitute",
+          "question": "Which profits are at risk?",
+          "bodyLines": [
+            "AI competes with businesses paid to think or coordinate.",
+            "The risk is owning the work that becomes cheap to copy."
+          ]
+        },
+        {
+          "id": "amplify",
+          "label": "Amplify",
+          "question": "What does cheap intelligence need?",
+          "bodyLines": [
+            "More AI use needs more power, machines and verification.",
+            "I look for suppliers that retain pricing power as use grows."
+          ]
+        },
+        {
+          "id": "reprice",
+          "label": "Reprice",
+          "question": "What cannot be made abundant?",
+          "bodyLines": [
+            "Land, rights, attention and scarce monetary assets remain",
+            "limited. I look for owners that capture the extra value."
+          ]
+        },
+        {
+          "id": "unlock",
+          "label": "Unlock",
+          "question": "What becomes a viable business?",
+          "bodyLines": [
+            "Cheaper cognition makes new services and markets viable.",
+            "The next generation of companies emerges in these markets."
+          ]
+        }
+      ],
+      "cta": {
+        "label": "Read the founding essay ↗",
+        "link": "foundingEssay"
+      }
+    },
+    "cycle": {
+      "id": "capital-cycle",
+      "eyebrow": "The AI capital cycle · Reviewed quarterly",
+      "heading": "Every technology boom borrows from the future",
+      "body": "Capital finances the buildout before its returns are proven. I track that gap to judge when to add exposure, wait or cut risk.",
+      "imageAlt": "An unfinished bridge above a river gorge, with construction on the near bank and a sunlit city across the missing span.",
+      "phases": [
+        {
+          "label": "Buildout",
+          "bodyLines": [
+            "Capital races to finance",
+            "and build new AI capacity"
+          ]
+        },
+        {
+          "label": "Digestion",
+          "bodyLines": [
+            "Cash flows must justify",
+            "the capital already spent"
+          ]
+        },
+        {
+          "label": "Diffusion",
+          "bodyLines": [
+            "Cheap intelligence reshapes",
+            "businesses across the economy"
+          ]
+        }
+      ],
+      "cta": {
+        "label": "Read the capital-cycle essay ↗",
+        "link": "capitalCycleEssay"
+      }
+    },
+    "investments": {
+      "eyebrow": "Investments",
+      "heading": "See what I own and why",
+      "body": "The public book records the positions, returns and reasoning behind each monthly review.",
+      "cta": {
+        "label": "Explore the public book →",
+        "link": "investments"
+      },
+      "data": "latest derived since-inception strategy and benchmark returns with their actual basis, dates, currency and audit status"
+    },
+    "author": {
+      "id": "author",
+      "eyebrow": "Written by",
+      "name": "Vladimir Goloborodko",
+      "bio": "use shared.authorBio"
+    },
+    "advisory": {
+      "eyebrow": "Advisory",
+      "heading": "Making a company decision?",
+      "body": "Apply the research to what to build, own or avoid.",
+      "cta": {
+        "label": "Explore Advisory →",
+        "link": "advisory"
+      }
+    }
+  },
+  "investments": {
+    "hero": {
+      "eyebrow": "Investments",
+      "headingLines": [
+        "The public",
+        "investment book"
+      ],
+      "body": "I invest behind the research. See the positions, returns and decisions as the thesis meets the market.",
+      "facts": [
+        "Global equities, ETFs and options",
+        "Concentrated, long-biased",
+        "No leverage",
+        "Since {inceptionMonthYear}"
+      ]
+    },
+    "performance": {
+      "heading": "Performance",
+      "asOf": "As of {latestCloseDate}",
+      "metricLabels": [
+        "Strategy · {strategyReturnBasis}",
+        "{benchmarkName} · {benchmarkReturnBasis}",
+        "Max drawdown · {drawdownConvention}"
+      ],
+      "viewLabels": [
+        "Cumulative",
+        "Monthly"
+      ],
+      "risk": "Past performance does not predict future returns",
+      "tableHeaders": [
+        "Period",
+        "Strategy · {strategyReturnBasis}",
+        "{benchmarkName}",
+        "Difference"
+      ],
+      "periodLabels": [
+        "1 month",
+        "3 months",
+        "12 months",
+        "Since inception"
+      ],
+      "removedLink": "Return methodology and full history"
+    },
+    "portfolio": {
+      "heading": "Inside the book",
+      "sleevesHeading": "Allocation by sleeve",
+      "positionsHeading": "Top 5 published positions",
+      "positionHeaders": [
+        "Company or fund",
+        "% NAV"
+      ],
+      "maxPositions": 5,
+      "coverageCaption": null,
+      "sleeveLabels": "Use existing src/content/investment-sleeves.json labels and order"
+    },
+    "review": {
+      "eyebrow": "{latestMonthYear} review",
+      "heading": "What drove the month",
+      "bodySource": "Use the latest release's approved commentary and existing safe token renderer. The mock's August prose is a dated visual example. See implementation spec for the excerpt and current-link behavior.",
+      "currentVerifiedPeriod": "2026-08",
+      "currentVerifiedLink": "verifiedAugust2026Review",
+      "ctaForVerifiedPeriod": "Read the {month} investment review ↗",
+      "fallbackCta": "Read investment reviews ↗",
+      "fallbackLink": "investmentArchive"
+    }
+  },
+  "advisory": {
+    "hero": {
+      "eyebrow": "Advisory",
+      "headingLines": [
+        "Decide what to build,",
+        "back and defend"
+      ],
+      "italicAmberLine": 1,
+      "body": "AI changes your market’s economics. I help founders, leadership teams and investors turn that shift into product and capital decisions.",
+      "cta": {
+        "label": "Start a conversation ↗",
+        "link": "calendly"
+      }
+    },
+    "decisions": {
+      "eyebrow": "The decisions",
+      "heading": "Bring a question that matters",
+      "items": [
+        {
+          "number": "01",
+          "heading": "Where will profits move?",
+          "body": "Identify the businesses losing pricing power and the owners of the inputs that stay scarce."
+        },
+        {
+          "number": "02",
+          "heading": "What should we build?",
+          "body": "Find products and services whose economics change as cognition becomes cheaper."
+        },
+        {
+          "number": "03",
+          "heading": "Which advantages last?",
+          "body": "Test distribution, trust, data and workflows against the cost of replication."
+        },
+        {
+          "number": "04",
+          "heading": "Where should we commit capital?",
+          "body": "Compare the bets, sequence the choices and define the evidence needed to commit."
+        }
+      ]
+    },
+    "formats": {
+      "eyebrow": "How we work",
+      "heading": "From a question to a decision",
+      "items": [
+        {
+          "label": "Working session",
+          "heading": "Clarify the decision",
+          "body": "Surface the assumptions, sharpen the question and agree what must be resolved."
+        },
+        {
+          "label": "Market mapping",
+          "heading": "Understand the market",
+          "body": "Map changing profit pools, new entrants and the sources of defensibility."
+        },
+        {
+          "label": "Decision sprint",
+          "heading": "Choose the next move",
+          "body": "Compare options, set priorities and define the evidence needed to commit."
+        }
+      ]
+    },
+    "experience": {
+      "eyebrow": "Experience",
+      "heading": "Advice grounded in operating experience",
+      "items": [
+        {
+          "label": "Transformation",
+          "body": "A decade delivering technology-led change for Fortune 500 and financial services clients"
+        },
+        {
+          "label": "Business leadership",
+          "body": "Ran a 250+ person unit, doubled revenue and turned a loss into approximately 30% profit"
+        },
+        {
+          "label": "Building companies",
+          "body": "Led product at a brokerage platform through acquisition and founded a startup of my own"
+        }
+      ],
+      "cta": {
+        "label": "About Vladimir ↗",
+        "link": "about"
+      }
+    },
+    "close": {
+      "heading": "What decision are you facing?",
+      "body": "Bring the question. The first conversation establishes whether the work fits.",
+      "cta": {
+        "label": "Start a conversation ↗",
+        "link": "calendly"
+      }
+    }
+  },
+  "about": {
+    "hero": {
+      "eyebrow": "About",
+      "headingLines": [
+        "Vladimir",
+        "Goloborodko"
+      ],
+      "bio": "use shared.authorBio",
+      "cta": {
+        "label": "LinkedIn ↗",
+        "link": "linkedin"
+      },
+      "substack": {
+        "label": "Substack ↗",
+        "link": "substack"
+      }
+    },
+    "approach": {
+      "eyebrow": "Why I write",
+      "heading": "When Intelligence Is Free",
+      "body": "I start with a world where intelligence is abundant, then work back to the businesses that lose pricing power, the scarce assets that gain it and the companies that become possible.",
+      "horizons": [
+        {
+          "eyebrow": "The next decade",
+          "heading": "Where value moves",
+          "body": "Four routes identify the sectors, assets and companies that benefit as intelligence gets cheaper."
+        },
+        {
+          "eyebrow": "The next quarters",
+          "heading": "When to change exposure",
+          "body": "The AI capital cycle tests the pace of investment against the cash flows that must justify it."
+        }
+      ]
+    },
+    "experience": {
+      "eyebrow": "Experience",
+      "heading": "Experience behind the research",
+      "items": [
+        {
+          "label": "Consulting & transformation",
+          "body": "A decade as a consulting partner delivering technology-led transformation for Fortune 500 and large financial services clients"
+        },
+        {
+          "label": "Business leadership",
+          "body": "Led a 250+ person unit with full P&L responsibility, doubled revenue and turned a loss into approximately 30% profit"
+        },
+        {
+          "label": "Brokerage product",
+          "body": "Led product at a European brokerage platform through its acquisition into a larger listed online broker"
+        },
+        {
+          "label": "Venture building & founding",
+          "body": "Built ventures in a €100M fintech group and founded and funded a startup of my own"
+        }
+      ]
+    },
+    "pathways": {
+      "heading": "Explore the work",
+      "items": [
+        {
+          "heading": "Research",
+          "body": "Where economic value moves as intelligence becomes abundant",
+          "cta": {
+            "label": "Read the founding essay ↗",
+            "link": "foundingEssay"
+          }
+        },
+        {
+          "heading": "Investments",
+          "body": "Positions, returns and the decisions behind the public book",
+          "cta": {
+            "label": "Explore the public book →",
+            "link": "investments"
+          }
+        },
+        {
+          "heading": "Advisory",
+          "body": "Product and capital decisions for founders, companies and investors",
+          "cta": {
+            "label": "Explore Advisory →",
+            "link": "advisory"
+          }
+        }
+      ]
+    }
+  }
+}

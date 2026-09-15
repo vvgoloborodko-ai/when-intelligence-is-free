@@ -12,6 +12,9 @@ styling, client behavior, and monthly Investments data.
   semantic content, mechanically extracted from the baseline.
 - `src/content/approved-copy-changes.json` — exact principal-approved copy
   replacements made after the immutable baseline, with approval dates.
+- `src/content/design-copy.json` — the 15 September 2026 approved handoff,
+  including exact render-time labels. Its hash and the verified review URL
+  configuration are checked alongside the original baseline and copy ledger.
 - `src/content/site-meta.json` — approved site name, canonical URLs, and a
   per-surface metadata grounded in approved copy.
 - `src/content/investment-sleeves.json` — approved public sleeve labels,
@@ -24,7 +27,8 @@ styling, client behavior, and monthly Investments data.
   enhancement. The build server-selects one visible view per route, so the
   route remains readable when this script fails or is blocked.
 - `data/investments/publication.json` — the one and only monthly Investments
-  handoff. It is generated upstream and is intentionally absent for now.
+  handoff, generated upstream. The current checkout contains the August 2026
+  close; the website renders its actual values, dates and conventions.
 - `schemas/investments-publication.schema.json` — machine-readable contract.
 - `scripts/` — copy guard, validator, deterministic calculations, static
   renderer, preview server, and release evidence.
@@ -33,7 +37,7 @@ styling, client behavior, and monthly Investments data.
 - `.github/workflows/` — general website CI plus the publication-only PR
   validator and preview-artifact build.
 - `dist/` — generated Cloudflare Pages output for `/`, `/research/`,
-  `/investments/`, and `/advisory/`; never production-published by these
+  `/investments/`, `/advisory/`, and `/about/`; never production-published by these
   scripts.
 - `.release/release-evidence.json` — local, ignored build evidence; it is never
   copied into deployable output.
@@ -41,6 +45,38 @@ styling, client behavior, and monthly Investments data.
 The baseline extractor is retained so the split is reproducible. Running it
 does not authorize a new baseline: approval and the pinned hash must be updated
 deliberately before a future approved baseline can replace the current one.
+
+## September 2026 design preview
+
+The four approved surfaces are Home (the primary Research destination),
+Investments, Advisory, and About. `/research/` retains the deeper research
+content. All five documents use a shared header and transparent subscription
+footer. The header Subscribe link always targets the current document.
+
+Run `npm run preview:release`, then open `http://127.0.0.1:4173/`.
+This serves a local preview only. See
+[acceptance and verification status](docs/design-2026-09-15/ACCEPTANCE.md) and
+[screenshots](docs/design-2026-09-15/SCREENSHOTS.md).
+
+Investments limits only its rendered positions to the five largest published
+weights, retaining source order on ties. The full publication, calculations,
+monthly history, and correction evidence remain intact. Review excerpts use
+the latest release's first two approved paragraphs. The August review URL is
+used only for the verified August period; later closes automatically link to
+the investment-review archive until a matching URL is approved.
+
+Optional browser QA uses Playwright supplied by the development environment;
+it is not a runtime or build dependency. With the preview running, set
+`PLAYWRIGHT_MODULE_PATH` to that installation if it is not locally resolvable,
+and optionally `BROWSER_CHANNEL=msedge`, then run:
+
+```text
+node scripts/browser-qa.cjs      # local navigation, keyboard, no-JS, overflow checks
+node scripts/capture-design.cjs # full network-enabled capture; requires fonts/Substack
+```
+
+The capture waits for the actual native email input before recording a frame.
+It never enters an email, submits a subscription, or books a conversation.
 
 ## Commands
 

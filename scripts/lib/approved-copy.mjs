@@ -10,6 +10,10 @@ export const APPROVED_COPY_CHANGES_PATH = resolve(ROOT, "src/content/approved-co
 export const APPROVED_SLEEVES_PATH = resolve(ROOT, "src/content/investment-sleeves.json");
 export const BASELINE_SHA256 = "97623de9935415c9fa1dd24c77bf5c41590a46f85031929e257f9f15d51c6b67";
 export const APPROVED_SLEEVES_SHA256 = "801e06689459950fb0d20c600a41c3ef5b4afee4639073ec03725b4ac4494ff4";
+// Principal-approved 15 September 2026 handoff. Static HTML remains governed
+// by the dated replacement ledger; these pins also cover render-time labels/URLs.
+export const APPROVED_DESIGN_SHA256 = "d534a3a03ed1a758f5c6cb784e39854630623a1c11d3df2b0a1cc9b0dd2190e6";
+export const APPROVED_DESIGN_WORK_ORDER_SHA256 = "cb5e358641319f876786e2c897e585b05116371e3f0f7c6d36499edc23a0d083";
 
 function assertExactKeys(value, expected, label) {
   const actual = Object.keys(value).sort();
@@ -78,6 +82,15 @@ export async function verifyApprovedCopy() {
   const normalizedBaseline = baseline.replace(/\r\n/g, "\n");
   const hash = createHash("sha256").update(normalizedBaseline).digest("hex");
   const errors = [];
+  for (const [path, expected] of [
+    ["src/content/design-copy.json", APPROVED_DESIGN_SHA256],
+    ["src/content/v3-work-order.json", APPROVED_DESIGN_WORK_ORDER_SHA256]
+  ]) {
+    const source = (await readFile(resolve(ROOT, path), "utf8")).replace(/\r\n/g, "\n");
+    if (createHash("sha256").update(source).digest("hex") !== expected) {
+      errors.push(`Approved September design copy changed: ${path}. Record principal approval before updating its pin.`);
+    }
+  }
   if (hash !== BASELINE_SHA256) {
     errors.push(`Approved baseline hash changed: expected ${BASELINE_SHA256}, received ${hash}.`);
   }
@@ -88,7 +101,7 @@ export async function verifyApprovedCopy() {
 
   const approvedCopyChanges = JSON.parse(approvedCopyChangesText);
   const approvedCopyChangesHash = createHash("sha256").update(approvedCopyChangesText.replace(/\r\n/g, "\n")).digest("hex");
-  const baselineBody = applyApprovedCopyChanges(extractBaselineBody(baseline), approvedCopyChanges);
+  const baselineBody = applyApprovedCopyChanges(extractBaselineBody(normalizedBaseline), approvedCopyChanges);
   if (publicText(baselineBody) !== publicText(approvedContent)) {
     errors.push("Approved public text no longer matches the principal-approved baseline.");
   }

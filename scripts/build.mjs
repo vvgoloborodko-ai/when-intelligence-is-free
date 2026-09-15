@@ -70,78 +70,11 @@ function injectTemplate(template, values) {
   return output;
 }
 
-function balancedElementEnd(source, tag, start) {
-  const tokenPattern = new RegExp(`<\\/?${tag}\\b[^>]*>`, "g");
-  tokenPattern.lastIndex = start;
-  let depth = 0;
-  for (let token = tokenPattern.exec(source); token; token = tokenPattern.exec(source)) {
-    if (token[0].startsWith(`</${tag}`)) depth -= 1;
-    else depth += 1;
-    if (depth === 0) return tokenPattern.lastIndex;
-  }
-  throw new Error(`Could not find balanced closing ${tag}.`);
-}
-
-function replaceElementsByClass(source, tag, className, replacement) {
-  const openingPattern = new RegExp(`<${tag}\\b[^>]*class="[^"]*\\b${className}\\b[^"]*"[^>]*>`, "g");
-  let output = "";
-  let cursor = 0;
-  let count = 0;
-  for (let opening = openingPattern.exec(source); opening; opening = openingPattern.exec(source)) {
-    if (opening.index < cursor) continue;
-    const end = balancedElementEnd(source, tag, opening.index);
-    output += source.slice(cursor, opening.index) + replacement(count, source.slice(opening.index, end));
-    cursor = end;
-    openingPattern.lastIndex = end;
-    count += 1;
-  }
-  return { content: output + source.slice(cursor), count };
-}
-
-function addSubscribeEmbeds(content, meta) {
-  const embed = meta.subscription_embed;
-  const replacement = () => `<div class="subscribe-embed">
-        <iframe src="${escapeHtml(embed.src)}" width="480" height="320" frameborder="0" scrolling="no" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="${escapeHtml(embed.title)}"></iframe>
-      </div>`;
-  const replaced = replaceElementsByClass(content, "div", "substack", replacement);
-  if (replaced.count !== 3) throw new Error(`Subscribe embed boundary expected 3 approved cards; found ${replaced.count}.`);
-  return replaced.content;
-}
-
-function addBrandLogo(content, logoPath) {
-  const boundary = /(<a\b[^>]*class="wordmark"[^>]*>)/g;
-  if ([...content.matchAll(boundary)].length !== 1) throw new Error("Brand-logo boundary expected one approved wordmark.");
-  return content.replace(boundary, `$1<img class="brand-logo" src="${escapeHtml(logoPath)}" width="38" height="38" alt="">`);
-}
-
 function replaceMarker(content, marker, replacement) {
   const token = `<!-- ${marker} -->`;
   const occurrences = content.split(token).length - 1;
   if (occurrences !== 1) throw new Error(`${marker} boundary expected once; found ${occurrences}.`);
   return content.replace(token, replacement);
-}
-
-function applyV3WorkOrder(content, workOrder, homeProof) {
-  if (workOrder?.status !== "draft") throw new Error("V3 work-order content must remain explicitly marked draft on the review branch.");
-  let output = replaceMarker(content, "V3_HOME_PROOF", homeProof || "");
-  const advisoryCta = '<div class="hero-cta advisory-second-cta"><a class="btn" href="https://calendly.com/vlad-whenintelligenceisfree/30min" target="_blank" rel="noopener">Start a conversation</a></div>';
-  output = replaceMarker(output, "V3_ADVISORY_CTA", advisoryCta);
-  const oldAdvisoryLabel = ">Full story →</a>";
-  if ((output.split(oldAdvisoryLabel).length - 1) !== 1) throw new Error("Home advisory-label boundary was not found exactly once.");
-  output = output.replace(oldAdvisoryLabel, `>${escapeHtml(workOrder.home.advisory_link_label)}</a>`);
-  const legacyPromises = [
-    "New essays as they ship and quarterly thesis review.",
-    "A short note at every monthly close and a full review each quarter.",
-    "Essays and the quarterly watchlist, as they ship."
-  ];
-  let replacements = 0;
-  for (const legacy of legacyPromises) {
-    const count = output.split(legacy).length - 1;
-    replacements += count;
-    output = output.replaceAll(legacy, workOrder.subscribe_promise);
-  }
-  if (replacements !== 4) throw new Error(`Subscribe promise expected four replacement points; found ${replacements}.`);
-  return output;
 }
 
 function addClass(tag, className) {
@@ -156,7 +89,7 @@ function selectRouteView(source, routeKey) {
   if (mainStart < 0 || mainEnd < 0) throw new Error("Missing single site-content main boundary.");
   const innerStart = mainStart + mainOpen.length;
   const inner = source.slice(innerStart, mainEnd);
-  const keys = ["home", "research", "investments", "advisory"];
+  const keys = ["home", "research", "investments", "advisory", "about"];
   const positions = new Map(keys.map((key) => [key, inner.indexOf(`<!-- ==================== ${key.toUpperCase()} ==================== -->`)]));
   if ([...positions.values()].some((position) => position < 0)) throw new Error("Missing approved route-view marker.");
   const start = positions.get(routeKey);
@@ -173,17 +106,12 @@ function prepareRouteContent(source, routeKey, surfaces) {
     if (!content.includes(expected)) throw new Error(`Missing approved ${key} view boundary.`);
     if (key === routeKey) content = content.replace(expected, `<section id="${key}" class="view active" data-view="${key}">`);
   }
-  const subscribeHref = {
-    home: "#subscribe",
-    research: "#subscribe-research",
-    investments: "#subscribe-investments",
-    advisory: "/#subscribe"
-  }[routeKey];
+  const subscribeHref = "#subscribe";
   content = content.replace(/<a\b[^>]*data-nav="subscribe"[^>]*>/g, (tag) => tag.replace(/href="[^"]*"/, `href="${subscribeHref}"`));
   const navEnd = content.indexOf("</nav>");
   if (navEnd < 0) throw new Error("Missing approved navigation boundary.");
   let navigation = content.slice(0, navEnd + 6);
-  const currentPattern = new RegExp(`<a\\b[^>]*data-nav="${routeKey}"[^>]*>`, "g");
+  const currentPattern = new RegExp(`<a\\b[^>]*data-nav="${routeKey === 'research' ? 'home' : routeKey}"[^>]*>`, "g");
   let currentCount = 0;
   navigation = navigation.replace(currentPattern, (tag) => {
     currentCount += 1;
@@ -323,15 +251,17 @@ export async function buildSite({ requirePublication = false, buildDate = proces
     assertValidPublication(publication, { previous });
     const rendered = renderInvestments(publication, sleeves, { buildDate });
     content = injectInvestments(content, rendered);
-    homeProof = renderHomeProofStrip(rendered.derived, publication, workOrder.home);
+    homeProof = renderHomeProofStrip(rendered.derived, publication);
     publicationEvidence = {
       input_sha256: createHash("sha256").update(currentText).digest("hex"),
       ...derivedEvidence(rendered.derived)
     };
   }
-  content = applyV3WorkOrder(content, workOrder, homeProof);
-  content = addSubscribeEmbeds(content, meta);
-  content = addBrandLogo(content, meta.identity.logo_path);
+  content = replaceMarker(content, "HOME_PROOF", homeProof);
+  content = content.replaceAll("{{CURRENT_YEAR}}", buildDate.slice(0, 4));
+  if ((content.match(/<iframe\b/g) || []).length !== 1 || !content.includes(meta.subscription_embed.src)) {
+    throw new Error("Expected one shared subscription iframe with the approved source.");
+  }
 
   if (!isWithinWorkspace(DIST)) throw new Error(`Refusing to replace output outside the workspace: ${DIST}`);
   await rm(DIST, { recursive: true, force: true });
@@ -339,6 +269,7 @@ export async function buildSite({ requirePublication = false, buildDate = proces
   await Promise.all([
     copyFile(STYLES, resolve(DIST, "assets/site.css")),
     copyFile(CLIENT, resolve(DIST, "assets/site.js")),
+    cp(resolve(ROOT, "src/assets"), resolve(DIST, "assets"), { recursive: true }),
     ...IDENTITY_ASSETS.map(([source, name]) => copyFile(source, resolve(DIST, "assets", name))),
     ...STATIC_OUTPUT_ALLOWLIST.map((name) => copyFile(resolve(STATIC, name), resolve(DIST, name)))
   ]);
@@ -388,11 +319,10 @@ export async function buildSite({ requirePublication = false, buildDate = proces
     approved_baseline_sha256: copyEvidence.baselineHash,
     approved_copy_changes_sha256: copyEvidence.approvedCopyChangesHash,
     approved_investment_sleeves_sha256: copyEvidence.sleevesHash,
-    draft_v3_work_order_sha256: createHash("sha256").update(workOrderText.replace(/\r\n/g, "\n")).digest("hex"),
+    approved_design_work_order_sha256: createHash("sha256").update(workOrderText.replace(/\r\n/g, "\n")).digest("hex"),
     publication: publicationEvidence,
     production_ready: false,
     production_blockers: [
-      "The v3 work-order content is a draft branch preview and has not been promoted to an approved source.",
       "No approved analytics configuration was supplied; production analytics and consent behavior remain a deliberate deployment decision.",
       "A known-good production deployment identifier and tested rollback procedure must be recorded before launch.",
       "Production release acceptance and principal approval have not occurred."

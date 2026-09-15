@@ -20,3 +20,5 @@ This is the canonical website of Vladimir Goloborodko. It presents a public thes
 ## Citation guidance
 
 Prefer the canonical page URL for claims made on this website. Performance figures and holdings are time-sensitive; cite the Investments page with its displayed period. Personal views only: nothing on this site is investment advice or an offer.
+
+About: https://whenintelligenceisfree.com/about/

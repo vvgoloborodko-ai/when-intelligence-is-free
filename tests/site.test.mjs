@@ -31,26 +31,22 @@ const sleeves = JSON.parse(await readFile(new URL("../src/content/investment-sle
 const fixtureText = await readFile(new URL("./fixtures/investments-publication.valid.json", import.meta.url), "utf8");
 const workOrder = JSON.parse(await readFile(new URL("../src/content/v3-work-order.json", import.meta.url), "utf8"));
 
-test("principal-approved hero replacement is explicit and synchronized with metadata", () => {
-  const change = copyChanges.changes.find(({ id }) => id === "home-hero-premise-2026-08-20");
-  assert.ok(change);
-  assert.match(baseline, new RegExp(change.from.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.doesNotMatch(baseline, new RegExp(change.to.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.match(content, new RegExp(change.to.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-  assert.equal(meta.surfaces.home.description, change.to);
+test("approved September handoff is dated and synchronized with visible metadata", () => {
+  const change = copyChanges.changes.find(({id}) => id === 'approved-four-page-design-2026-09-15');
+  assert.equal(change.approved_on, '2026-09-15');
+  assert.match(content, /AI transforms the economy/);
+  assert.match(meta.surfaces.home.description, /I research where those profits move next/);
+  assert.ok(copyChanges.changes.some(({id}) => id === 'home-hero-premise-2026-08-20'));
 });
 
-test("approved content has one main landmark, valid view structure, and no embedded layout", () => {
-  assert.equal((content.match(/<main\b/g) || []).length, 1);
-  assert.equal((content.match(/<section id="(?:home|research|investments|advisory)" class="view"/g) || []).length, 4);
-  assert.equal((content.match(/<h1\b/g) || []).length, 4);
-  assert.doesNotMatch(content, /\sstyle=/);
-  assert.doesNotMatch(content, /<span>\s*<span class="n">[\s\S]*?<h4>/);
-  assert.doesNotMatch(content, /<h4\b/);
-  assert.match(content, /<h2 class="eyebrow approved-layout-17">Performance history<\/h2>/);
-  assert.match(content, /<h3 class="eyebrow approved-layout-17">Top holdings<\/h3>/);
-  assert.doesNotMatch(content, /mailto:|vlad@whenintelligenceisfree\.com|structure mock|internal review|Calendly embed \/ link renders here/i);
-  assert.match(content, /href="https:\/\/calendly\.com\/vlad-whenintelligenceisfree\/30min"/);
+test("approved content has five views, one shared footer, and semantic content", () => {
+  assert.equal((content.match(/<main\b/g)||[]).length,1);
+  assert.equal((content.match(/class="view"/g)||[]).length,5);
+  assert.equal((content.match(/<h1\b/g)||[]).length,5);
+  assert.equal((content.match(/<iframe\b/g)||[]).length,1);
+  assert.match(content,/width="480" height="150" style="border: 0; background: transparent"/);
+  assert.match(content,/id="about"/);
+  assert.doesNotMatch(content,/class="substack"|<input|Return methodology and full history|77\.3%/);
 });
 
 test("all source hash links resolve and IDs are unique", () => {
@@ -82,122 +78,56 @@ test("external new-tab links carry safe relationship attributes", () => {
   for (const tag of tags) assert.match(tag, /rel="[^"]*noopener[^"]*"/);
 });
 
-test("static routes select one server-rendered view and remain usable without JavaScript", async () => {
-  await buildSite({ buildDate: new Date().toISOString().slice(0, 10) });
-  const subscribeTargets = {
-    home: "#subscribe",
-    research: "#subscribe-research",
-    investments: "#subscribe-investments",
-    advisory: "/#subscribe"
-  };
-  for (const [key, surface] of Object.entries(meta.surfaces)) {
-    const path = key === "home"
-      ? new URL("../dist/index.html", import.meta.url)
-      : new URL(`../dist/${key}/index.html`, import.meta.url);
-    const html = await readFile(path, "utf8");
-    assert.match(html, new RegExp(`<html lang="en" data-initial-view="${key}">`));
-    assert.match(html, new RegExp(`<section id="${key}" class="view active" data-view="${key}">`));
-    assert.equal((html.match(/data-view="/g) || []).length, 1);
-    assert.equal((html.match(/aria-current="page"/g) || []).length, 1);
-    assert.doesNotMatch(html, /href="#(?:home|research|investments|advisory)"/);
-    assert.doesNotMatch(html, /class="substack"|Mock of the Substack embed/);
-    assert.doesNotMatch(html, /Subscribe directly on Substack|mailto:|vlad@whenintelligenceisfree\.com|structure mock|internal review|Calendly embed \/ link renders here/i);
-    assert.match(html, /<img class="brand-logo" src="\/assets\/logo\.svg" width="38" height="38" alt="">/);
-    assert.match(html, new RegExp(`<meta property="og:image" content="${meta.canonical_origin}${surface.social_image_path.replaceAll("/", "\\/")}">`));
-    assert.match(html, new RegExp(`<meta name="twitter:image" content="${meta.canonical_origin}${surface.social_image_path.replaceAll("/", "\\/")}">`));
-    assert.match(html, new RegExp(`<meta property="og:image:width" content="${surface.social_image_width}">`));
-    assert.match(html, new RegExp(`<meta property="og:image:height" content="${surface.social_image_height}">`));
-    assert.match(html, /<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">/);
-    assert.match(html, new RegExp(`<meta name="twitter:image:alt" content="${surface.social_image_alt.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}">`));
-    assert.equal((html.match(new RegExp(workOrder.subscribe_promise.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length, 1);
-    if (key === "advisory") {
-      assert.doesNotMatch(html, /read\.whenintelligenceisfree\.com\/embed/);
-      assert.equal((html.match(/href="https:\/\/calendly\.com\/vlad-whenintelligenceisfree\/30min"[^>]*>Start a conversation<\/a>/g) || []).length, 2);
-    } else {
-      assert.match(html, /<iframe src="https:\/\/read\.whenintelligenceisfree\.com\/embed"[^>]*title="Subscribe to When Intelligence Is Free"><\/iframe>/);
+test("static routes select one view and share accessible navigation, metadata and native subscription", async () => {
+  await buildSite({buildDate:new Date().toISOString().slice(0,10)});
+  for(const [key,surface] of Object.entries(meta.surfaces)) {
+    const html=await readFile(new URL('../dist/'+(key==='home'?'':key+'/')+'index.html',import.meta.url),'utf8');
+    assert.equal((html.match(/data-view="/g)||[]).length,1);
+    assert.equal((html.match(/aria-current="page"/g)||[]).length,1);
+    assert.match(html,new RegExp('data-view="'+key+'"'));
+    assert.match(html,/href="#subscribe" data-nav="subscribe"/);
+    assert.equal((html.match(/id="subscribe"/g)||[]).length,1);
+    assert.equal((html.match(/<iframe /g)||[]).length,1);
+    assert.ok(html.includes('src="https://read.whenintelligenceisfree.com/embed?transparent=1&light=1"'));
+    assert.match(html,/title="Subscribe to When Intelligence Is Free"/);
+    assert.match(html,/class="brand-logo"[^>]*alt="When Intelligence Is Free"/);
+    assert.ok(html.includes('rel="canonical" href="'+meta.canonical_origin+surface.path+'"'));
+    assert.ok(html.includes('<meta property="og:image" content="'+meta.canonical_origin+surface.social_image_path+'">'));
+    assert.ok(html.includes('<meta name="twitter:image" content="'+meta.canonical_origin+surface.social_image_path+'">'));
+    const structured=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+    assert.equal(structured['@graph'].find(e=>e['@type']==='WebPage').url,meta.canonical_origin+surface.path);
+    const levels=[...html.matchAll(/<h([1-6])\b/g)].map(m=>Number(m[1]));
+    assert.equal(levels[0],1);
+    for(let i=1;i<levels.length;i++)assert.ok(levels[i]-levels[i-1]<=1,key+' heading hierarchy');
+    const ids=[...html.matchAll(/ id="([^"]+)"/g)].map(m=>m[1]);
+    assert.equal(ids.length,new Set(ids).size,key+' unique IDs');
+    for(const m of html.matchAll(/href="#([^"]+)"/g))assert.ok(ids.includes(m[1]),key+' missing anchor '+m[1]);
+    const social=await readFile(new URL('../dist'+surface.social_image_path,import.meta.url));
+    assert.equal(social.readUInt32BE(16),surface.social_image_width);
+    assert.equal(social.readUInt32BE(20),surface.social_image_height);
+    if(key==='home') {
+      assert.equal((html.match(/class="framework-item /g)||[]).length,4);
+      const hero=html.slice(html.indexOf('class="hero wrap"'),html.indexOf('id="framework"'));
+      assert.doesNotMatch(hero,/<a |Vladimir|>WIF</);
+      assert.match(html,/class="home-investments-proof"/);
     }
-    const headingLevels = [...html.matchAll(/<h([1-6])\b/g)].map((match) => Number(match[1]));
-    assert.equal(headingLevels[0], 1);
-    for (let index = 1; index < headingLevels.length; index += 1) {
-      assert.ok(headingLevels[index] - headingLevels[index - 1] <= 1, `${key} skips from h${headingLevels[index - 1]} to h${headingLevels[index]}`);
+    if(key==='investments') {
+      assert.match(html,/Top 5 published positions/);
+      assert.doesNotMatch(html,/Return methodology and full history|77\.3%/);
+      assert.match(html,/What drove the month/);
+      assert.match(html,/data-performance-view-control hidden role="group"/);
+      assert.doesNotMatch(html,/class="performance-view [^"]*"[^>]* hidden/);
+      assert.match(html,/class="history publication-monthly-history"/);
     }
-    const subscribeTags = [...html.matchAll(/<a\b[^>]*data-nav="subscribe"[^>]*>/g)].map((match) => match[0]);
-    assert.ok(subscribeTags.length > 0);
-    for (const tag of subscribeTags) {
-      assert.match(tag, new RegExp(`href="${subscribeTargets[key].replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`));
-    }
-    if (subscribeTargets[key].startsWith("#")) {
-      assert.match(html, new RegExp(`id="${subscribeTargets[key].slice(1)}"`));
-    }
-    assert.match(html, new RegExp(`rel="canonical" href="${meta.canonical_origin}${surface.path.replaceAll("/", "\\/")}"`));
-    const structured = html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
-    assert.ok(structured);
-    const structuredData = JSON.parse(structured[1]);
-    const structuredPage = structuredData["@graph"].find((entry) => entry["@type"] === "WebPage");
-    assert.equal(structuredPage.url, `${meta.canonical_origin}${surface.path}`);
-    assert.equal(structuredPage.author["@id"], `${meta.canonical_origin}/#author`);
-    if (key === "home") {
-      assert.match(html, /class="home-investments-proof"/);
-      assert.match(html, /\+79\.2%[\s\S]*\+40\.2%/);
-      assert.match(html, /Nasdaq-100 since 1 Jan 2025\./);
-      assert.doesNotMatch(html, /since January 2025|Marked monthly, as of 31 July 2026/);
-      assert.equal((html.match(/<div class="mode /g) || []).length, 4);
-      assert.doesNotMatch(html, /href="\/research\/#(?:substitute|amplify|reprice|unlock)"/);
-      assert.match(html, />Work with me →<\/a>/);
-    }
-    if (key === "research") {
-      assert.doesNotMatch(html, /class="research-index"|class="pipeline-essays"/);
-    }
-    if (key === "investments") {
-      assert.match(html, /August 2026 · close note/);
-      assert.match(html, /<h3 class="close-note-title"[^>]*>August 2026 · close note<\/h3>/);
-      assert.doesNotMatch(html, /close-note-date|<time|31 August 2026/);
-      assert.match(html, />Sleeve attribution<\/h2>/);
-      assert.doesNotMatch(html, /Complete sleeve attribution/);
-      assert.match(html, /<div class="attribution-block" data-investments-block="attribution">\s*<div class="wrap">\s*<div class="block-head"><h2 class="eyebrow">Sleeve attribution<\/h2>/);
-      assert.doesNotMatch(html, /<section[^>]*data-investments-block="attribution"/);
-      assert.doesNotMatch(html, /attribution-heading-band|attribution-section/);
-      assert.match(html, /<\/div>\s*<section class="close-note-section">/);
-      assert.match(html, /August was the month the regime bet paid\./);
-      assert.match(html, /href="https:\/\/read\.whenintelligenceisfree\.com\/p\/2608"/);
-      assert.match(html, /<div class="history publication-monthly-history">/);
-      assert.match(html, /data-performance-view-control hidden role="group" aria-label="Performance view"/);
-      assert.match(html, /data-performance-view="cumulative" role="region" aria-label="Cumulative"/);
-      assert.match(html, /data-performance-view="monthly" role="region" aria-label="Monthly"/);
-      assert.doesNotMatch(html, /class="performance-view [^"]*"[^>]* hidden/);
-      assert.match(html, /class="chart publication-chart monthly-return-chart"/);
-      assert.match(html, /<th class="r">Strategy<\/th><th class="r">Nasdaq-100<\/th><th class="r">Excess<\/th>/);
-      assert.match(html, /Show earlier months \(17\)/);
-      assert.doesNotMatch(html, />Monthly performance history<\/h3>/);
-      assert.doesNotMatch(html, /<details class="monthly-history-archive" open/);
-      assert.ok(html.indexOf('data-investments-block="composition"') < html.indexOf('class="finetext"'));
-    }
+    if(key==='advisory')assert.equal((html.match(/href="https:\/\/calendly.com\/vlad-whenintelligenceisfree\/30min"/g)||[]).length,2);
   }
-  assert.match(client, /data-initial-view/);
-  assert.match(client, /aria-current/);
-  assert.match(styles, /\.view\{display:none\}/);
-  assert.match(styles, /\.view\.active\{display:block\}/);
-  assert.equal(new Set(Object.values(meta.surfaces).map(({ title }) => title)).size, 4);
-  assert.equal(new Set(Object.values(meta.surfaces).map(({ description }) => description)).size, 4);
-  assert.equal(new Set(Object.values(meta.surfaces).map(({ social_image_path }) => social_image_path)).size, 4);
-  assert.equal(new Set(Object.values(meta.surfaces).map(({ social_image_alt }) => social_image_alt)).size, 4);
-  for (const surface of Object.values(meta.surfaces)) {
-    const socialPreview = await readFile(new URL(`../dist${surface.social_image_path}`, import.meta.url));
-    assert.equal(socialPreview.readUInt32BE(16), surface.social_image_width);
-    assert.equal(socialPreview.readUInt32BE(20), surface.social_image_height);
-  }
-  assert.match(llms, /https:\/\/whenintelligenceisfree\.com\/research\//);
-  assert.match(llms, /Performance figures and holdings are time-sensitive/);
-  const deployedLogo = await readFile(new URL("../dist/assets/logo.svg", import.meta.url));
-  assert.ok(deployedLogo.byteLength < 100_000);
-  const sitesWorker = await readFile(new URL("../dist/server/index.js", import.meta.url), "utf8");
-  assert.match(sitesWorker, /env\.ASSETS\.fetch\(request\)/);
-  const pagesWorker = await readFile(new URL("../dist/_worker.js", import.meta.url), "utf8");
-  assert.equal(pagesWorker, sitesWorker);
-  const sitesInvestments = await readFile(new URL("../dist/client/investments/index.html", import.meta.url), "utf8");
-  assert.match(sitesInvestments, /<div class="history publication-monthly-history">/);
-  assert.match(sitesInvestments, /\/assets\/site\.css\?v=[a-f0-9]{12}/);
-  assert.match(sitesInvestments, /\/assets\/site\.js\?v=[a-f0-9]{12}/);
+  const worker=await readFile(new URL('../dist/server/index.js',import.meta.url),'utf8');
+  assert.equal(await readFile(new URL('../dist/_worker.js',import.meta.url),'utf8'),worker);
+  assert.match(worker,/env\.ASSETS\.fetch\(request\)/);
+  const mirrored=await readFile(new URL('../dist/client/about/index.html',import.meta.url),'utf8');
+  assert.match(mirrored,/data-view="about"/);
+  assert.match(mirrored,/\/assets\/site\.css\?v=[a-f0-9]{12}/);
+  assert.match(llms,/https:\/\/whenintelligenceisfree\.com\/research\//);
 });
 
 test("GitHub CI owns publication history checks, build, and preview artifacts", () => {
@@ -252,44 +182,27 @@ test("WhatsApp receives the logo card while Telegram keeps page-specific preview
   assert.match(await telegramResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-research\.png">/);
 });
 
-test("narrow-screen CSS protects navigation, charts, forms, prose, and hero gutters", () => {
-  assert.match(styles, /@media \(max-width:420px\)/);
-  assert.match(styles, /grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(styles, /\.chart\{overflow-x:auto\}/);
-  assert.match(styles, /\.chart svg\{min-width:620px\}/);
-  assert.match(styles, /\.tp-chart\{overflow-x:auto\}/);
-  assert.match(styles, /\.tp-chart svg\{min-width:620px\}/);
-  assert.doesNotMatch(styles, /\.tp-chart\{display:none\}/);
-  assert.match(styles, /\.substack input\{flex:1;min-width:0/);
-  assert.match(styles, /\.hero\{padding-block:/);
-  assert.match(styles, /\.essay-row\{align-items:flex-start;flex-direction:column/);
-  assert.match(styles, /\.performance-comparison-table table\{table-layout:fixed\}/);
-  assert.match(styles, /\.performance-comparison-table\{overflow-x:visible\}/);
-  assert.match(styles, /\.performance-view-control\[hidden\]\{display:none\}/);
-  assert.match(styles, /\.performance-view-button:focus-visible\{outline:2px solid var\(--amber-ink\)/);
-  assert.match(styles, /\.performance-view-control,\.monthly-return-chart\{display:none!important\}/);
-  assert.match(styles, /\.performance-period-column\{width:32%\}/);
-  assert.match(styles, /section\{padding:60px 0\}/);
-  assert.match(styles, /section\+section\{border-top:1px solid var\(--line\)\}/);
-  assert.match(styles, /\.attribution-block\{padding:0 0 60px\}/);
-  assert.match(styles, /\.publication-attribution-grid\{margin-top:14px;align-items:start\}/);
-  assert.match(styles, /\.close-note-section\{border-top:1px solid var\(--line\)\}/);
-  assert.doesNotMatch(styles, /\.attribution-heading-band|\.attribution-section/);
-  assert.match(styles, /\.close-note-title\{[^}]*color:var\(--amber-ink\)/);
-  assert.match(styles, /\.close-note-body\{margin-top:14px;/);
-  assert.doesNotMatch(styles, /\.close-note-date/);
-  assert.doesNotMatch(styles, /@media \(max-width:[^)]+\)[\s\S]{0,300}table\{display:none/);
-  assert.match(styles, /overflow-wrap:anywhere/);
-  assert.doesNotMatch(styles, /body\s*\{[^}]*overflow-x\s*:\s*hidden/);
-  assert.match(client, /matchMedia\('\(min-width: 641px\)'\)/);
-  assert.match(client, /event\.key==='ArrowRight'/);
+test("responsive CSS and progressive enhancement protect navigation and data", () => {
+  assert.match(styles,/@media \(max-width:600px\)/);
+  assert.match(styles,/\.chart\{overflow-x:auto\}/);
+  assert.match(styles,/\[hidden\]\{display:none!important\}/);
+  assert.match(styles,/prefers-reduced-motion:no-preference/);
+  assert.match(styles,/overflow-wrap:anywhere/);
+  assert.doesNotMatch(styles,/body\s*\{[^}]*overflow-x\s*:\s*hidden/);
+  assert.doesNotMatch(styles,/\.view\{display:none/);
+  assert.match(client,/event.key === 'ArrowRight'/);
+  assert.match(client,/aria-pressed/);
+  assert.match(client,/aria-expanded/);
 });
 
 test("valid publication replaces every hard-coded Investments data block", () => {
   const publication = parsePublicationText(fixtureText);
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
   const output = injectInvestments(content, rendered);
-  assert.match(output, /SYNTHETIC-TEST-PRICE/);
+  // Principal review removes the display-only methodology/date block; validation still checks conventions.
+  assert.equal(publication.conventions.benchmark.series_identifier, 'SYNTHETIC-TEST-PRICE');
+  assert.doesNotMatch(output, /SYNTHETIC-TEST-PRICE|class="conventions small"/);
+  assert.doesNotMatch(rendered.performance, /class="conventions-date small"/);
   assert.match(output, /Example Compute Company/);
   assert.doesNotMatch(output, /\+63\.0%/);
   assert.doesNotMatch(output, /31 Jul 2026|30 Jun 2026/);
@@ -297,8 +210,8 @@ test("valid publication replaces every hard-coded Investments data block", () =>
   assert.equal((output.match(/data-investments-block="composition"/g) || []).length, 1);
   assert.equal((output.match(/data-investments-block="attribution"/g) || []).length, 1);
   assert.match(output, /table aria-labelledby="performance-heading"/);
-  assert.match(output, /table aria-labelledby="named-holdings-heading"/);
-  assert.match(output, /table aria-labelledby="contributors-heading"/);
+  assert.match(output, /table[^>]* aria-labelledby="named-holdings-heading"/);
+  assert.match(output, /What drove the month/);
 });
 
 test("the canonical monthly handoff is optional before launch and validated whenever present", async () => {

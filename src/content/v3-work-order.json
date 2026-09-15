@@ -1,19 +1,17 @@
 {
-  "status": "draft",
-  "source": "Codex work order — whenintelligenceisfree.com v3",
-  "requested_on": "2026-08-21",
-  "home": {
-    "proof_lead": "The thesis, held as positions:",
-    "proof_versus": "vs",
-    "proof_link": "See the book",
-    "advisory_link_label": "Work with me →"
-  },
+  "status": "approved",
+  "source": "WIF-Codex-handoff-v1",
+  "approved_on": "2026-09-15",
   "investments": {
-    "close_note_suffix": "close note",
-    "read_full_note_label": "Read the full note →",
+    "verified_review_period": "2026-08",
     "read_full_note_url": "https://read.whenintelligenceisfree.com/p/2608",
-    "all_close_notes_label": "All close notes →",
     "all_close_notes_url": "https://read.whenintelligenceisfree.com/t/investments"
   },
-  "subscribe_promise": "Essays as they ship, a short note at every monthly close, and a full review each quarter."
+  "review": {
+    "approved_on": "2026-09-15",
+    "investments_hero": "two columns with key facts on the right",
+    "remove_investments_date_line": true,
+    "remove_investments_conventions_block": true,
+    "merge_and_deploy_authorized": true
+  }
 }

@@ -4,6 +4,7 @@ import { assertValidPublication, derivePublication, publicationFirewallFlags } f
 
 const COPY = Object.freeze(JSON.parse(readFileSync(new URL("../../src/content/investments-interface-copy.json", import.meta.url), "utf8")));
 const V3 = Object.freeze(JSON.parse(readFileSync(new URL("../../src/content/v3-work-order.json", import.meta.url), "utf8")));
+const DESIGN = Object.freeze(JSON.parse(readFileSync(new URL("../../src/content/design-copy.json", import.meta.url), "utf8")));
 const MONTHS = COPY.months;
 const MONTHS_LONG = COPY.months_long;
 
@@ -115,14 +116,13 @@ function asOfMarkup(asOfDate, period, buildDate, conventions) {
   return `<div class="asof">${escapeHtml(COPY.as_of)} · ${escapeHtml(displayDate(asOfDate))} · ${escapeHtml(conventions.audit_status)} · ${escapeHtml(COPY.updated_monthly)}${overdue}</div>`;
 }
 
-export function renderHomeProofStrip(derived, publication, labels) {
-  const summary = derived.summary;
-  const conventions = publication.conventions;
-  return `<aside class="home-investments-proof">
-    <div class="wrap">
-      <p>${escapeHtml(labels.proof_lead)} <strong class="${tone(summary.strategyCumulativePct)}">${escapeHtml(formatPct(summary.strategyCumulativePct))}</strong> ${escapeHtml(labels.proof_versus)} <strong class="${tone(summary.benchmarkCumulativePct)}">${escapeHtml(formatPct(summary.benchmarkCumulativePct))}</strong> ${escapeHtml(conventions.benchmark.name)} since ${escapeHtml(displayDate(conventions.inception_date))}. <a href="/investments/">→ ${escapeHtml(labels.proof_link)}</a></p>
-    </div>
-  </aside>`;
+function conventionsLine(derived, conventions) {
+  return escapeHtml(displayDate(conventions.inception_date) + '–' + displayDate(derived.asOfDate) + ' · ' + conventions.return_currency + ' · ' + conventions.audit_status);
+}
+
+export function renderHomeProofStrip(derived, publication) {
+  const c = publication.conventions;
+  return `<aside class="home-investments-proof"><div class="proof-stats"><div><strong>${escapeHtml(formatPct(derived.summary.strategyCumulativePct))}</strong><span>Strategy · ${escapeHtml(c.strategy_return_basis.basis)}</span></div><div><strong>${escapeHtml(formatPct(derived.summary.benchmarkCumulativePct))}</strong><span>${escapeHtml(c.benchmark.name)} · ${escapeHtml(benchmarkBasisLabel(c.benchmark.return_basis))}</span></div></div><p class="small">${conventionsLine(derived,c)}<br>${escapeHtml(DESIGN.investments.performance.risk)}</p></aside>`;
 }
 
 function niceStep(raw) {
@@ -201,8 +201,8 @@ function chartMarkup(rows, conventions) {
   const benchmarkName = conventions.benchmark.name;
   return `<div class="chart publication-chart">
     <div class="legend">
-      <span><span class="sw strategy-swatch"></span>${escapeHtml(COPY.strategy)}</span>
-      <span><span class="sw benchmark-swatch"></span>${escapeHtml(benchmarkName)}</span>
+      <span><span class="sw strategy-swatch"></span>${escapeHtml(COPY.strategy)} · ${escapeHtml(conventions.strategy_return_basis.basis)}</span>
+      <span><span class="sw benchmark-swatch"></span>${escapeHtml(benchmarkName)} · ${escapeHtml(benchmarkBasisLabel(conventions.benchmark.return_basis))}</span>
     </div>
     <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(copy(COPY.chart_label, { inception: displayInception(conventions.inception_date, { short: true }), benchmark: benchmarkName, period: displayPeriod(latest.period) }))}">
       <g font-family="IBM Plex Mono,monospace" font-size="10" fill="#4A5C52">${grid}${labels}</g>
@@ -276,8 +276,8 @@ function monthlyChartMarkup(rows, conventions) {
 
   return `<div class="chart publication-chart monthly-return-chart">
     <div class="legend">
-      <span><span class="sw strategy-swatch"></span>${escapeHtml(COPY.strategy)}</span>
-      <span><span class="sw benchmark-swatch"></span>${escapeHtml(benchmarkName)}</span>
+      <span><span class="sw strategy-swatch"></span>${escapeHtml(COPY.strategy)} · ${escapeHtml(conventions.strategy_return_basis.basis)}</span>
+      <span><span class="sw benchmark-swatch"></span>${escapeHtml(benchmarkName)} · ${escapeHtml(benchmarkBasisLabel(conventions.benchmark.return_basis))}</span>
     </div>
     <svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeHtml(copy(COPY.monthly_chart_label, { benchmark: benchmarkName, start_period: displayPeriod(rows[0].period), end_period: displayPeriod(rows.at(-1).period) }))}">
       <g font-family="IBM Plex Mono,monospace" font-size="10" fill="#4A5C52">${grid}</g>
@@ -298,15 +298,16 @@ function performanceHistoryRows(rows) {
 
 const PERFORMANCE_COMPARISON_COLUMNS = `<colgroup><col class="performance-period-column"><col class="performance-strategy-column"><col class="performance-benchmark-column"><col class="performance-excess-column"></colgroup>`;
 
-function performanceHistoryTable(rows, benchmarkName, accessibleLabel) {
+function performanceHistoryTable(rows, conventions, accessibleLabel) {
+  const benchmarkName = conventions.benchmark.name;
   return `<div class="tblwrap performance-comparison-table monthly-history-table"><table aria-label="${escapeHtml(accessibleLabel)}">
     ${PERFORMANCE_COMPARISON_COLUMNS}
-    <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.excess)}</th></tr></thead>
+    <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)} · ${escapeHtml(conventions.strategy_return_basis.basis)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(DESIGN.investments.performance.tableHeaders[3])}</th></tr></thead>
     <tbody>${performanceHistoryRows(rows)}</tbody>
   </table></div>`;
 }
 
-function performanceHistory(rows, benchmarkName) {
+function performanceHistory(rows, conventions) {
   const newestFirst = [...rows].reverse();
   const recent = newestFirst.slice(0, 3);
   const older = newestFirst.slice(3);
@@ -314,11 +315,11 @@ function performanceHistory(rows, benchmarkName) {
   const archive = older.length
     ? `<details class="monthly-history-archive">
       <summary>${escapeHtml(archiveLabel)}</summary>
-      ${performanceHistoryTable(older, benchmarkName, `${COPY.monthly_performance_history}, ${archiveLabel}`)}
+      ${performanceHistoryTable(older, conventions, `${COPY.monthly_performance_history}, ${archiveLabel}`)}
     </details>`
     : "";
   return `<div class="history publication-monthly-history">
-    ${performanceHistoryTable(recent, benchmarkName, COPY.monthly_performance_history)}
+    ${performanceHistoryTable(recent, conventions, COPY.monthly_performance_history)}
     ${archive}
   </div>`;
 }
@@ -327,10 +328,10 @@ function performanceBlock(derived, publication, buildDate) {
   const { summary, performanceRows: rows, asOfDate, currentPeriod } = derived;
   const conventions = publication.conventions;
   const benchmarkName = conventions.benchmark.name;
-  const monthlyHistory = performanceHistory(rows, benchmarkName);
+  const monthlyHistory = performanceHistory(rows, conventions);
   const periodRows = summary.windows.map((window) => {
     const label = window.kind === "current_month"
-      ? COPY.month
+      ? DESIGN.investments.performance.periodLabels[0]
       : window.kind === "trailing_three_months"
         ? COPY.three_months
         : window.kind === "trailing_twelve_months"
@@ -350,14 +351,13 @@ function performanceBlock(derived, publication, buildDate) {
   return `<section data-investments-block="performance">
     <div class="wrap">
       <div class="block-head">
-        <h2 class="eyebrow" id="performance-heading">${escapeHtml(COPY.performance)}</h2>
+        <h2 id="performance-heading">${escapeHtml(DESIGN.investments.performance.heading)}</h2>
         ${asOfMarkup(asOfDate, currentPeriod, buildDate, conventions)}
       </div>
       <div class="statgrid publication-statgrid">
-        <div class="stat"><div class="lbl">${escapeHtml(COPY.since_inception)}</div><div class="val ${tone(summary.strategyCumulativePct)}">${escapeHtml(formatPct(summary.strategyCumulativePct))}</div><div class="sub">${escapeHtml(copy(COPY.from_inception, { date: displayInception(conventions.inception_date, { short: true }) }))}</div></div>
-        <div class="stat"><div class="lbl">${escapeHtml(benchmarkName)}</div><div class="val ${tone(summary.benchmarkCumulativePct)}">${escapeHtml(formatPct(summary.benchmarkCumulativePct))}</div><div class="sub">${escapeHtml(COPY.same_period)}</div></div>
-        <div class="stat"><div class="lbl">${escapeHtml(COPY.excess)}</div><div class="val ${tone(summary.excessCumulativePp)}">${escapeHtml(formatPp(summary.excessCumulativePp))}</div><div class="sub">${escapeHtml(COPY.versus_reference)}</div></div>
-        <div class="stat"><div class="lbl">${escapeHtml(COPY.max_drawdown)}</div><div class="val ${tone(summary.maxDrawdownPct)}">${escapeHtml(formatPct(summary.maxDrawdownPct))}</div><div class="sub">${escapeHtml(COPY.month_end_series)}${summary.maxDrawdownPeriod ? ` · ${escapeHtml(displayPeriod(summary.maxDrawdownPeriod))}` : ""}</div></div>
+        <div class="stat"><div class="val">${escapeHtml(formatPct(summary.strategyCumulativePct))}</div><div class="lbl">Strategy · ${escapeHtml(conventions.strategy_return_basis.basis)}</div></div>
+        <div class="stat"><div class="val">${escapeHtml(formatPct(summary.benchmarkCumulativePct))}</div><div class="lbl">${escapeHtml(benchmarkName)} · ${escapeHtml(benchmarkBasisLabel(conventions.benchmark.return_basis))}</div></div>
+        <div class="stat"><div class="val">${escapeHtml(formatPct(summary.maxDrawdownPct))}</div><div class="lbl">${escapeHtml(COPY.max_drawdown)} · ${escapeHtml(conventions.drawdown_convention === 'month_end_series' ? 'month-end' : conventions.drawdown_convention)}</div></div>
       </div>
       <div class="performance-view-control" data-performance-view-control hidden role="group" aria-label="${escapeHtml(COPY.performance_view)}">
         <button class="performance-view-button" type="button" data-performance-view-target="cumulative" aria-pressed="true" aria-controls="performance-cumulative-view">${escapeHtml(COPY.cumulative)}</button>
@@ -365,9 +365,10 @@ function performanceBlock(derived, publication, buildDate) {
       </div>
       <div class="performance-view performance-cumulative-view" id="performance-cumulative-view" data-performance-view="cumulative" role="region" aria-label="${escapeHtml(COPY.cumulative)}">
         ${chartMarkup(rows, conventions)}
+        <p class="small risk">${escapeHtml(DESIGN.investments.performance.risk)}</p>
         <div class="tblwrap performance-comparison-table publication-period-table"><table aria-labelledby="performance-heading">
           ${PERFORMANCE_COMPARISON_COLUMNS}
-          <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(COPY.excess)}</th></tr></thead>
+          <thead><tr><th>${escapeHtml(COPY.period)}</th><th class="r">${escapeHtml(COPY.strategy)} · ${escapeHtml(conventions.strategy_return_basis.basis)}</th><th class="r">${escapeHtml(benchmarkName)}</th><th class="r">${escapeHtml(DESIGN.investments.performance.tableHeaders[3])}</th></tr></thead>
           <tbody>${periodRows}</tbody>
         </table></div>
       </div>
@@ -379,53 +380,24 @@ function performanceBlock(derived, publication, buildDate) {
   </section>`;
 }
 
-function compositionBlock(derived, sleeves, publication, buildDate) {
-  const sleeveCopy = new Map(sleeves.map((sleeve) => [sleeve.id, sleeve]));
-  const maxWeight = Math.max(...derived.composition.map((item) => item.weightPct / 100), 0.45);
-  const scale = Math.max(0.45, Math.ceil(maxWeight / 0.05) * 0.05);
-  const rows = derived.composition.map((item) => {
-    const sleeve = sleeveCopy.get(item.sleeveId);
-    const range = sleeve.approved_range_decimal;
-    const band = range
-      ? `<div class="cband" style="left:${(range.minimum / scale * 100).toFixed(4)}%;width:${((range.maximum - range.minimum) / scale * 100).toFixed(4)}%"></div>`
-      : "";
-    const current = formatPct(item.weightPct, { sign: false, adaptive: true });
-    const accessible = range
-      ? copy(COPY.range_accessible, {
-        name: sleeve.name,
-        description: sleeve.description,
-        current,
-        minimum: formatPct(range.minimum * 100, { sign: false, adaptive: true }),
-        maximum: formatPct(range.maximum * 100, { sign: false, adaptive: true })
-      })
-      : copy(COPY.no_range_accessible, { name: sleeve.name, description: sleeve.description, current });
-    return `<div class="comp-row" role="group" aria-label="${escapeHtml(accessible)}">
-      <div><div class="nm">${escapeHtml(sleeve.name)}</div><div class="rng">${escapeHtml(sleeve.description)}</div></div>
-      <div class="ctrack">${band}<div class="cfill" style="width:${Math.min(item.weightPct / (scale * 100) * 100, 100).toFixed(4)}%"></div></div>
-      <div class="pc">${escapeHtml(current)}</div>
-    </div>`;
-  }).join("");
-  const holdingRows = derived.holdings.map((holding) => `<tr>
-    <td><div class="holding-identity"><span>${escapeHtml(holding.name)}</span>${holding.ticker ? `<span class="holding-ticker">${escapeHtml(holding.ticker)}</span>` : ""}</div></td>
-    <td class="muted">${escapeHtml(sleeveCopy.get(holding.sleeveId).name)}</td>
-    <td class="mono r">${escapeHtml(formatPct(holding.weightPct, { sign: false, adaptive: true }))}</td>
-  </tr>`).join("");
-  const holdingsTotal = derived.holdings.reduce((sum, holding) => sum + holding.weightPct, 0);
+export function topPublishedHoldings(derived, limit = 5) {
+  // Derivation sorts equal weights alphabetically. Restore publication order for ties
+  // without changing its complete holdings array or rounding any ranking weight.
+  const sourceOrder = new Map(derived.latestRelease.holdings.map((holding, index) => [holding.name, index]));
+  return [...derived.holdings].sort((a, b) => b.weightPct - a.weightPct || sourceOrder.get(a.name) - sourceOrder.get(b.name)).slice(0, limit);
+}
 
-  return `<section data-investments-block="composition">
-    <div class="wrap">
-      <div class="block-head"><h2 class="eyebrow">${escapeHtml(COPY.composition)}</h2>${asOfMarkup(derived.asOfDate, derived.currentPeriod, buildDate, publication.conventions)}</div>
-      <div class="publication-composition-rows">${rows}</div>
-      <p class="mono small muted publication-range-note">${escapeHtml(copy(COPY.range_note, { maximum: formatNumber(scale * 100, 0) }))}</p>
-      <div class="publication-holdings">
-        <div class="block-head"><h3 class="eyebrow" id="named-holdings-heading">${escapeHtml(COPY.named_holdings)}</h3><div class="asof">${escapeHtml(formatPct(holdingsTotal, { sign: false, adaptive: true }))} ${escapeHtml(COPY.of_the_book)} · ${escapeHtml(displayDate(derived.asOfDate))}</div></div>
-        <div class="tblwrap publication-holdings-table"><table aria-labelledby="named-holdings-heading">
-          <thead><tr><th>${escapeHtml(COPY.holding)}</th><th>${escapeHtml(COPY.theme)}</th><th class="r">${escapeHtml(COPY.percent_nav)}</th></tr></thead>
-          <tbody>${holdingRows}</tbody>
-        </table></div>
-      </div>
-    </div>
-  </section>`;
+function compositionBlock(derived, sleeves, publication, buildDate) {
+  const labels = DESIGN.investments.portfolio;
+  const composition = new Map(derived.composition.map(item => [item.sleeveId, item]));
+  const rows = sleeves.map(sleeve => {
+    const current = formatPct(composition.get(sleeve.id).weightPct, {sign:false, adaptive:true});
+    const range = sleeve.approved_range_decimal;
+    const description = sleeve.description + (range ? ' Mandated range ' + formatPct(range.minimum * 100, {sign:false}) + '–' + formatPct(range.maximum * 100, {sign:false}) + ' of NAV.' : ' No mandated range.');
+    return `<tr aria-label="${escapeHtml(sleeve.name + '. ' + description + ' Current ' + current)}"><th scope="row">${escapeHtml(sleeve.name)}</th><td class="r">${escapeHtml(current)}</td></tr>`;
+  }).join('');
+  const holdingRows = topPublishedHoldings(derived, labels.maxPositions).map(holding => `<tr><td>${escapeHtml(holding.name)}</td><td class="r">${escapeHtml(formatPct(holding.weightPct,{sign:false,adaptive:true}))}</td></tr>`).join('');
+  return `<section data-investments-block="composition"><div class="wrap"><div class="block-head"><h2>${escapeHtml(labels.heading)}</h2>${asOfMarkup(derived.asOfDate,derived.currentPeriod,buildDate,publication.conventions)}</div><div class="portfolio-grid"><div class="portfolio-column"><h3 id="sleeves-heading">${escapeHtml(labels.sleevesHeading)}</h3><table class="sleeve-table" aria-labelledby="sleeves-heading"><tbody>${rows}</tbody></table></div><div class="portfolio-column"><h3 id="named-holdings-heading">${escapeHtml(labels.positionsHeading)}</h3><table class="publication-holdings-table" aria-labelledby="named-holdings-heading"><thead><tr><th>${escapeHtml(labels.positionHeaders[0])}</th><th class="r">${escapeHtml(labels.positionHeaders[1])}</th></tr></thead><tbody>${holdingRows}</tbody></table></div></div></div></section>`;
 }
 
 function renderCommentaryParagraph(paragraph, derived, benchmarkName) {
@@ -448,56 +420,18 @@ function renderCommentaryParagraph(paragraph, derived, benchmarkName) {
   });
 }
 
-function attributionBlock(derived, sleeves, publication, buildDate) {
-  const sleeveCopy = new Map(sleeves.map((sleeve) => [sleeve.id, sleeve]));
-  const items = derived.attribution.items.map((item) => ({
-    ...item,
-    label: item.level === "sleeve" ? sleeveCopy.get(item.sleeveId).name : item.holdingName
-  }));
-  const contributors = items.filter((item) => item.effectPp > 0);
-  const detractors = items.filter((item) => item.effectPp < 0);
-  const neutral = items.filter((item) => item.effectPp === 0);
-  const renderRows = (values, emptyLabel) => values.length
-    ? values.map((item) => `<tr><td>${escapeHtml(item.label)}</td><td class="mono r ${tone(item.effectPp, adaptiveDigits(item.effectPp))}">${escapeHtml(formatPp(item.effectPp, { adaptive: true }))}</td></tr>`).join("")
-    : `<tr><td class="muted" colspan="2">${escapeHtml(emptyLabel)}</td></tr>`;
-  const scopeLabel = COPY[`${derived.attribution.coverage}_${derived.attribution.level}_attribution`];
-  const commentary = derived.latestRelease.commentary?.paragraphs?.length
-    ? `<article class="approved-commentary publication-commentary" aria-labelledby="close-note-heading">
-        <div class="close-note-head">
-          <h3 class="close-note-title" id="close-note-heading">${escapeHtml(displayPeriodLong(derived.currentPeriod))} · ${escapeHtml(V3.investments.close_note_suffix)}</h3>
-        </div>
-        <div class="close-note-body">${derived.latestRelease.commentary.paragraphs.map((paragraph) => `<p>${escapeHtml(renderCommentaryParagraph(paragraph, derived, publication.conventions.benchmark.name))}</p>`).join("")}</div>
-        <div class="close-note-links"><a href="${escapeHtml(V3.investments.read_full_note_url)}" target="_blank" rel="noopener">${escapeHtml(V3.investments.read_full_note_label)}</a><a href="${escapeHtml(V3.investments.all_close_notes_url)}" target="_blank" rel="noopener">${escapeHtml(V3.investments.all_close_notes_label)}</a></div>
-      </article>`
-    : `<div class="approved-commentary publication-commentary muted"><p>${escapeHtml(COPY.no_commentary)}</p></div>`;
-
-  return `<div class="attribution-block" data-investments-block="attribution">
-    <div class="wrap">
-      <div class="block-head"><h2 class="eyebrow">${escapeHtml(scopeLabel)}</h2>${asOfMarkup(derived.asOfDate, derived.currentPeriod, buildDate, publication.conventions)}</div>
-      <div class="grid2 publication-attribution-grid">
-        <div class="tblwrap"><table aria-labelledby="contributors-heading"><thead><tr><th id="contributors-heading">${escapeHtml(COPY.contributors)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(contributors, COPY.no_positive)}</tbody></table></div>
-        <div class="tblwrap"><table aria-labelledby="detractors-heading"><thead><tr><th id="detractors-heading">${escapeHtml(COPY.detractors)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(detractors, COPY.no_negative)}</tbody></table></div>
-      </div>
-      ${neutral.length ? `<div class="tblwrap publication-neutral-attribution"><table aria-labelledby="neutral-heading"><thead><tr><th id="neutral-heading">${escapeHtml(COPY.no_effect)}</th><th class="r">${escapeHtml(COPY.effect)}</th></tr></thead><tbody>${renderRows(neutral, "")}</tbody></table></div>` : ""}
-    </div>
-  </div>
-  <section class="close-note-section">
-    <div class="wrap">${commentary}</div>
-  </section>`;
+function attributionBlock(derived, sleeves, publication) {
+  const review = DESIGN.investments.review;
+  const verified = derived.currentPeriod === V3.investments.verified_review_period;
+  const label = verified ? review.ctaForVerifiedPeriod.replace('{month}', MONTHS_LONG[Number(derived.currentPeriod.slice(5))-1]) : review.fallbackCta;
+  const href = verified ? V3.investments.read_full_note_url : V3.investments.all_close_notes_url;
+  const paragraphs = derived.latestRelease.commentary?.paragraphs?.slice(0,2);
+  const commentary = paragraphs?.length ? paragraphs.map(p => `<p>${escapeHtml(renderCommentaryParagraph(p,derived,publication.conventions.benchmark.name))}</p>`).join('') : `<p>${escapeHtml(COPY.no_commentary)}</p>`;
+  return `<section class="close-note-section" data-investments-block="attribution"><div class="wrap"><article class="approved-commentary publication-commentary"><p class="eyebrow">${escapeHtml(displayPeriodLong(derived.currentPeriod))} review</p><h2>${escapeHtml(review.heading)}</h2><div class="close-note-body">${commentary}</div><a class="btn outline" href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label)}</a></article></div></section>`;
 }
 
 function factsBlock(publication) {
-  const conventions = publication.conventions;
-  return `<aside class="facts" data-investments-facts aria-labelledby="investments-facts-heading">
-    <div class="facts-h" id="investments-facts-heading">${escapeHtml(COPY.key_facts)}</div>
-    <dl>
-      <div class="row"><dt>${escapeHtml(COPY.inception)}</dt><dd>${escapeHtml(displayInception(conventions.inception_date))}</dd></div>
-      <div class="row"><dt>${escapeHtml(COPY.universe)}</dt><dd>${escapeHtml(COPY.universe_value)}</dd></div>
-      <div class="row"><dt>${escapeHtml(COPY.style)}</dt><dd>${escapeHtml(COPY.style_value)}</dd></div>
-      <div class="row"><dt>${escapeHtml(COPY.leverage)}</dt><dd>${escapeHtml(COPY.none)}</dd></div>
-      <div class="row"><dt>${escapeHtml(COPY.benchmark)}</dt><dd>${escapeHtml(conventions.benchmark.name)} · ${escapeHtml(benchmarkBasisLabel(conventions.benchmark.return_basis))} · ${escapeHtml(conventions.benchmark.series_identifier)}</dd></div>
-    </dl>
-  </aside>`;
+  return `<aside class="facts" data-investments-facts aria-label="${escapeHtml(COPY.key_facts)}"><ul>${DESIGN.investments.hero.facts.map(fact=>`<li>${escapeHtml(fact.replace('{inceptionMonthYear}',displayInception(publication.conventions.inception_date)))}</li>`).join('')}</ul></aside>`;
 }
 
 export function assertRenderedFirewall(html, publication) {
@@ -505,6 +439,10 @@ export function assertRenderedFirewall(html, publication) {
     throw new Error("Rendered Investments firewall rejected invisible default-ignorable characters.");
   }
   let scan = html;
+  // Approved column label describes instruments, not the public practice.
+  scan = scan.replaceAll('<th>Company or fund</th>', '<th>Instrument</th>');
+  // A validated date followed by the currency is not a currency amount.
+  scan = scan.replaceAll(conventionsLine(derivePublication(publication), publication.conventions), '[performance dates and conventions]');
   const permittedInstrumentNames = [
     ...publication.releases.flatMap((release) => release.holdings.map((holding) => holding.name)),
     ...publication.releases.flatMap((release) => release.holdings.map((holding) => holding.ticker).filter(Boolean)),

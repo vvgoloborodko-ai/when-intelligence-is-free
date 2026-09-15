@@ -1,11 +1,11 @@
 {
   "canonical_origin": "https://whenintelligenceisfree.com",
   "subscription_embed": {
-    "src": "https://read.whenintelligenceisfree.com/embed",
+    "src": "https://read.whenintelligenceisfree.com/embed?transparent=1&light=1",
     "title": "Subscribe to When Intelligence Is Free"
   },
   "identity": {
-    "logo_path": "/assets/logo.svg",
+    "logo_path": "/assets/brand/WIF_brandmark_transparent_dark.png",
     "favicon_path": "/assets/favicon-64.png",
     "apple_touch_icon_path": "/assets/apple-touch-icon.png",
     "site_name": "When Intelligence Is Free",
@@ -13,7 +13,7 @@
   },
   "author": {
     "name": "Vladimir Goloborodko",
-    "url": "https://whenintelligenceisfree.com/",
+    "url": "https://whenintelligenceisfree.com/about/",
     "same_as": [
       "https://www.linkedin.com/in/vgoloborodko",
       "https://read.whenintelligenceisfree.com"
@@ -24,7 +24,7 @@
     "home": {
       "path": "/",
       "title": "When Intelligence Is Free — The Post-AI Economy",
-      "description": "The price of thinking is collapsing, the way the price of electricity did a century ago. The biggest gains came from what cheap power made possible, not from selling the power itself.",
+      "description": "AI transforms the economy while eroding the profits of businesses we own today. I research where those profits move next and how to invest through the transition.",
       "social_image_path": "/assets/social-home.png",
       "social_image_alt": "When Intelligence Is Free — Research, Investments, Advisory",
       "social_image_width": 1728,
@@ -42,7 +42,7 @@
     "investments": {
       "path": "/investments/",
       "title": "Investments — When Intelligence Is Free",
-      "description": "A concentrated global strategy built on one rule: own what stays scarce when intelligence becomes abundant.",
+      "description": "I invest behind the research. See the positions, returns and decisions as the thesis meets the market.",
       "social_image_path": "/assets/social-investments.png",
       "social_image_alt": "Investments — The thesis, held as positions",
       "social_image_width": 1200,
@@ -51,9 +51,18 @@
     "advisory": {
       "path": "/advisory/",
       "title": "Advisory — When Intelligence Is Free",
-      "description": "I work with founders, companies and capital providers on decisions that sit between technology, market structure, product and capital: where value is moving, what becomes newly viable, where defensibility survives, and what to prioritize now.",
+      "description": "AI changes your market’s economics. I help founders, leadership teams and investors turn that shift into product and capital decisions.",
       "social_image_path": "/assets/social-advisory.png",
       "social_image_alt": "Advisory — Where AI changes enterprise value",
+      "social_image_width": 1200,
+      "social_image_height": 630
+    },
+    "about": {
+      "path": "/about/",
+      "title": "About — When Intelligence Is Free",
+      "description": "Investor, founder and consulting partner spanning Fortune 500 transformation, brokerage product leadership and fintech venture building.",
+      "social_image_path": "/assets/social-logo.png",
+      "social_image_alt": "When Intelligence Is Free — Vladimir Goloborodko",
       "social_image_width": 1200,
       "social_image_height": 630
     }
