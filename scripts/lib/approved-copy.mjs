@@ -12,7 +12,7 @@ export const BASELINE_SHA256 = "97623de9935415c9fa1dd24c77bf5c41590a46f85031929e
 export const APPROVED_SLEEVES_SHA256 = "801e06689459950fb0d20c600a41c3ef5b4afee4639073ec03725b4ac4494ff4";
 // Principal-approved 15 September 2026 handoff. Static HTML remains governed
 // by the dated replacement ledger; these pins also cover render-time labels/URLs.
-export const APPROVED_DESIGN_SHA256 = "d534a3a03ed1a758f5c6cb784e39854630623a1c11d3df2b0a1cc9b0dd2190e6";
+export const APPROVED_DESIGN_SHA256 = "7a378be732e7abf4048a31e3cf14ce48c6ca6455eef6613949068b3711e1b6dc";
 export const APPROVED_DESIGN_WORK_ORDER_SHA256 = "cb5e358641319f876786e2c897e585b05116371e3f0f7c6d36499edc23a0d083";
 
 function assertExactKeys(value, expected, label) {

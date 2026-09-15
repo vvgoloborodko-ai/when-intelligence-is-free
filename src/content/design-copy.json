@@ -178,7 +178,11 @@
       "id": "author",
       "eyebrow": "Written by",
       "name": "Vladimir Goloborodko",
-      "bio": "use shared.authorBio"
+      "bio": "Investor, founder and consulting partner",
+      "cta": {
+        "label": "About Vladimir →",
+        "link": "about"
+      }
     },
     "advisory": {
       "eyebrow": "Advisory",

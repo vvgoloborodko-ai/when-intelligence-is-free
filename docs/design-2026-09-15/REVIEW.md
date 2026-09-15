@@ -22,3 +22,8 @@
 ## Release
 
 The configured existing Site is used with its current audience preserved. Before this release, the saved production version was 12, with source 797f5ccca62e5a76384319ac2071937fcc343619 and deployment appgdep_6a99351099448191b4a96eed6ecdd935. The saved archive/version remains available for rollback by redeploying it. No analytics, access-policy or DNS change is requested. Build evidence deliberately describes build output and does not itself authorize publication; the principal's explicit approval governs this release.
+
+## Follow-up navigation refinement
+
+The principal requested a shorter Home author summary and an About link, plus a transparent three-line mobile menu. Home now says “Investor, founder and consulting partner” with “About Vladimir →”. The button retains its accessible Menu name, expanded state, keyboard controls and 44px touch target; its lines become a close icon when expanded. The detailed About biography is retained.
+Validation: all 62 tests passed on Node 22. Browser checks passed at 320, 390, 768 and 1440px, including the About destination and menu open/Escape/focus behavior. The desktop author row and mobile closed/open menu screenshots were inspected.
