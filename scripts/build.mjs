@@ -35,9 +35,9 @@ const SITES_WORKER = resolve(ROOT, "scripts/sites-worker.mjs");
 const STATIC = resolve(ROOT, "src/static");
 const IDENTITY_ASSETS = Object.freeze([
   [resolve(ROOT, "logos/wiif_lighthouse_square_master_v2.svg"), "logo.svg"],
-  [resolve(ROOT, "logos/wiif_lighthouse_favicon_v2.ico"), "favicon.ico"],
-  [resolve(ROOT, "logos/wiif_lighthouse_square_v2_64.png"), "favicon-64.png"],
-  [resolve(ROOT, "logos/wiif_lighthouse_square_v2_180.png"), "apple-touch-icon.png"],
+  [resolve(ROOT, "logos/wif-brand-favicon.ico"), "wif-brand-favicon.ico"],
+  [resolve(ROOT, "logos/wif-brand-favicon-64.png"), "wif-brand-favicon-64.png"],
+  [resolve(ROOT, "logos/wif-brand-apple-touch-icon-180.png"), "wif-brand-apple-touch-icon-180.png"],
   [resolve(ROOT, "logos/social-logo-1200x630.png"), "social-logo.png"],
   [resolve(ROOT, "logos/social-home-1728x910.png"), "social-home.png"],
   [resolve(ROOT, "logos/social-research-1200x630.png"), "social-research.png"],

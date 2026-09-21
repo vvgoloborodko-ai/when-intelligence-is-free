@@ -38,6 +38,11 @@ export function rewriteSocialPreviewForWhatsApp(html) {
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+    if (["/research", "/research/", "/research/index.html"].includes(url.pathname)) {
+      url.pathname = "/";
+      return Response.redirect(url.href, 301);
+    }
     if (!env.ASSETS || typeof env.ASSETS.fetch !== "function") {
       return new Response("Static asset binding unavailable.", { status: 500 });
     }

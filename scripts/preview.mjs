@@ -29,6 +29,11 @@ await buildSite({ requirePublication: process.argv.includes("--require-publicati
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host || "localhost"}`);
+    if (["/research", "/research/", "/research/index.html"].includes(url.pathname)) {
+      response.writeHead(301, { Location: `/${url.search}` });
+      response.end();
+      return;
+    }
     if (url.pathname === "/thesis" || url.pathname === "/thesis/") {
       response.writeHead(302, { Location: meta.thesis_url });
       response.end();
