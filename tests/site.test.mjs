@@ -78,6 +78,22 @@ test("external new-tab links carry safe relationship attributes", () => {
   for (const tag of tags) assert.match(tag, /rel="[^"]*noopener[^"]*"/);
 });
 
+test("retired research URLs permanently redirect home before serving assets", async () => {
+  for (const path of ["/research", "/research/", "/research/index.html"]) {
+    assert.ok(redirects.split(/\r?\n/).some((line) => {
+      const fields = line.trim().split(/\s+/);
+      return fields[0] === path && fields[1] === "/" && fields[2] === "301";
+    }));
+    for (const method of ["GET", "HEAD"]) {
+      const response = await sitesWorker.fetch(new Request(`https://whenintelligenceisfree.com${path}?ref=archive`, { method }), {
+        ASSETS: { fetch: () => assert.fail("Retired research content must not be served") }
+      });
+      assert.equal(response.status, 301);
+      assert.equal(response.headers.get("Location"), "https://whenintelligenceisfree.com/?ref=archive");
+    }
+  }
+});
+
 test("static routes select one view and share accessible navigation, metadata and native subscription", async () => {
   await buildSite({buildDate:new Date().toISOString().slice(0,10)});
   for(const [key,surface] of Object.entries(meta.surfaces)) {
@@ -91,6 +107,12 @@ test("static routes select one view and share accessible navigation, metadata an
     assert.ok(html.includes('src="https://read.whenintelligenceisfree.com/embed?transparent=1&light=1"'));
     assert.match(html,/title="Subscribe to When Intelligence Is Free"/);
     assert.match(html,/class="brand-logo"[^>]*alt="When Intelligence Is Free"/);
+    assert.deepEqual(html.match(/<link rel="(?:icon|apple-touch-icon)"[^>]*>/g), [
+      '<link rel="icon" type="image/x-icon" sizes="16x16 32x32 64x64" href="/assets/wif-brand-favicon.ico">',
+      '<link rel="icon" type="image/png" sizes="64x64" href="/assets/wif-brand-favicon-64.png">',
+      '<link rel="apple-touch-icon" sizes="180x180" href="/assets/wif-brand-apple-touch-icon-180.png">'
+    ]);
+    assert.doesNotMatch(html, /wiif_lighthouse_(?:favicon_v2|square_v2_(?:64|180))|\/assets\/(?:favicon\.ico|favicon-64\.png|apple-touch-icon\.png)/);
     assert.ok(html.includes('rel="canonical" href="'+meta.canonical_origin+surface.path+'"'));
     assert.ok(html.includes('<meta property="og:image" content="'+meta.canonical_origin+surface.social_image_path+'">'));
     assert.ok(html.includes('<meta name="twitter:image" content="'+meta.canonical_origin+surface.social_image_path+'">'));
@@ -128,6 +150,29 @@ test("static routes select one view and share accessible navigation, metadata an
   assert.match(mirrored,/data-view="about"/);
   assert.match(mirrored,/\/assets\/site\.css\?v=[a-f0-9]{12}/);
   assert.match(llms,/https:\/\/whenintelligenceisfree\.com\/research\//);
+  for (const base of ["../dist/assets/", "../dist/client/assets/"]) {
+    for (const [name, size] of [["wif-brand-favicon-64.png", 64], ["wif-brand-apple-touch-icon-180.png", 180]]) {
+      const png = await readFile(new URL(base + name, import.meta.url));
+      assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
+      assert.equal(png.readUInt32BE(16), size);
+      assert.equal(png.readUInt32BE(20), size);
+      assert.equal(png[25], 6, "RGBA transparency is preserved");
+    }
+    const ico = await readFile(new URL(base + "wif-brand-favicon.ico", import.meta.url));
+    assert.equal(ico.readUInt16LE(2), 1);
+    assert.equal(ico.readUInt16LE(4), 3);
+    for (const [i, size] of [16, 32, 64].entries()) {
+      const entry = 6 + i * 16;
+      assert.equal(ico[entry], size);
+      assert.equal(ico[entry + 1], size);
+      const frame = ico.subarray(ico.readUInt32LE(entry + 12), ico.readUInt32LE(entry + 12) + ico.readUInt32LE(entry + 8));
+      assert.equal(frame.readUInt32BE(16), size);
+      assert.equal(frame.readUInt32BE(20), size);
+    }
+    for (const legacy of ["favicon.ico", "favicon-64.png", "apple-touch-icon.png"]) {
+      await assert.rejects(readFile(new URL(base + legacy, import.meta.url)), { code: "ENOENT" });
+    }
+  }
 });
 
 test("GitHub CI owns publication history checks, build, and preview artifacts", () => {
@@ -151,35 +196,35 @@ test("local preview serves the lighthouse identity with browser-safe MIME types"
 });
 
 test("WhatsApp receives the logo card while Telegram keeps page-specific previews", async () => {
-  const researchHtml = await readFile(new URL("../dist/research/index.html", import.meta.url), "utf8");
-  const whatsappHtml = rewriteSocialPreviewForWhatsApp(researchHtml);
+  const advisoryHtml = await readFile(new URL("../dist/advisory/index.html", import.meta.url), "utf8");
+  const whatsappHtml = rewriteSocialPreviewForWhatsApp(advisoryHtml);
   assert.match(whatsappHtml, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-logo\.png">/);
   assert.match(whatsappHtml, /<meta property="og:image:width" content="1200">/);
   assert.match(whatsappHtml, /<meta property="og:image:height" content="630">/);
   assert.match(whatsappHtml, /<meta property="og:image:alt" content="When Intelligence Is Free lighthouse logo">/);
-  assert.doesNotMatch(whatsappHtml, /<meta property="og:image" content="[^\"]*social-research\.png">/);
-  assert.match(researchHtml, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-research\.png">/);
-  assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/research/", {
+  assert.doesNotMatch(whatsappHtml, /<meta property="og:image" content="[^\"]*social-advisory\.png">/);
+  assert.match(advisoryHtml, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-advisory\.png">/);
+  assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/advisory/", {
     headers: { "User-Agent": "WhatsApp/2.26.1" }
   })), true);
-  assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/research/", {
+  assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/advisory/", {
     headers: { "User-Agent": "TelegramBot (like TwitterBot)" }
   })), false);
   const assets = {
-    fetch: async () => new Response(researchHtml, {
+    fetch: async () => new Response(advisoryHtml, {
       headers: { "Content-Type": "text/html; charset=utf-8" }
     })
   };
-  const whatsappResponse = await sitesWorker.fetch(new Request("https://whenintelligenceisfree.com/research/", {
+  const whatsappResponse = await sitesWorker.fetch(new Request("https://whenintelligenceisfree.com/advisory/", {
     headers: { "User-Agent": "WhatsApp/2.26.1" }
   }), { ASSETS: assets });
   assert.equal(whatsappResponse.headers.get("Vary"), "User-Agent");
   assert.match(await whatsappResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-logo\.png">/);
-  const telegramResponse = await sitesWorker.fetch(new Request("https://whenintelligenceisfree.com/research/", {
+  const telegramResponse = await sitesWorker.fetch(new Request("https://whenintelligenceisfree.com/advisory/", {
     headers: { "User-Agent": "TelegramBot (like TwitterBot)" }
   }), { ASSETS: assets });
   assert.equal(telegramResponse.headers.get("Vary"), "User-Agent");
-  assert.match(await telegramResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-research\.png">/);
+  assert.match(await telegramResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-advisory\.png">/);
 });
 
 test("responsive CSS and progressive enhancement protect navigation and data", () => {
