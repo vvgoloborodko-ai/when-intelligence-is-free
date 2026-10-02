@@ -613,7 +613,7 @@ test("renderer uses derived rows, current as-of date, and escaped text", () => {
   assert.doesNotMatch(rendered.performance, /class="history-heading"/);
   assert.doesNotMatch(rendered.performance, /<details class="monthly-history-archive"/);
   assert.match(rendered.performance, /text-anchor="end">Mar 2025<\/text>/);
-  assert.match(rendered.attribution, /Synthetic validator fixture only\./);
+  assert.doesNotMatch(rendered.attribution, /Synthetic validator fixture only\./);
   assert.doesNotMatch(rendered.attribution, /Complete sleeve attribution/);
   assert.match(rendered.attribution, /class="close-note-section"/);
   assert.doesNotMatch(rendered.attribution, /attribution-heading-band|attribution-section/);
@@ -646,12 +646,13 @@ test("monthly history shows the latest three rows first and collapses the older 
   const publication = parsePublicationText(canonicalPublicationText);
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2026-08-21" });
   const history = rendered.performance.slice(rendered.performance.indexOf('<div class="history publication-monthly-history">'));
-  assert.equal((history.match(/<tr>/g) || []).length - 2, 20);
+  assert.equal((history.match(/<tr>/g) || []).length - 2, 21);
   assert.match(history, /Jan 2025/);
-  assert.match(history, /Aug 2026/);
+  assert.match(history, /Sep 2026/);
+  assert.ok(history.indexOf("Sep 2026") < history.indexOf("Aug 2026"));
   assert.match(history, /<th class="r">Strategy · net<\/th><th class="r">Nasdaq-100<\/th><th class="r">Difference<\/th>/);
   assert.match(history, /\+5\.4pp/);
-  assert.match(history, /Show earlier months \(17\)/);
+  assert.match(history, /Show earlier months \(18\)/);
   assert.ok(history.indexOf("Aug 2026") < history.indexOf("Jul 2026"));
   assert.ok(history.indexOf("Jul 2026") < history.indexOf("Jun 2026"));
   assert.ok(history.indexOf("Jun 2026") < history.indexOf("May 2026"));
@@ -687,22 +688,12 @@ test("Home proof and Investments use the same changed publication primitives", (
   assert.doesNotMatch(investments.performance, /· net, unaudited/);
 });
 
-test("approved commentary derives benchmark, monthly, excess, and cumulative tokens", () => {
+test("publication commentary tokens remain validated even when the editorial teaser replaces the excerpt", () => {
   const publication = fixture();
-  publication.releases[0].commentary.paragraphs = ["The strategy returned {{strategy_month_pct}} against {{benchmark_month_pct}} for the {{benchmark_name}}, a {{strategy_month_excess_pp}} beat. Since inception, the numbers are {{strategy_since_inception_pct}} against {{benchmark_since_inception_pct}}."];
-  const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
-  assert.match(rendered.attribution, /returned \+3\.00% against −1\.00% for the Nasdaq-100, a \+4\.00pp beat\./);
-  assert.match(rendered.attribution, /Since inception, the numbers are \+4\.0% against \+2\.0%\./);
-  assert.match(rendered.attribution, /class="approved-commentary publication-commentary"/);
+  publication.releases[0].commentary.paragraphs = ["The strategy returned {{strategy_month_pct}} against {{benchmark_month_pct}} for the {{benchmark_name}}."];
+  assert.doesNotThrow(() => assertValidPublication(publication));
   publication.releases[0].commentary.paragraphs = ["Unknown {{typed_statistic}}."];
   assert.throws(() => assertValidPublication(publication), /unknown derived commentary token/i);
-});
-
-test("optional commentary absence remains explicit", () => {
-  const publication = fixture();
-  delete publication.releases[0].commentary;
-  const rendered = renderInvestments(publication, sleeves, { buildDate: "2025-04-03" });
-  assert.match(rendered.attribution, /No approved Investments commentary for this close\./);
 });
 
 test("rendered firewall scans screen-reader-visible attributes", () => {
@@ -767,29 +758,20 @@ test("canonical holdings limit only presentation while the full source remains i
   assert.doesNotMatch(rendered.composition,/77\.3%|Published positions cover/);
 });
 
-test("current commentary uses two safe paragraphs and only a verified matching review URL", () => {
-  const publication = fixture();
-  publication.generated_at='2026-09-01T08:00:00Z';
-  for(let month=3;month<20;month++) {
-    const date=new Date(Date.UTC(2025,month+1,0));
-    const asOf=date.toISOString().slice(0,10);
-    publication.performance.push({...publication.performance.at(-1),period:asOf.slice(0,7),as_of_date:asOf});
+test("latest review stays a compact editorial teaser independent of monthly commentary", () => {
+  const publication = parsePublicationText(canonicalPublicationText);
+  for (const paragraphs of [undefined, ["The strategy returned {{strategy_month_pct}}.", "Repeated performance figures."]]) {
+    if (paragraphs) publication.releases.at(-1).commentary = { paragraphs };
+    else delete publication.releases.at(-1).commentary;
+    const { attribution } = renderInvestments(publication, sleeves, { buildDate: '2026-10-02' });
+    assert.match(attribution, /Q3 2026 · AI Capital Cycle Review/);
+    assert.match(attribution, /The Boom Can Break While the Business Grows/);
+    assert.match(attribution, /AI demand strengthened during Q3, but financing its expansion became harder. The review explores how useful infrastructure could change owners without the technology failing and where that could create opportunities./);
+    assert.match(attribution, /Read the Q3 review ↗/);
+    assert.ok(attribution.includes('href="https://read.whenintelligenceisfree.com/p/2609"'));
+    assert.equal((attribution.match(/<div class="close-note-body">([\s\S]*?)<\/div>/)[1].match(/<p>/g) || []).length, 1);
+    assert.doesNotMatch(attribution, /What drove the month|Repeated performance|strategy returned|No approved Investments commentary|2608|%/);
   }
-  publication.releases[0].period='2026-08';
-  publication.releases[0].commentary.paragraphs=['First approved paragraph.','The strategy returned {{strategy_month_pct}}.','Third approved paragraph.'];
-  const august = renderInvestments(publication,sleeves,{buildDate:'2026-09-15'});
-  assert.match(august.attribution,/Read the August investment review ↗/);
-  assert.match(august.attribution,/href="https:\/\/read.whenintelligenceisfree.com\/p\/2608"/);
-  assert.equal((august.attribution.match(/<div class="close-note-body">([\s\S]*?)<\/div>/)[1].match(/<p>/g)||[]).length,2);
-  const later = structuredClone(publication);
-  later.generated_at='2026-10-01T08:00:00Z';
-  later.performance.push({...later.performance.at(-1),period:'2026-09',as_of_date:'2026-09-30'});
-  later.releases.push({...structuredClone(later.releases.at(-1)),period:'2026-09'});
-  const september=renderInvestments(later,sleeves,{buildDate:'2026-10-02'});
-  assert.match(september.attribution,/September 2026 review/);
-  assert.match(september.attribution,/Read investment reviews ↗/);
-  assert.match(september.attribution,/href="https:\/\/read.whenintelligenceisfree.com\/t\/investments"/);
-  assert.doesNotMatch(september.attribution,/\/p\/2608/);
 });
 
 test("approved instrument header does not weaken the public-data firewall", () => {

@@ -276,9 +276,9 @@ The only form is:
 Paragraphs are escaped as text. HTML, Markdown links, URLs, email addresses,
 unapproved financial statistics, advice, solicitation, forward-looking return
 claims, and forbidden public-data language fail. Omit commentary when approval
-or sanitization is uncertain. The surface then states that no approved
-Investments commentary was published for that close, so the disappearance of
-an optional disclosure is not silent.
+or sanitization is uncertain. Commentary remains optional publication data. The Investments page now uses a
+separately approved editorial review teaser instead of monthly commentary; its
+copy and link are maintained in `src/content/design-copy.json`.
 
 The following derived tokens are allowed inside approved commentary:
 `{{benchmark_name}}`, `{{benchmark_month_abs_pct}}`,

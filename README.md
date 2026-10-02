@@ -27,7 +27,7 @@ styling, client behavior, and monthly Investments data.
   enhancement. The build server-selects one visible view per route, so the
   route remains readable when this script fails or is blocked.
 - `data/investments/publication.json` — the one and only monthly Investments
-  handoff, generated upstream. The current checkout contains the August 2026
+  handoff, generated upstream. The current checkout contains the September 2026
   close; the website renders its actual values, dates and conventions.
 - `schemas/investments-publication.schema.json` — machine-readable contract.
 - `scripts/` — copy guard, validator, deterministic calculations, static
@@ -60,10 +60,7 @@ This serves a local preview only. See
 
 Investments limits only its rendered positions to the five largest published
 weights, retaining source order on ties. The full publication, calculations,
-monthly history, and correction evidence remain intact. Review excerpts use
-the latest release's first two approved paragraphs. The August review URL is
-used only for the verified August period; later closes automatically link to
-the investment-review archive until a matching URL is approved.
+monthly history, and correction evidence remain intact. The compact editorial teaser uses the separately approved Q3 2026 review copy and URL. It does not repeat monthly commentary or performance figures. Update the teaser when a new review is approved, independently of the monthly close.
 
 Optional browser QA uses Playwright supplied by the development environment;
 it is not a runtime or build dependency. With the preview running, set

@@ -136,7 +136,7 @@ test("static routes select one view and share accessible navigation, metadata an
     if(key==='investments') {
       assert.match(html,/Top 5 published positions/);
       assert.doesNotMatch(html,/Return methodology and full history|77\.3%/);
-      assert.match(html,/What drove the month/);
+      assert.match(html,/The Boom Can Break While the Business Grows/);
       assert.match(html,/data-performance-view-control hidden role="group"/);
       assert.doesNotMatch(html,/class="performance-view [^"]*"[^>]* hidden/);
       assert.match(html,/class="history publication-monthly-history"/);
@@ -256,7 +256,7 @@ test("valid publication replaces every hard-coded Investments data block", () =>
   assert.equal((output.match(/data-investments-block="attribution"/g) || []).length, 1);
   assert.match(output, /table aria-labelledby="performance-heading"/);
   assert.match(output, /table[^>]* aria-labelledby="named-holdings-heading"/);
-  assert.match(output, /What drove the month/);
+  assert.match(output, /The Boom Can Break While the Business Grows/);
 });
 
 test("the canonical monthly handoff is optional before launch and validated whenever present", async () => {

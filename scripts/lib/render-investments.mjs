@@ -3,7 +3,6 @@ import { readFileSync } from "node:fs";
 import { assertValidPublication, derivePublication, publicationFirewallFlags } from "./investments.mjs";
 
 const COPY = Object.freeze(JSON.parse(readFileSync(new URL("../../src/content/investments-interface-copy.json", import.meta.url), "utf8")));
-const V3 = Object.freeze(JSON.parse(readFileSync(new URL("../../src/content/v3-work-order.json", import.meta.url), "utf8")));
 const DESIGN = Object.freeze(JSON.parse(readFileSync(new URL("../../src/content/design-copy.json", import.meta.url), "utf8")));
 const MONTHS = COPY.months;
 const MONTHS_LONG = COPY.months_long;
@@ -400,34 +399,9 @@ function compositionBlock(derived, sleeves, publication, buildDate) {
   return `<section data-investments-block="composition"><div class="wrap"><div class="block-head"><h2>${escapeHtml(labels.heading)}</h2>${asOfMarkup(derived.asOfDate,derived.currentPeriod,buildDate,publication.conventions)}</div><div class="portfolio-grid"><div class="portfolio-column"><h3 id="sleeves-heading">${escapeHtml(labels.sleevesHeading)}</h3><table class="sleeve-table" aria-labelledby="sleeves-heading"><tbody>${rows}</tbody></table></div><div class="portfolio-column"><h3 id="named-holdings-heading">${escapeHtml(labels.positionsHeading)}</h3><table class="publication-holdings-table" aria-labelledby="named-holdings-heading"><thead><tr><th>${escapeHtml(labels.positionHeaders[0])}</th><th class="r">${escapeHtml(labels.positionHeaders[1])}</th></tr></thead><tbody>${holdingRows}</tbody></table></div></div></div></section>`;
 }
 
-function renderCommentaryParagraph(paragraph, derived, benchmarkName) {
-  const latestPerformance = derived.performanceRows.at(-1);
-  const values = {
-    benchmark_name: benchmarkName,
-    benchmark_month_abs_pct: formatPct(Math.abs(latestPerformance.benchmarkMonthlyPct), { sign: false }),
-    strategy_month_pct: formatPct(latestPerformance.strategyMonthlyPct, { digits: 2 }),
-    benchmark_month_pct: formatPct(latestPerformance.benchmarkMonthlyPct, { digits: 2 }),
-    strategy_month_excess_pp: formatPp(
-      latestPerformance.strategyMonthlyPct - latestPerformance.benchmarkMonthlyPct,
-      { digits: 2 }
-    ),
-    strategy_since_inception_pct: formatPct(derived.summary.strategyCumulativePct),
-    benchmark_since_inception_pct: formatPct(derived.summary.benchmarkCumulativePct)
-  };
-  return paragraph.replace(/\{\{([^{}]+)\}\}/g, (_token, key) => {
-    if (!Object.hasOwn(values, key)) throw new Error(`Unknown derived commentary token: ${key}.`);
-    return values[key];
-  });
-}
-
-function attributionBlock(derived, sleeves, publication) {
+function attributionBlock() {
   const review = DESIGN.investments.review;
-  const verified = derived.currentPeriod === V3.investments.verified_review_period;
-  const label = verified ? review.ctaForVerifiedPeriod.replace('{month}', MONTHS_LONG[Number(derived.currentPeriod.slice(5))-1]) : review.fallbackCta;
-  const href = verified ? V3.investments.read_full_note_url : V3.investments.all_close_notes_url;
-  const paragraphs = derived.latestRelease.commentary?.paragraphs?.slice(0,2);
-  const commentary = paragraphs?.length ? paragraphs.map(p => `<p>${escapeHtml(renderCommentaryParagraph(p,derived,publication.conventions.benchmark.name))}</p>`).join('') : `<p>${escapeHtml(COPY.no_commentary)}</p>`;
-  return `<section class="close-note-section" data-investments-block="attribution"><div class="wrap"><article class="approved-commentary publication-commentary"><p class="eyebrow">${escapeHtml(displayPeriodLong(derived.currentPeriod))} review</p><h2>${escapeHtml(review.heading)}</h2><div class="close-note-body">${commentary}</div><a class="btn outline" href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label)}</a></article></div></section>`;
+  return `<section class="close-note-section" data-investments-block="attribution"><div class="wrap"><article class="approved-commentary publication-commentary"><p class="eyebrow">${escapeHtml(review.eyebrow)}</p><h2>${escapeHtml(review.heading)}</h2><div class="close-note-body"><p>${escapeHtml(review.description)}</p></div><a class="btn outline" href="${escapeHtml(DESIGN.links[review.link])}" target="_blank" rel="noopener">${escapeHtml(review.cta)}</a></article></div></section>`;
 }
 
 function factsBlock(publication) {
@@ -497,7 +471,7 @@ export function renderInvestments(publication, sleeves, { buildDate }) {
     facts: factsBlock(publication),
     performance: performanceBlock(derived, publication, buildDate),
     composition: compositionBlock(derived, sleeves, publication, buildDate),
-    attribution: attributionBlock(derived, sleeves, publication, buildDate)
+    attribution: attributionBlock()
   };
   assertRenderedFirewall(
     `${rendered.facts}${rendered.performance}${rendered.composition}${rendered.attribution}`,

@@ -84,6 +84,24 @@
       "from": "<button class=\"menu-toggle\" type=\"button\" aria-expanded=\"false\" aria-controls=\"primary-navigation\" hidden>Menu</button>",
       "to": "<button class=\"menu-toggle\" type=\"button\" aria-label=\"Menu\" aria-expanded=\"false\" aria-controls=\"primary-navigation\" hidden><span class=\"menu-icon\" aria-hidden=\"true\"><span></span><span></span><span></span></span></button>",
       "approved_on": "2026-09-15"
+    },
+    {
+      "id": "home-author-partner-copy-2026-10-02",
+      "approved_on": "2026-10-02",
+      "from": "<p>Investor, founder and consulting partner</p>",
+      "to": "<p>Investor, founder and partner in consulting &amp; venture businesses</p>"
+    },
+    {
+      "id": "about-hero-partner-copy-2026-10-02",
+      "approved_on": "2026-10-02",
+      "from": "<p class=\"premise\">Investor, founder and consulting partner spanning Fortune 500 transformation, brokerage product leadership and fintech venture building.</p>",
+      "to": "<p class=\"premise\">Investor, founder and partner in consulting &amp; venture businesses spanning Fortune 500 transformation, brokerage product leadership and fintech venture building.</p>"
+    },
+    {
+      "id": "about-experience-partner-copy-2026-10-02",
+      "approved_on": "2026-10-02",
+      "from": "<dd>A decade as a consulting partner delivering technology-led transformation for Fortune 500 and large financial services clients</dd>",
+      "to": "<dd>A decade as a partner in consulting &amp; venture businesses delivering technology-led transformation for Fortune 500 and large financial services clients</dd>"
     }
   ]
 }

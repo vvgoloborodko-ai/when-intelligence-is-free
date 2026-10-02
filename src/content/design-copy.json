@@ -16,7 +16,7 @@
     "substack": "https://read.whenintelligenceisfree.com/",
     "investmentArchive": "https://read.whenintelligenceisfree.com/t/investments",
     "linkedin": "https://www.linkedin.com/in/vgoloborodko",
-    "verifiedAugust2026Review": "https://read.whenintelligenceisfree.com/p/2608"
+    "latestReview": "https://read.whenintelligenceisfree.com/p/2609"
   },
   "shared": {
     "navigation": [
@@ -41,7 +41,7 @@
         "href": "#subscribe"
       }
     ],
-    "authorBio": "Investor, founder and consulting partner spanning Fortune 500 transformation, brokerage product leadership and fintech venture building.",
+    "authorBio": "Investor, founder and partner in consulting & venture businesses spanning Fortune 500 transformation, brokerage product leadership and fintech venture building.",
     "subscription": {
       "headingLines": [
         "Follow the thesis and",
@@ -178,7 +178,7 @@
       "id": "author",
       "eyebrow": "Written by",
       "name": "Vladimir Goloborodko",
-      "bio": "Investor, founder and consulting partner",
+      "bio": "Investor, founder and partner in consulting & venture businesses",
       "cta": {
         "label": "About Vladimir →",
         "link": "about"
@@ -249,14 +249,12 @@
       "sleeveLabels": "Use existing src/content/investment-sleeves.json labels and order"
     },
     "review": {
-      "eyebrow": "{latestMonthYear} review",
-      "heading": "What drove the month",
-      "bodySource": "Use the latest release's approved commentary and existing safe token renderer. The mock's August prose is a dated visual example. See implementation spec for the excerpt and current-link behavior.",
-      "currentVerifiedPeriod": "2026-08",
-      "currentVerifiedLink": "verifiedAugust2026Review",
-      "ctaForVerifiedPeriod": "Read the {month} investment review ↗",
-      "fallbackCta": "Read investment reviews ↗",
-      "fallbackLink": "investmentArchive"
+      "approved_on": "2026-10-02",
+      "eyebrow": "Q3 2026 · AI Capital Cycle Review",
+      "heading": "The Boom Can Break While the Business Grows",
+      "description": "AI demand strengthened during Q3, but financing its expansion became harder. The review explores how useful infrastructure could change owners without the technology failing and where that could create opportunities.",
+      "cta": "Read the Q3 review ↗",
+      "link": "latestReview"
     }
   },
   "advisory": {
@@ -391,7 +389,7 @@
       "items": [
         {
           "label": "Consulting & transformation",
-          "body": "A decade as a consulting partner delivering technology-led transformation for Fortune 500 and large financial services clients"
+          "body": "A decade as a partner in consulting & venture businesses delivering technology-led transformation for Fortune 500 and large financial services clients"
         },
         {
           "label": "Business leadership",
