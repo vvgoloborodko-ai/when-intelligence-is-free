@@ -13,6 +13,30 @@ const fs=require('fs');const assert=require('assert/strict');
    const layout=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth,overflowElements:[...document.querySelectorAll('body *')].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.right>innerWidth+1||r.left< -1)&&!e.closest('.chart,.tblwrap,.tp-chart')}).map(e=>({tag:e.tagName,cls:e.className,rect:e.getBoundingClientRect().toJSON()})),portfolio:[...document.querySelectorAll('.portfolio-column h3,.portfolio-column tbody')].map(e=>({tag:e.tagName,rect:e.getBoundingClientRect().toJSON()}))}));
    results.push({route,width,...layout});
    assert.equal(layout.overflow,false,route+' at '+width+'px has page overflow');
+   if(route==='home'){
+    const labelStyles=await page.evaluate(()=>['#author .eyebrow','.home-proof .eyebrow'].map(selector=>{
+     const style=getComputedStyle(document.querySelector(selector));return [style.fontSize,style.fontFamily,style.letterSpacing];
+    }));
+    assert.deepEqual(labelStyles[0],labelStyles[1],'About and Investments section labels match');
+   }
+   if(route==='about'){
+    const cases=page.locator('.additional-case');assert.equal(await cases.count(),3);
+    for(let i=0;i<3;i++){
+     const item=cases.nth(i),summary=item.locator('summary'),body=item.locator('.case-expansion');
+     assert.equal(await body.isVisible(),false);
+     await summary.click();assert.equal(await body.isVisible(),true);
+     assert.equal(await body.locator('p').count(),2);
+     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'expanded case fits at '+width+'px');
+     await summary.press('Enter');assert.equal(await body.isVisible(),false);
+     await summary.press('Space');assert.equal(await body.isVisible(),true);
+     await summary.press('Space');assert.equal(await body.isVisible(),false);
+    }
+    for(const link of await page.locator('.about-anchor-links a').all()){
+     const href=await link.getAttribute('href');await link.click();
+     const top=await page.locator(href).evaluate(el=>el.getBoundingClientRect().top);
+     assert.ok(top>=0&&top<1000,'section index reaches '+href);
+    }
+   }
    if(route==='investments' && width===1440) {
     assert.ok(Math.abs(layout.portfolio[0].rect.top-layout.portfolio[2].rect.top)<1,'portfolio heading alignment');
     assert.ok(Math.abs(layout.portfolio[1].rect.top-layout.portfolio[3].rect.top)<1,'portfolio row-region alignment');
@@ -43,6 +67,11 @@ const fs=require('fs');const assert=require('assert/strict');
   await page.goto('http://127.0.0.1:4173/'+(route==='home'?'':route+'/'));
   assert.equal(await page.locator('h1').isVisible(),true);
   assert.equal(await page.locator('#primary-navigation').isVisible(),true);
+  if(route==='about'){
+   for(const item of await page.locator('.additional-case').all()){
+    await item.locator('summary').click();assert.equal(await item.locator('.case-expansion').isVisible(),true);
+   }
+  }
   await page.locator('a[data-nav="subscribe"]').click();
   if(route==='investments'){assert.equal(await page.locator('#performance-monthly-view').isVisible(),true);assert.equal(await page.locator('#performance-cumulative-view').isVisible(),true);}
  }
