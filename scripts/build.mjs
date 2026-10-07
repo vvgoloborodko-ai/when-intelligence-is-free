@@ -89,7 +89,7 @@ function selectRouteView(source, routeKey) {
   if (mainStart < 0 || mainEnd < 0) throw new Error("Missing single site-content main boundary.");
   const innerStart = mainStart + mainOpen.length;
   const inner = source.slice(innerStart, mainEnd);
-  const keys = ["home", "research", "investments", "advisory", "about"];
+  const keys = ["home", "research", "investments", "about"];
   const positions = new Map(keys.map((key) => [key, inner.indexOf(`<!-- ==================== ${key.toUpperCase()} ==================== -->`)]));
   if ([...positions.values()].some((position) => position < 0)) throw new Error("Missing approved route-view marker.");
   const start = positions.get(routeKey);

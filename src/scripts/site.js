@@ -22,7 +22,7 @@
     });
   }
   // Keep pre-route inbound hashes. Section and subscription links remain native.
-  var routes = {home:'/',research:'/research/',investments:'/investments/',advisory:'/advisory/',about:'/about/'};
+  var routes = {home:'/',research:'/research/',investments:'/investments/',advisory:'/about/',about:'/about/'};
   function legacyRoute() {
     var key = location.hash.slice(1);
     if (routes[key] && !document.getElementById(key)) location.replace(routes[key]);

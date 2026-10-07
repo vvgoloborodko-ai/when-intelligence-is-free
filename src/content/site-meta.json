@@ -48,19 +48,10 @@
       "social_image_width": 1200,
       "social_image_height": 630
     },
-    "advisory": {
-      "path": "/advisory/",
-      "title": "Advisory — When Intelligence Is Free",
-      "description": "AI changes your market’s economics. I help founders, leadership teams and investors turn that shift into product and capital decisions.",
-      "social_image_path": "/assets/social-advisory.png",
-      "social_image_alt": "Advisory — Where AI changes enterprise value",
-      "social_image_width": 1200,
-      "social_image_height": 630
-    },
     "about": {
       "path": "/about/",
       "title": "About — When Intelligence Is Free",
-      "description": "Investor, founder and partner in consulting & venture businesses spanning Fortune 500 transformation, brokerage product leadership and fintech venture building.",
+      "description": "Vladimir Goloborodko works with businesses to understand what is holding value back and change the system producing it. Track record, approach and ways to work together.",
       "social_image_path": "/assets/social-logo.png",
       "social_image_alt": "When Intelligence Is Free — Vladimir Goloborodko",
       "social_image_width": 1200,

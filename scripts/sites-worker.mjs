@@ -39,6 +39,10 @@ export function rewriteSocialPreviewForWhatsApp(html) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (["/advisory", "/advisory/", "/advisory/index.html"].includes(url.pathname)) {
+      url.pathname = "/about/";
+      return Response.redirect(url.href, 301);
+    }
     if (["/research", "/research/", "/research/index.html"].includes(url.pathname)) {
       url.pathname = "/";
       return Response.redirect(url.href, 301);

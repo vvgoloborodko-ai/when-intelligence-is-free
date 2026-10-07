@@ -39,10 +39,10 @@ test("approved September handoff is dated and synchronized with visible metadata
   assert.ok(copyChanges.changes.some(({id}) => id === 'home-hero-premise-2026-08-20'));
 });
 
-test("approved content has five views, one shared footer, and semantic content", () => {
+test("approved content has four views, one shared footer, and semantic content", () => {
   assert.equal((content.match(/<main\b/g)||[]).length,1);
-  assert.equal((content.match(/class="view"/g)||[]).length,5);
-  assert.equal((content.match(/<h1\b/g)||[]).length,5);
+  assert.equal((content.match(/class="view"/g)||[]).length,4);
+  assert.equal((content.match(/<h1\b/g)||[]).length,4);
   assert.equal((content.match(/<iframe\b/g)||[]).length,1);
   assert.match(content,/width="480" height="150" style="border: 0; background: transparent"/);
   assert.match(content,/id="about"/);
@@ -128,6 +128,11 @@ test("static routes select one view and share accessible navigation, metadata an
     assert.equal(social.readUInt32BE(16),surface.social_image_width);
     assert.equal(social.readUInt32BE(20),surface.social_image_height);
     if(key==='home') {
+      const author = html.match(/<section id="author"[\s\S]*?<\/section>/)[0];
+      assert.equal((author.match(/<h2>/g) || []).length, 1);
+      assert.equal((author.match(/<a /g) || []).length, 1);
+      assert.match(author, /href="\/about\/"/);
+      assert.doesNotMatch(html, /calendly\.com|href="\/advisory\/"|Written by/);
       assert.equal((html.match(/class="framework-item /g)||[]).length,4);
       const hero=html.slice(html.indexOf('class="hero wrap"'),html.indexOf('id="framework"'));
       assert.doesNotMatch(hero,/<a |Vladimir|>WIF</);
@@ -141,7 +146,7 @@ test("static routes select one view and share accessible navigation, metadata an
       assert.doesNotMatch(html,/class="performance-view [^"]*"[^>]* hidden/);
       assert.match(html,/class="history publication-monthly-history"/);
     }
-    if(key==='advisory')assert.equal((html.match(/href="https:\/\/calendly.com\/vlad-whenintelligenceisfree\/30min"/g)||[]).length,2);
+    if(key==='about')assert.equal((html.match(/href="https:\/\/calendly.com\/vlad-whenintelligenceisfree\/30min"/g)||[]).length,2);
   }
   const worker=await readFile(new URL('../dist/server/index.js',import.meta.url),'utf8');
   assert.equal(await readFile(new URL('../dist/_worker.js',import.meta.url),'utf8'),worker);
@@ -175,6 +180,37 @@ test("static routes select one view and share accessible navigation, metadata an
   }
 });
 
+test("retired Advisory URLs redirect to About for GET and HEAD, preserving queries", async () => {
+  for (const path of ["/advisory", "/advisory/", "/advisory/index.html"]) {
+    assert.ok(redirects.split(/\r?\n/).some(line => {
+      const fields = line.trim().split(/\s+/);
+      return fields[0] === path && fields[1] === "/about/" && fields[2] === "301";
+    }));
+    for (const method of ["GET", "HEAD"]) {
+      const response = await sitesWorker.fetch(new Request(`https://whenintelligenceisfree.com${path}?ref=legacy`, {method}), {
+        ASSETS: {fetch: () => assert.fail("Retired Advisory must not serve a duplicate page")}
+      });
+      assert.equal(response.status, 301);
+      assert.equal(response.headers.get("Location"), "https://whenintelligenceisfree.com/about/?ref=legacy");
+    }
+  }
+  assert.match(client, /advisory:'\/about\/'/);
+  assert.doesNotMatch(sitemap, /\/advisory\//);
+  assert.doesNotMatch(content, /href="\/advisory\/"/);
+});
+
+test("merged About includes mock sections and four equally structured engagement terms", async () => {
+  const html = await readFile(new URL('../dist/about/index.html', import.meta.url), 'utf8');
+  for (const id of ['track-record', 'working-together', 'how-i-work', 'engagement', 'research-investing', 'career']) {
+    assert.ok(html.includes(`id="${id}"`));
+  }
+  const terms = html.match(/<dl class="engagement-terms">([\s\S]*?)<\/dl>/)[1];
+  assert.deepEqual([...terms.matchAll(/<div><dt>(.*?)<\/dt><dd>/g)].map(m => m[1]), ['Start', 'Form', 'Duration', 'Geography']);
+  assert.match(terms, /Based in the Netherlands; internationally mobile/);
+  assert.equal((html.match(/class="case-study"/g) || []).length, 3);
+  assert.doesNotMatch(html, /data-nav="advisory"/);
+});
+
 test("GitHub CI owns publication history checks, build, and preview artifacts", () => {
   assert.equal(nodeVersion.trim(), "22");
   assert.match(websiteWorkflow, /fetch-depth: 0/);
@@ -196,35 +232,35 @@ test("local preview serves the lighthouse identity with browser-safe MIME types"
 });
 
 test("WhatsApp receives the logo card while Telegram keeps page-specific previews", async () => {
-  const advisoryHtml = await readFile(new URL("../dist/advisory/index.html", import.meta.url), "utf8");
-  const whatsappHtml = rewriteSocialPreviewForWhatsApp(advisoryHtml);
+  const investmentsHtml = await readFile(new URL("../dist/investments/index.html", import.meta.url), "utf8");
+  const whatsappHtml = rewriteSocialPreviewForWhatsApp(investmentsHtml);
   assert.match(whatsappHtml, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-logo\.png">/);
   assert.match(whatsappHtml, /<meta property="og:image:width" content="1200">/);
   assert.match(whatsappHtml, /<meta property="og:image:height" content="630">/);
   assert.match(whatsappHtml, /<meta property="og:image:alt" content="When Intelligence Is Free lighthouse logo">/);
-  assert.doesNotMatch(whatsappHtml, /<meta property="og:image" content="[^\"]*social-advisory\.png">/);
-  assert.match(advisoryHtml, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-advisory\.png">/);
-  assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/advisory/", {
+  assert.doesNotMatch(whatsappHtml, /<meta property="og:image" content="[^\"]*social-investments\.png">/);
+  assert.match(investmentsHtml, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-investments\.png">/);
+  assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/investments/", {
     headers: { "User-Agent": "WhatsApp/2.26.1" }
   })), true);
-  assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/advisory/", {
+  assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/investments/", {
     headers: { "User-Agent": "TelegramBot (like TwitterBot)" }
   })), false);
   const assets = {
-    fetch: async () => new Response(advisoryHtml, {
+    fetch: async () => new Response(investmentsHtml, {
       headers: { "Content-Type": "text/html; charset=utf-8" }
     })
   };
-  const whatsappResponse = await sitesWorker.fetch(new Request("https://whenintelligenceisfree.com/advisory/", {
+  const whatsappResponse = await sitesWorker.fetch(new Request("https://whenintelligenceisfree.com/investments/", {
     headers: { "User-Agent": "WhatsApp/2.26.1" }
   }), { ASSETS: assets });
   assert.equal(whatsappResponse.headers.get("Vary"), "User-Agent");
   assert.match(await whatsappResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-logo\.png">/);
-  const telegramResponse = await sitesWorker.fetch(new Request("https://whenintelligenceisfree.com/advisory/", {
+  const telegramResponse = await sitesWorker.fetch(new Request("https://whenintelligenceisfree.com/investments/", {
     headers: { "User-Agent": "TelegramBot (like TwitterBot)" }
   }), { ASSETS: assets });
   assert.equal(telegramResponse.headers.get("Vary"), "User-Agent");
-  assert.match(await telegramResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-advisory\.png">/);
+  assert.match(await telegramResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-investments\.png">/);
 });
 
 test("responsive CSS and progressive enhancement protect navigation and data", () => {

@@ -21,7 +21,7 @@ const fs=require('fs');const assert=require('assert/strict');
    if(width<=800){await page.getByRole('button',{name:'Menu',exact:true}).click();assert.equal(await page.locator('.menu-toggle').getAttribute('aria-expanded'),'true');}
    await page.locator('a[data-nav="subscribe"]').click();
    assert.equal(new URL(page.url()).hash,'#subscribe');
-   assert.equal(new URL(page.url()).pathname,route==='home'?'/':'/'+route+'/');
+   assert.equal(new URL(page.url()).pathname,route==='home'||route==='research'?'/':route==='advisory'?'/about/':'/'+route+'/');
    await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
    if(width<=800)await page.getByRole('button',{name:'Menu',exact:true}).click();
    await page.locator('a[data-nav="subscribe"]').click();
@@ -42,12 +42,12 @@ const fs=require('fs');const assert=require('assert/strict');
  for(const route of ['home','investments','advisory','about','research']){
   await page.goto('http://127.0.0.1:4173/'+(route==='home'?'':route+'/'));
   assert.equal(await page.locator('h1').isVisible(),true);
-  assert.equal(await page.locator('nav').isVisible(),true);
+  assert.equal(await page.locator('#primary-navigation').isVisible(),true);
   await page.locator('a[data-nav="subscribe"]').click();
   if(route==='investments'){assert.equal(await page.locator('#performance-monthly-view').isVisible(),true);assert.equal(await page.locator('#performance-cumulative-view').isVisible(),true);}
  }
  const thesis=await page.request.get('http://127.0.0.1:4173/thesis',{maxRedirects:0});assert.equal(thesis.status(),302);assert.equal(thesis.headers().location,'https://read.whenintelligenceisfree.com/p/thesis');
- fs.writeFileSync('docs/design-2026-09-15/functional-measurements.json',JSON.stringify({checks:'Native navigation; local and repeated Subscribe; keyboard performance control; five no-JS routes; thesis redirect',results},null,2));
+ fs.writeFileSync('.release/browser-qa.json',JSON.stringify({checks:'Native navigation; local and repeated Subscribe; keyboard performance control; five no-JS routes; thesis redirect',results},null,2));
  console.log(JSON.stringify(results.filter(r=>r.overflow),null,2));
  await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});

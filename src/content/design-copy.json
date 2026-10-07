@@ -1,5 +1,5 @@
 {
-  "_notes": "Authoritative static UI copy. Dynamic investment values, names, dates, conventions and commentary come from the repository publication pipeline. Text in reference PNGs yields to this file and IMPLEMENTATION-SPEC.md. Body line arrays are desktop composition hints; allow natural wrapping on narrow screens.",
+  "_notes": "Authoritative static UI copy. Dynamic investment values, names, dates, conventions and commentary come from the repository publication pipeline. Text in reference PNGs yields to this file and IMPLEMENTATION-SPEC.md. Body line arrays are desktop composition hints; allow natural wrapping on narrow screens. About and homepage author copy superseded by the user-approved production-mock.pdf and 7 October 2026 instructions; exact content is governed by the dated replacement ledger.",
   "site": {
     "name": "When Intelligence Is Free",
     "language": "en",
@@ -8,7 +8,7 @@
   "links": {
     "home": "/",
     "investments": "/investments/",
-    "advisory": "/advisory/",
+    "advisory": "/about/",
     "about": "/about/",
     "foundingEssay": "https://read.whenintelligenceisfree.com/p/thesis",
     "capitalCycleEssay": "https://read.whenintelligenceisfree.com/p/time-path",
@@ -27,10 +27,6 @@
       {
         "label": "Investments",
         "href": "/investments/"
-      },
-      {
-        "label": "Advisory",
-        "href": "/advisory/"
       },
       {
         "label": "About",

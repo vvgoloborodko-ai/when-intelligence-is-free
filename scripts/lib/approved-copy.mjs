@@ -10,10 +10,10 @@ export const APPROVED_COPY_CHANGES_PATH = resolve(ROOT, "src/content/approved-co
 export const APPROVED_SLEEVES_PATH = resolve(ROOT, "src/content/investment-sleeves.json");
 export const BASELINE_SHA256 = "97623de9935415c9fa1dd24c77bf5c41590a46f85031929e257f9f15d51c6b67";
 export const APPROVED_SLEEVES_SHA256 = "801e06689459950fb0d20c600a41c3ef5b4afee4639073ec03725b4ac4494ff4";
-// Principal-approved design, updated with 2 October 2026 review and partner copy.
+// Principal-approved design, updated with the 7 October 2026 About merge and production mock.
 // Static HTML remains governed
 // by the dated replacement ledger; these pins also cover render-time labels/URLs.
-export const APPROVED_DESIGN_SHA256 = "471cd40253b4e62d18272bfdb340b647b4efe46819737070d30538101bba943b";
+export const APPROVED_DESIGN_SHA256 = "fbd3fc2b24af81cbb98ece33c203e670b09fe799f939cd54610a68389ae64c8a";
 export const APPROVED_DESIGN_WORK_ORDER_SHA256 = "b292ff1716b1674b053668907ac1ed81a5a636ca667d650bc64b34706d379f80";
 
 function assertExactKeys(value, expected, label) {

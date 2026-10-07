@@ -37,8 +37,8 @@ styling, client behavior, and monthly Investments data.
 - `.github/workflows/` — general website CI plus the publication-only PR
   validator and preview-artifact build.
 - `dist/` — generated Cloudflare Pages output for `/`, `/research/`,
-  `/investments/`, `/advisory/`, and `/about/`; never production-published by these
-  scripts.
+  `/investments/` and `/about/`; `/advisory/` permanently redirects to `/about/`.
+  Output is never production-published by these scripts.
 - `.release/release-evidence.json` — local, ignored build evidence; it is never
   copied into deployable output.
 
@@ -48,10 +48,19 @@ deliberately before a future approved baseline can replace the current one.
 
 ## September 2026 design preview
 
-The four approved surfaces are Home (the primary Research destination),
-Investments, Advisory, and About. `/research/` retains the deeper research
-content. All five documents use a shared header and transparent subscription
-footer. The header Subscribe link always targets the current document.
+The 7 October 2026 update merges Advisory into About using the owner's
+`production-mock.pdf`, while preserving the shared header, fonts, subscription
+form and footer. The homepage has one author section linking to About, with no
+booking CTA. About includes the selected track record, operating approach,
+engagement terms (Start, Form, Duration and Geography), research and career.
+The dated copy ledger records this approval. Cloudflare Pages deploys GitHub
+`main` to `https://whenintelligenceisfree.com`; the separate private Sites copy
+is not the public production deployment.
+
+The current public surfaces are Home (the primary Research destination),
+Investments and About. `/research/` permanently redirects home; `/advisory/`
+permanently redirects to About. All pages use a shared header and transparent
+subscription footer. The header Subscribe link always targets the current document.
 
 Run `npm run preview:release`, then open `http://127.0.0.1:4173/`.
 This serves a local preview only. See
