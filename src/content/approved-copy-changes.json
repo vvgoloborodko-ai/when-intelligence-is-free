@@ -138,6 +138,30 @@
       "approved_on": "2026-10-07",
       "from": "<dl class=\"additional-cases\"><div><dt>Tinkoff Insurance · 2013–2014</dt><dd>Online sales live in five months</dd></div><div><dt>Fortune Global 500 bank · 2010–2013</dt><dd>Programme recovery · ~30,000 users</dd></div><div><dt>Large retail bank · 2014–2015</dt><dd>Turnaround through a portfolio leader</dd></div></dl>",
       "to": "<div class=\"additional-cases\">\n<details class=\"additional-case\">\n<summary><span class=\"case-client\">Tinkoff Insurance · 2013–2014</span><span class=\"case-proof\">Online sales live in five months</span><span class=\"case-toggle\" aria-hidden=\"true\"></span></summary>\n<div class=\"case-expansion\">\n<p><strong>Greenfield under hard constraints.</strong> A new insurer’s core platform on a roughly $7M fixed-price programme. The binding constraint was scarce Guidewire expertise, so I built a ~30-person core team around the limited experienced talent available and ran inception as one team with the client and Guidewire Professional Services.</p>\n<p>Online sales went live five months after implementation start, followed by phone sales a month later and further releases during the year. The fixed-price programme then became a continuing time-and-materials relationship as the client internalised the operating model.</p>\n</div>\n</details>\n<details class=\"additional-case\">\n<summary><span class=\"case-client\">Fortune Global 500 bank · 2010–2013</span><span class=\"case-proof\">Programme recovery · ~30,000 users</span><span class=\"case-toggle\" aria-hidden=\"true\"></span></summary>\n<div class=\"case-expansion\">\n<p><strong>A stalled multi-vendor programme where the problem was the system, not the technology.</strong> Business units, internal IT, a prime contractor and our team were working under fixed-price commitments without a shared production cycle connecting demand to delivery.</p>\n<p>I designed a common release model with fixed dates, capacity rules, prioritisation, entry criteria and explicit obligations for every party. Delivery became predictable, the team grew from ~50 to ~100, the programme reached ~30,000 users, the engagement economics recovered, and the client later absorbed the operating model into its own technology organisation.</p>\n</div>\n</details>\n<details class=\"additional-case\">\n<summary><span class=\"case-client\">Large retail bank · 2014–2015</span><span class=\"case-proof\">Turnaround through a portfolio leader</span><span class=\"case-toggle\" aria-hidden=\"true\"></span></summary>\n<div class=\"case-expansion\">\n<p><strong>Transformation through others.</strong> The largest programme in my portfolio, representing roughly a third of portfolio revenue, was loss-making and had a dissatisfied client. With the portfolio manager, I diagnosed the problem and designed the recovery model and the case for changing how the programme operated.</p>\n<p>I joined the critical executive discussions as the authority, but the portfolio manager owned execution. The programme recovered. For me, the important result was that the approach had become an organisational capability rather than something that depended on me personally.</p>\n</div>\n</details>\n</div>"
+    },
+    {
+      "id": "about-platform-logic-2026-10-07",
+      "approved_on": "2026-10-07",
+      "from": "I make the economics, ownership, constraints and decision rights legible. Then I work with management to change what is holding the business back.",
+      "to": "I make the economics, product and platform logic, ownership, constraints and decision rights legible. Then I work with management to change what is holding the business back."
+    },
+    {
+      "id": "woolsocks-platform-leadership-2026-10-07",
+      "approved_on": "2026-10-07",
+      "from": "Built delivery capacity, then resized it as growth expectations changed. Integrated five acquired businesses with in-house investment and gift-card products into one platform.",
+      "to": "Built product and delivery capacity and initially led six teams across Amsterdam and the Baltics. As growth expectations changed, I resized capacity, integrated five acquired businesses and consolidated relevant B2B SaaS/API capabilities into the unified platform."
+    },
+    {
+      "id": "degiro-product-direction-2026-10-07",
+      "approved_on": "2026-10-07",
+      "from": "Built formal business reviews, capacity quotas and one prioritised backlog. Restructured delivery into cross-functional squads with Product Owners.",
+      "to": "Built formal business reviews, capacity quotas and one prioritised backlog. Restructured development into 12 cross-functional squads across three tribes and, while the new leadership structure was being staffed, operated at tribe/GPM level across product direction, prioritisation, capacity allocation and cross-squad decisions."
+    },
+    {
+      "id": "scale-up-platform-constraints-2026-10-07",
+      "approved_on": "2026-10-07",
+      "from": "<h3>Scale-up constraints</h3><p>The company has outgrown informal coordination. How should priorities, capacity and accountability now connect?</p>",
+      "to": "<h3>Scale-up &amp; platform constraints</h3><p>The company has outgrown informal coordination or the platform has accumulated too much complexity. What should remain, what should be simplified, and how should product priorities, technology capacity and accountability connect?</p>"
     }
   ]
 }
