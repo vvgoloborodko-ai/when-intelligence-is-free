@@ -34,6 +34,7 @@ const CLIENT = resolve(ROOT, "src/scripts/site.js");
 const SITES_WORKER = resolve(ROOT, "scripts/sites-worker.mjs");
 const STATIC = resolve(ROOT, "src/static");
 const IDENTITY_ASSETS = Object.freeze([
+  [resolve(ROOT, "logos/social-ai-capital-cycle-v2-1200x630.png"), "social-ai-capital-cycle-v2-1200x630.png"],
   [resolve(ROOT, "logos/social-wide-1200x630.png"), "social-wide-1200x630.png"],
   [resolve(ROOT, "logos/wiif_lighthouse_square_master_v2.svg"), "logo.svg"],
   [resolve(ROOT, "logos/wif-brand-favicon.ico"), "wif-brand-favicon.ico"],

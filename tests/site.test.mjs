@@ -238,8 +238,8 @@ test("WhatsApp receives the logo card while Telegram receives the wide brand pre
   assert.match(whatsappHtml, /<meta property="og:image:width" content="1200">/);
   assert.match(whatsappHtml, /<meta property="og:image:height" content="630">/);
   assert.match(whatsappHtml, /<meta property="og:image:alt" content="When Intelligence Is Free lighthouse logo">/);
-  assert.doesNotMatch(whatsappHtml, /<meta property="og:image" content="[^\"]*social-wide-1200x630\.png">/);
-  assert.match(investmentsHtml, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-wide-1200x630\.png">/);
+  assert.doesNotMatch(whatsappHtml, /<meta property="og:image" content="[^\"]*social-ai-capital-cycle-v2-1200x630\.png">/);
+  assert.match(investmentsHtml, /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-ai-capital-cycle-v2-1200x630\.png">/);
   assert.equal(isWhatsAppPreviewRequest(new Request("https://whenintelligenceisfree.com/investments/", {
     headers: { "User-Agent": "WhatsApp/2.26.1" }
   })), true);
@@ -260,7 +260,7 @@ test("WhatsApp receives the logo card while Telegram receives the wide brand pre
     headers: { "User-Agent": "TelegramBot (like TwitterBot)" }
   }), { ASSETS: assets });
   assert.equal(telegramResponse.headers.get("Vary"), "User-Agent");
-  assert.match(await telegramResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-wide-1200x630\.png">/);
+  assert.match(await telegramResponse.text(), /<meta property="og:image" content="https:\/\/whenintelligenceisfree\.com\/assets\/social-ai-capital-cycle-v2-1200x630\.png">/);
 });
 
 test("responsive CSS and progressive enhancement protect navigation and data", () => {
