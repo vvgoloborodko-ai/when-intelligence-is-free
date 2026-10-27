@@ -29,3 +29,7 @@ Previous production source: `2e1001db8ec34f2d1cd7d8cf000ad5e28a94bb75`, includin
 the independently updated social preview asset. Roll back by reverting this
 release commit on main and letting Cloudflare redeploy; retain unrelated later
 changes. No hosting credentials or private source documents are in this release.
+
+Follow-up on 27 October: the owner requested removal of the added strategy
+subtitle from the shared logo and immediate production publication. The original
+lighthouse and wordmark remain, with no tagline beneath the name.

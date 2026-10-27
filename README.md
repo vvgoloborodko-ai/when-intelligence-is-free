@@ -5,7 +5,7 @@
 The approved partner site has six pages: Home, Strategy, Performance,
 Certificate, About and Letter. About follows the owner's v10 “Four seats in a
 technology cycle” mockup. Shared navigation, the native Substack embed and
-direct Calendly links remain; the brand subtitle is “AI Capital Cycle Strategy”.
+direct Calendly links remain. The shared logo has no strategy subtitle.
 The publication source, calculation conventions and protected baseline remain
 unchanged. See [release approval and rollback](docs/partner-release-2026-10-27.md).
 

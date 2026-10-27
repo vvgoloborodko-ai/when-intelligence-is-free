@@ -36,7 +36,7 @@ export async function renderPartnerPages(root, {production=false}={}) {
   const d=rendered.derived, m=partnerMetrics(d.effectivePerformance);
   const original=await read('dist/index.html');
   const header=original.slice(original.indexOf('<a class="skip-link"'),original.indexOf('<main id="site-content">'));
-  const nav=header.replace(/<nav class="nav-links"[\s\S]*?<\/nav>/,`<nav class="nav-links" id="primary-navigation" aria-label="Main navigation">${['Strategy','Performance','Certificate','About'].map(x=>`<a href="/${x.toLowerCase()}/" data-nav="${x.toLowerCase()}">${x}</a>`).join('')}<a href="${RESEARCH}" target="_blank" rel="noopener">Research ↗</a>${button('nav')}</nav>`).replace('class="nav"','class="nav v7-navigation"').replace('alt="When Intelligence Is Free">','alt="When Intelligence Is Free"><span class="brand-strategy">AI Capital Cycle Strategy</span>');
+  const nav=header.replace(/<nav class="nav-links"[\s\S]*?<\/nav>/,`<nav class="nav-links" id="primary-navigation" aria-label="Main navigation">${['Strategy','Performance','Certificate','About'].map(x=>`<a href="/${x.toLowerCase()}/" data-nav="${x.toLowerCase()}">${x}</a>`).join('')}<a href="${RESEARCH}" target="_blank" rel="noopener">Research ↗</a>${button('nav')}</nav>`).replace('class="nav"','class="nav v7-navigation"');
   const footer=original.slice(original.indexOf('<footer'),original.indexOf('</footer>')+9)
     .replace('Follow the thesis and<br>the decisions it changes','The monthly letter')
     .replace('Get new research on emerging opportunities, evidence that changes the outlook and the reasoning behind portfolio moves.','What changed, what we decided and why.')

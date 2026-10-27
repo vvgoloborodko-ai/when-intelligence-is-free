@@ -37,7 +37,7 @@
   #letter .wrap{width:100%}#letter .hero{padding:0 0 12px}#letter h1{font-size:25pt;line-height:1.1}#letter .premise:empty{display:none}#letter .eyebrow{font-size:8pt}#letter>section{padding:0}#letter .v7-letter-stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}#letter .stat .val{font-size:25pt}#letter .stat .lbl{font-size:9pt}#letter .stat+.stat{padding-left:12px;border-left:1px solid var(--line)}#letter .small{font-size:8pt}#letter .v7-letter-body{grid-template-columns:1fr 1fr;gap:16px 24px;margin:20px 0}#letter .v7-letter-body article{padding-top:12px;break-inside:avoid}#letter .v7-letter-body h2{font-size:16pt;margin-bottom:8px}#letter .chart svg{max-height:180px}#letter .legend{font-size:8pt;margin-block:8px}#letter a{color:inherit}#letter .text-link{margin-top:4px}
 }
 @media print{#letter .hero h1{font-size:25pt}.v7-chart-mobile{display:none!important}.v7-chart-desktop{display:block!important}}
-/* Retain the original lighthouse and wordmark; replace the former subline. */
+/* Retain the original lighthouse and wordmark without the former subline. */
 .v7-navigation .brand-logo{clip-path:polygon(0 0,100% 0,100% 70%,16% 70%,16% 100%,0 100%)}
 #home .hero{padding-bottom:28px}#home .premise{max-width:1040px}
 .v7-parts tbody th{font-weight:700;width:25%}.v7-parts td:last-child{font:600 30px/1.2 var(--serif);white-space:nowrap;width:20%;color:var(--amber-ink)}
@@ -87,9 +87,7 @@ a.v7-letter-preview{display:block;color:inherit;text-decoration:none}a.v7-letter
 @media(max-width:1100px){.v8-decisions{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.v8-decisions{grid-template-columns:1fr}}
 
-/* Approved v10 About and the shared strategy wordmark. */
-.v7-navigation .wordmark{position:relative}
-.brand-strategy{position:absolute;left:16.3%;top:75%;white-space:nowrap;font:8px/1.2 var(--mono);letter-spacing:.17em;text-transform:uppercase;color:var(--ink2)}
+/* Approved v10 About. */
 .v10-about-hero h1 span{display:block}.v10-about-hero .about-actions{margin-top:28px}
 #about .v10-about-hero h1{font-size:clamp(48px,5.5vw,78px);line-height:1.05}
 #about .v10-about-hero{padding-bottom:64px}
@@ -105,4 +103,4 @@ a.v7-letter-preview{display:block;color:inherit;text-decoration:none}a.v7-letter
 .v10-application p:not(.eyebrow){font-size:20px;line-height:1.4}
 .v10-experience .text-link{margin-top:30px}
 @media(max-width:800px){.v10-seats{gap:32px}.v10-experience-intro{font-size:22px}#about .v10-about-hero{padding-bottom:32px}}
-@media(max-width:600px){.brand-strategy{font-size:7px;letter-spacing:.1em}.v10-seats{grid-template-columns:1fr;gap:32px}.v10-seats h3{font-size:28px}#about .v10-about-hero h1{font-size:clamp(37px,10.8vw,48px)}}
+@media(max-width:600px){.v10-seats{grid-template-columns:1fr;gap:32px}.v10-seats h3{font-size:28px}#about .v10-about-hero h1{font-size:clamp(37px,10.8vw,48px)}}

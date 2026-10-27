@@ -59,7 +59,7 @@ for(const key of ['home','strategy','performance','certificate','about','letter'
  const html=await read(`dist/${key==='home'?'':key+'/'}index.html`);
  assert.ok(html.includes('content="index,follow,max-image-preview:large"'),key+' production indexing');
  assert.ok(html.includes(`rel="canonical" href="https://whenintelligenceisfree.com${path}"`),key+' canonical');
- assert.ok(html.includes('<span class="brand-strategy">AI Capital Cycle Strategy</span>'),key+' brand subtitle');
+ assert.ok(!html.includes('brand-strategy'),key+' logo has no strategy subtitle');
  assert.ok((await read('dist/sitemap.xml')).includes(`<loc>https://whenintelligenceisfree.com${path}</loc>`),key+' in sitemap');
 }
 assert.equal(await read('dist/robots.txt'),await read('src/static/robots.txt'));
