@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build:partner": "node scripts/build-partner.mjs",
+    "preview:partner": "node scripts/preview.mjs --require-publication --partner-preview",
     "build": "node scripts/build.mjs",
     "build:release": "node scripts/build.mjs --require-publication",
     "validate": "node scripts/validate.mjs",

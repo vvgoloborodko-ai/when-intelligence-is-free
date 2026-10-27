@@ -1,0 +1,37 @@
+{
+  "eyebrow": "About · The portfolio manager",
+  "name": "Vladimir Goloborodko",
+  "premise": "Portfolio manager of the AI Capital Cycle Strategy. For twenty years he was an operator inside financial businesses, on every side of a technology cycle and invested his own capital throughout.",
+  "experience_heading": "Four seats in a technology cycle",
+  "experience_intro": "The AI cycle will be decided by how fast enterprises adopt, which new companies find a market, who scales and consolidates, and where committed capital goes. He has worked in each of those seats as an operator, inside the business.",
+  "seats": [
+    {
+      "company": "Technoserv Consulting · 2007–2017",
+      "title": "Enterprise adoption",
+      "role": "Programme leader, then head of business unit",
+      "body": "Ten years leading technology transformations for Fortune Global 500 banks, insurers and telecom operators. Adoption moved at the pace of decision rights, dependencies and economics, not the technology. Then a ~200-person unit of his own: revenue from $7M to $15M, margin from breakeven to about 30%.",
+      "application": "AI revenue arrives at the speed enterprises can absorb it, so adoption is read from reported results, not forecasts."
+    },
+    {
+      "company": "SmartPay · 2018–2019",
+      "title": "The founder",
+      "role": "Founder",
+      "body": "A payments start-up, accepted into the accelerator, taken through a fundraising, MVP, pilots and pivots in search of product-market fit. The lessons: effort does not create demand, and seeing a weak thesis is not the same as stopping.",
+      "application": "Most new companies will not find a market. A position is paid for when usage shows up in reported data."
+    },
+    {
+      "company": "DEGIRO · 2019–2021",
+      "title": "The scale-up and the merger",
+      "role": "Product & delivery transformation lead",
+      "body": "One of Europe's fastest-growing online brokers, still run like a start-up. He rebuilt its operating model for scale as clients grew into the millions, and stayed through its acquisition, as two organisations were combined into one.",
+      "application": "Hypergrowth breaks operating models, so growth is paid for only when the system can carry it."
+    },
+    {
+      "company": "APC · Woolsocks · 2021–2025",
+      "title": "Committed capital",
+      "role": "Delivery & platform integration lead · shareholder",
+      "body": "A €100M committed-capital fintech investment and venture-building platform with an owner-operator model. He saw where its capital went, built for the growth wave, then assembled five acquired businesses into one product around the economics that worked.",
+      "application": "Capital committed at the top of a cycle is repriced in the reset. The reset is where the strategy buys."
+    }
+  ]
+}

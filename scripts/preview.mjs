@@ -17,6 +17,9 @@ const TYPES = new Map([
   [".json", "application/json; charset=utf-8"],
   [".svg", "image/svg+xml"],
   [".png", "image/png"],
+  [".jpeg", "image/jpeg"],
+  [".jpg", "image/jpeg"],
+  [".pdf", "application/pdf"],
   [".ico", "image/x-icon"],
   [".webp", "image/webp"],
   [".xml", "application/xml; charset=utf-8"],
@@ -25,10 +28,20 @@ const TYPES = new Map([
 
 const meta = JSON.parse(await readFile(META, "utf8"));
 await buildSite({ requirePublication: process.argv.includes("--require-publication") });
+const partnerPreview = process.argv.includes('--partner-preview');
+if (partnerPreview) {
+  const { renderPartnerPages } = await import('./lib/render-partner.mjs');
+  await renderPartnerPages(ROOT);
+}
 
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host || "localhost"}`);
+    if (partnerPreview && ['/investments', '/investments/', '/investments/index.html'].includes(url.pathname)) {
+      response.writeHead(301, { Location: `/performance/${url.search}` });
+      response.end();
+      return;
+    }
     if (["/advisory", "/advisory/", "/advisory/index.html"].includes(url.pathname)) {
       response.writeHead(301, { Location: `/about/${url.search}` });
       response.end();

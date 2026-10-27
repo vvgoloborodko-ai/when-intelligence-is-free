@@ -337,5 +337,7 @@ export async function buildSite({ requirePublication = false, buildDate = proces
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  await buildSite({ requirePublication: process.argv.includes("--require-publication") });
+  await buildSite({ requirePublication: true });
+  const { renderPartnerPages } = await import('./lib/render-partner.mjs');
+  await renderPartnerPages(ROOT, {production:true});
 }

@@ -1,5 +1,25 @@
 # When Intelligence Is Free website
 
+## Current production — partner site, October 2026
+
+The approved partner site has six pages: Home, Strategy, Performance,
+Certificate, About and Letter. About follows the owner's v10 “Four seats in a
+technology cycle” mockup. Shared navigation, the native Substack embed and
+direct Calendly links remain; the brand subtitle is “AI Capital Cycle Strategy”.
+The publication source, calculation conventions and protected baseline remain
+unchanged. See [release approval and rollback](docs/partner-release-2026-10-27.md).
+
+`npm run check` validates sources, runs all regression and partner checks, and
+builds production. Both `npm run build` and `npm run build:release` generate the
+six-page, indexable `dist` for Cloudflare Pages. GitHub main deploys to
+`https://whenintelligenceisfree.com`. For a noindex local preview use
+`npm run preview:partner` (set `PORT=4175` for the current preview address).
+`npm run build:partner` builds that preview without starting a server.
+
+The architecture and earlier release notes below document the protected
+baseline, which is still used by the publication regression suite. Their older
+page inventory and preview-only build descriptions are superseded by this release.
+
 This repository is a dependency-light static website. The principal-approved
 single-file mock remains unchanged at
 `WIIF_Landing_v3_Mock_2026-08-18.html`; its line-ending-normalized SHA-256 is

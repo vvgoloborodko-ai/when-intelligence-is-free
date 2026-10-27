@@ -18,4 +18,5 @@ function run(args) {
 
 await run(["scripts/validate.mjs"]);
 await run(["--test"]);
+await run(["scripts/check-partner.mjs"]);
 await run(["scripts/build.mjs"]);

@@ -1,0 +1,83 @@
+{
+  "version": 7,
+  "source": "User-supplied v7 PNGs, 21 October 2026; preview only",
+  "sleeves": [
+    [
+      "physical-scarcity",
+      "Physical infrastructure",
+      "Power, grids, cooling, precision components and data-centre capacity.",
+      "35–40%"
+    ],
+    [
+      "compute-platforms",
+      "Compute and platforms",
+      "Chips, computing infrastructure and platforms that develop and distribute AI.",
+      "15–20%"
+    ],
+    [
+      "survivors-tolls-second-wave",
+      "AI beneficiaries",
+      "Businesses that can turn AI into stronger margins, better services or new sources of revenue.",
+      "15–20%"
+    ],
+    [
+      "moonshots",
+      "Early-stage",
+      "Emerging technologies and businesses whose commercial potential is still developing.",
+      "0–5%"
+    ],
+    [
+      "macro-scenario-bets",
+      "Macro",
+      "Metals, Bitcoin and investments linked to monetary and geopolitical shifts.",
+      "10–15%"
+    ],
+    [
+      "reserve-optionality",
+      "Reserve",
+      "Cash, short-term bonds and put options.",
+      "10–15%"
+    ]
+  ],
+  "reviews": [
+    [
+      "Q3 2026 review",
+      "The Boom Can Break While the Business Grows",
+      "AI demand strengthened, but financing its expansion became harder.",
+      "https://read.whenintelligenceisfree.com/p/2609"
+    ],
+    [
+      "August 2026",
+      "The AI buildout bought more time",
+      "Lenders and suppliers gave the expansion more time. Customers still have to turn it into earnings.",
+      "https://read.whenintelligenceisfree.com/p/2608"
+    ],
+    [
+      "July 2026",
+      "The businesses got better. The money got worse.",
+      "A growing order book can make a business look stronger while making its next bill harder to pay.",
+      "https://read.whenintelligenceisfree.com/p/the-businesses-got-better-the-money"
+    ]
+  ],
+  "letter": {
+    "title": "Behind the index in a month led by the AI platforms",
+    "sections": [
+      [
+        "Why",
+        "Strategy Inc rose 15%, but silver fell 11%, the pipeline companies fell as interest rates rose, and our protection against a drop in chip stocks lost value as they rallied 9%. The portfolio owns little of the big AI platforms that led the Nasdaq-100."
+      ],
+      [
+        "What we did",
+        "We sold Cleveland-Cliffs at $12.99, 12% above its August close, and bought Hyosung Heavy Industries, a Korean maker of large power transformers. We also doubled the protection against a sharp fall in chip stocks."
+      ],
+      [
+        "What has not changed",
+        "We continue to hold selected AI bottlenecks while keeping a reserve for better entry prices. The reserve is 23% of the portfolio, including cash, short-term bonds and put protection. AI-related holdings remain below their long-term ranges until prices reach the levels set for them."
+      ],
+      [
+        "What we watch",
+        "Late-October results from Alphabet, Microsoft, Amazon and Meta: is AI spending still rising, and is AI revenue catching up with it? And US long-term interest rates, now above 5%."
+      ]
+    ]
+  }
+}
