@@ -11,7 +11,7 @@ const button = (position='close') => `<a class="btn" href="${CALL}?utm_source=si
 const link = (href, text) => `<a class="text-link" href="${href}">${text}</a>`;
 const section = (eyebrow, title, body, cls='') => `<section class="${cls}"><div class="wrap">${eyebrow ? `<p class="eyebrow">${eyebrow}</p>`:''}${title ? `<h2>${title}</h2>`:''}${body}</div></section>`;
 const table = (heads,rows,cls='') => `<div class="v7-table ${cls}" tabindex="0" role="region" aria-label="${heads.join(', ')}"><table><thead><tr>${heads.map(h=>`<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map((c,i)=>i===0?`<th scope="row">${c}</th>`:`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-const close = () => `<section class="advisory-close"><div class="wrap"><div><p class="eyebrow">Next step</p><h2>Is it a fit for your clients?</h2><p>A 30-minute call with the portfolio manager: the track record, the client materials and how we could work together.</p></div>${button()}</div></section>`;
+const close = () => `<section class="advisory-close"><div class="wrap"><div><p class="eyebrow">Next step</p><h2>Is it a fit for your clients?</h2><p>Discuss the investment approach, track record, the client materials and how we could work together.</p></div>${button()}</div></section>`;
 const hero = (label,title,body,facts=[]) => `<div class="hero wrap ${facts.length?'investment-hero':''}"><div><p class="eyebrow">${label}</p><h1>${title}</h1><p class="premise">${body}</p></div>${facts.length?`<aside class="facts"><ul>${facts.map(f=>`<li>${f}</li>`).join('')}</ul></aside>`:''}</div>`;
 const pct = (n,sign=true) => `${n<0?'−':sign&&n>0?'+':''}${Math.abs(n).toFixed(1)}%`;
 
