@@ -4,11 +4,20 @@ import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {buildSite} from './build.mjs';
 import {renderPartnerPages,partnerMetrics} from './lib/render-partner.mjs';
+import {renderInvestments} from './lib/render-investments.mjs';
 const root=fileURLToPath(new URL('..',import.meta.url));
 const read=p=>readFile(resolve(root,p),'utf8');
 await buildSite({requirePublication:true});
 const baselinePerformance=await read('dist/investments/index.html');
 const chart=baselinePerformance.match(/<div class="chart publication-chart"[\s\S]*?<\/svg>\s*<\/div>/)[0];
+const publication=JSON.parse(await read('data/investments/publication.json'));
+const content=JSON.parse(await read('src/content/partner-v7.json'));
+const samplePublication={...publication,
+ performance:publication.performance.filter(row=>row.period<=content.letter.period),
+ releases:publication.releases.filter(row=>row.period<=content.letter.period),
+ corrections:publication.corrections.filter(row=>row.period<=content.letter.period)};
+const sampleRendered=renderInvestments(samplePublication,JSON.parse(await read('src/content/investment-sleeves.json')),{buildDate:new Date().toISOString().slice(0,10)});
+const sampleChart=sampleRendered.performance.match(/<div class="chart publication-chart"[\s\S]*?<\/svg>\s*<\/div>/)[0];
 await renderPartnerPages(root);
 let links=new Set(),results=[];
 for(const key of ['home','strategy','performance','certificate','about','letter']){
@@ -26,7 +35,7 @@ for(const key of ['home','strategy','performance','certificate','about','letter'
   let url=m[1];if(url.startsWith('/')){if(url.endsWith('/'))url+='index.html';await access(resolve(root,'dist',url.slice(1)));}else if(url.startsWith('https:'))links.add(url);
  }
  if(['performance','letter'].includes(key)){
-  const originalSvg=chart.match(/<svg[\s\S]*?<\/svg>/)[0];
+  const originalSvg=(key==='letter'?sampleChart:chart).match(/<svg[\s\S]*?<\/svg>/)[0];
   const desktopSvg=html.match(/<svg class="v7-chart-desktop"[\s\S]*?<\/svg>/)[0].replace(' class="v7-chart-desktop"','');
   assert.equal(desktopSvg,originalSvg,key+' exact desktop production chart');
   const mobileSvg=html.match(/<svg class="v7-chart-mobile"[\s\S]*?<\/svg>/)[0];
@@ -34,11 +43,28 @@ for(const key of ['home','strategy','performance','certificate','about','letter'
   const before=points(originalSvg),after=points(mobileSvg);
   assert.deepEqual(after.map(series=>series.map(p=>p[1])),before.map(series=>series.map(p=>p[1])),key+' mobile series keeps every value and period');
   for(let j=0;j<before.length;j++)for(let i=0;i<before[j].length;i++)assert.ok(Math.abs(after[j][i][0]-(36+(before[j][i][0]-60)*252/532))<0.006,key+' mobile x mapping');
-  for(const value of ['+77.8%','+44.7%'])assert.ok(mobileSvg.includes(value),key+' both endpoint results');
+  const endpointValues=[...originalSvg.matchAll(/<g class="chart-end-label"[\s\S]*?<text[^>]*>([^<]+)<\/text>/g)].map(match=>match[1]);
+  assert.equal(endpointValues.length,2,key+' both endpoint labels present');
+  for(const value of endpointValues)assert.ok(mobileSvg.includes(value),key+' both endpoint results');
  }
  if(key==='performance'){
   assert.equal((html.match(/class="v7-return-group"/g)||[]).length,3,'three return groups in one table');
   assert.equal((html.match(/class="v7-allocation-track"/g)||[]).length,6,'six allocation ranges');
+  assert.ok(html.includes('31 Oct 2026'),'October close context');
+  assert.match(html,/<th scope="row">Last month<\/th><td>−2\.3%<\/td><td>−6\.7%<\/td>/,'October monthly returns');
+  assert.match(html,/<span>Reserve<\/span><strong>33\.9%<\/strong>/,'October allocation');
+  assert.match(html,/<th scope="row">iShares USD Treasury Bond 0-1yr UCITS ETF<\/th><td>Reserve<\/td><td>15\.7%<\/td>/,'October holdings');
+  assert.ok(html.indexOf('https://read.whenintelligenceisfree.com/p/2610')<html.indexOf('https://read.whenintelligenceisfree.com/p/2609'),'October review precedes September');
+ }
+ if(key==='letter'){
+  assert.match(html,/<div class="val">−0\.8%<\/div><div class="lbl">Strategy, September/,'September sample monthly result retained');
+  assert.match(html,/<div class="val">\+3\.2%<\/div><div class="lbl">Nasdaq-100, September/,'September sample benchmark retained');
+  assert.ok(html.includes('+77.8%')&&html.includes('+44.7%'),'September cumulative results retained');
+  assert.ok(!html.includes('Oct 2026'),'September sample chart excludes October');
+ }
+ if(key==='home'){
+  assert.ok(html.includes('31 Oct 2026'),'home uses October close');
+  assert.match(html,/<strong>−0\.8%<small>Strategy<\/small>/,'sample preview retains September figures');
  }
  results.push({route:key,status:'passed'});
 }

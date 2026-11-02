@@ -646,13 +646,16 @@ test("monthly history shows the latest three rows first and collapses the older 
   const publication = parsePublicationText(canonicalPublicationText);
   const rendered = renderInvestments(publication, sleeves, { buildDate: "2026-08-21" });
   const history = rendered.performance.slice(rendered.performance.indexOf('<div class="history publication-monthly-history">'));
-  assert.equal((history.match(/<tr>/g) || []).length - 2, 21);
+  const rows=rendered.derived.performanceRows;
+  assert.equal((history.match(/<tr>/g) || []).length - 2, rows.length);
   assert.match(history, /Jan 2025/);
   assert.match(history, /Sep 2026/);
   assert.ok(history.indexOf("Sep 2026") < history.indexOf("Aug 2026"));
   assert.match(history, /<th class="r">Strategy · net<\/th><th class="r">Nasdaq-100<\/th><th class="r">Difference<\/th>/);
   assert.match(history, /\+5\.4pp/);
-  assert.match(history, /Show earlier months \(18\)/);
+  assert.ok(history.includes(`Show earlier months (${rows.length-3})`));
+  const latestLabels=rows.slice(-5).reverse().map(row=>new Intl.DateTimeFormat('en-GB',{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(`${row.period}-01T00:00:00Z`)).replace('Sept ','Sep '));
+  for(let i=1;i<latestLabels.length;i++)assert.ok(history.indexOf(latestLabels[i-1])<history.indexOf(latestLabels[i]),'latest months first');
   assert.ok(history.indexOf("Aug 2026") < history.indexOf("Jul 2026"));
   assert.ok(history.indexOf("Jul 2026") < history.indexOf("Jun 2026"));
   assert.ok(history.indexOf("Jun 2026") < history.indexOf("May 2026"));

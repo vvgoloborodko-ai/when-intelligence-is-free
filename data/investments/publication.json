@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-01T12:05:00Z",
+  "generated_at": "2026-11-02T12:04:03Z",
   "conventions": {
     "inception_date": "2025-01-01",
     "return_currency": "USD",
@@ -165,6 +165,13 @@
       "revision": 1,
       "strategy_return_pct": "-0.788303",
       "benchmark_return_pct": "3.230237"
+    },
+    {
+      "period": "2026-10",
+      "as_of_date": "2026-10-31",
+      "revision": 1,
+      "strategy_return_pct": "-2.282874",
+      "benchmark_return_pct": "-6.654883"
     }
   ],
   "releases": [
@@ -634,6 +641,140 @@
           {
             "sleeve_id": "reserve-optionality",
             "effect_pp": "-1.599898"
+          }
+        ]
+      }
+    },
+    {
+      "period": "2026-10",
+      "revision": 1,
+      "composition": [
+        {
+          "sleeve_id": "physical-scarcity",
+          "weight_pct_nav": "13.103518"
+        },
+        {
+          "sleeve_id": "compute-platforms",
+          "weight_pct_nav": "12.798137"
+        },
+        {
+          "sleeve_id": "survivors-tolls-second-wave",
+          "weight_pct_nav": "9.020065"
+        },
+        {
+          "sleeve_id": "moonshots",
+          "weight_pct_nav": "1.953474"
+        },
+        {
+          "sleeve_id": "macro-scenario-bets",
+          "weight_pct_nav": "29.269537"
+        },
+        {
+          "sleeve_id": "reserve-optionality",
+          "weight_pct_nav": "33.855269"
+        }
+      ],
+      "holdings": [
+        {
+          "name": "Kinder Morgan Inc",
+          "ticker": "KMI",
+          "sleeve_id": "physical-scarcity",
+          "weight_pct_nav": "3.188942"
+        },
+        {
+          "name": "Talen Energy",
+          "ticker": "TLN",
+          "sleeve_id": "physical-scarcity",
+          "weight_pct_nav": "2.326001"
+        },
+        {
+          "name": "Alphabet Inc Class A",
+          "ticker": "GOOGL",
+          "sleeve_id": "compute-platforms",
+          "weight_pct_nav": "5.269522"
+        },
+        {
+          "name": "Tesla Inc",
+          "ticker": "TSLA",
+          "sleeve_id": "compute-platforms",
+          "weight_pct_nav": "7.528615"
+        },
+        {
+          "name": "RELX PLC Sponsored ADR",
+          "ticker": "RELX",
+          "sleeve_id": "survivors-tolls-second-wave",
+          "weight_pct_nav": "2.264742"
+        },
+        {
+          "name": "SailPoint Inc",
+          "ticker": "SAIL",
+          "sleeve_id": "survivors-tolls-second-wave",
+          "weight_pct_nav": "3.172560"
+        },
+        {
+          "name": "Zscaler Inc",
+          "ticker": "ZS",
+          "sleeve_id": "survivors-tolls-second-wave",
+          "weight_pct_nav": "3.582763"
+        },
+        {
+          "name": "Recursion Pharmaceuticals",
+          "ticker": "RXRX",
+          "sleeve_id": "moonshots",
+          "weight_pct_nav": "1.365963"
+        },
+        {
+          "name": "Serve Robotics",
+          "ticker": "SERV",
+          "sleeve_id": "moonshots",
+          "weight_pct_nav": "0.587511"
+        },
+        {
+          "name": "Strategy Inc",
+          "ticker": "MSTR",
+          "sleeve_id": "macro-scenario-bets",
+          "weight_pct_nav": "17.202964"
+        },
+        {
+          "name": "Sprott Physical Silver Trust",
+          "ticker": "PSLV",
+          "sleeve_id": "macro-scenario-bets",
+          "weight_pct_nav": "12.066573"
+        },
+        {
+          "name": "iShares USD Treasury Bond 0-1yr UCITS ETF",
+          "ticker": "IB01",
+          "sleeve_id": "reserve-optionality",
+          "weight_pct_nav": "15.680593"
+        }
+      ],
+      "attribution": {
+        "level": "sleeve",
+        "coverage": "complete",
+        "items": [
+          {
+            "sleeve_id": "physical-scarcity",
+            "effect_pp": "-0.402670"
+          },
+          {
+            "sleeve_id": "compute-platforms",
+            "effect_pp": "-0.354028"
+          },
+          {
+            "sleeve_id": "survivors-tolls-second-wave",
+            "effect_pp": "1.049902"
+          },
+          {
+            "sleeve_id": "moonshots",
+            "effect_pp": "-0.485776"
+          },
+          {
+            "sleeve_id": "macro-scenario-bets",
+            "effect_pp": "-5.081327"
+          },
+          {
+            "sleeve_id": "reserve-optionality",
+            "effect_pp": "2.991025"
           }
         ]
       }

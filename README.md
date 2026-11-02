@@ -47,7 +47,7 @@ styling, client behavior, and monthly Investments data.
   enhancement. The build server-selects one visible view per route, so the
   route remains readable when this script fails or is blocked.
 - `data/investments/publication.json` — the one and only monthly Investments
-  handoff, generated upstream. The current checkout contains the September 2026
+  handoff, generated upstream. The current checkout contains the October 2026
   close; the website renders its actual values, dates and conventions.
 - `schemas/investments-publication.schema.json` — machine-readable contract.
 - `scripts/` — copy guard, validator, deterministic calculations, static
