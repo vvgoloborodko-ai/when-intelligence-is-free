@@ -82,6 +82,8 @@ export async function renderPartnerPages(root,{production=false}={}) {
   await writeFile(resolve(dest,'index.html'),`${head}</head><body>${header(key)}<main id="site-content">${body}</main>${footer}</body></html>`);
  }
  await copyFile(resolve(root,'src/styles/landing.css'),resolve(root,'dist/assets/landing.css'));
+ // A real 404 prevents Cloudflare Pages' SPA fallback serving Home at retired URLs.
+ await writeFile(resolve(root,'dist/404.html'),'<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Page not found — When Intelligence Is Free</title><meta name="robots" content="noindex"><link rel="stylesheet" href="/assets/landing.css"></head><body><main class="wrap rail-section"><h1>Page not found</h1><p><a href="/">Home</a> · <a href="/invest/">Invest</a></p></main></body></html>');
  const redirects='/about / 301\n/about/ / 301\n/about/index.html / 301\n';
  await writeFile(resolve(root,'dist/_redirects'),redirects);
  let worker=await read('scripts/sites-worker.mjs');
@@ -91,7 +93,7 @@ export async function renderPartnerPages(root,{production=false}={}) {
  await writeFile(resolve(root,'dist/sitemap.xml'),'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://whenintelligenceisfree.com/</loc></url><url><loc>https://whenintelligenceisfree.com/invest/</loc></url></urlset>');
  await cp(resolve(root,'dist/invest'),resolve(root,'dist/client/invest'),{recursive:true});
  await cp(resolve(root,'dist/assets'),resolve(root,'dist/client/assets'),{recursive:true});
- for(const file of ['index.html','_redirects','robots.txt','sitemap.xml'])await copyFile(resolve(root,'dist',file),resolve(root,'dist/client',file));
+ for(const file of ['index.html','404.html','_redirects','robots.txt','sitemap.xml'])await copyFile(resolve(root,'dist',file),resolve(root,'dist/client',file));
  const evidence=JSON.parse(await read('.release/release-evidence.json'));
  Object.assign(evidence,{build_mode:'landing-production',production_ready:production,production_blockers:[],approval_record:'docs/landing-release-2026-11-16.md',production_published:false});
  await writeFile(resolve(root,'.release/release-evidence.json'),JSON.stringify(evidence,null,2)+'\n');
