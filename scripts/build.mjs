@@ -1,5 +1,6 @@
+import { copyOutput as cp } from './lib/copy-output.mjs';
 import { createHash } from "node:crypto";
-import { access, copyFile, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { access, copyFile, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { constants } from "node:fs";
 import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";

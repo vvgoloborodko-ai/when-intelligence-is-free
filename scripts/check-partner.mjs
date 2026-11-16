@@ -28,8 +28,15 @@ for(const route of ['', 'invest/']){
  }
  assert.ok(!/href="\/(strategy|performance|certificate|letter|about)\//.test(html));
  assert.equal(html,await read(`dist/client/${route}index.html`));
+ assert.match(html,/assets\/site.css/);
+ assert.match(html,/WIF_brandmark_transparent_dark.png/);
+ assert.ok(!html.includes('viewBox="0 0 36 48"'));
  if(route){
-  assert.match(html,/read.whenintelligenceisfree.com\/embed/);
+  assert.match(html,/src="https:\/\/read.whenintelligenceisfree.com\/embed"/);
+  assert.ok(!html.includes('Free, by email, via Substack'));
+  assert.ok(!html.includes('The research behind it'));
+  assert.ok(!html.includes('Invest sections'));
+  assert.equal((html.match(/<h2>Follow the cycle<\/h2>/g)||[]).length,2);
   assert.match(html,/Strategy · gross of fees/);
   assert.equal((html.match(/class="allocation-track"/g)||[]).length,6);
   const desktop=html.match(/<svg class="v7-chart-desktop"[\s\S]*?<\/svg>/)[0];
@@ -37,8 +44,11 @@ for(const route of ['', 'invest/']){
   assert.match(html,/31 Oct 2026/);
   assert.match(html,/<th scope="row">Last month<\/th><td>−2.3%<\/td><td>−6.7%<\/td>/);
  }else{
-  assert.equal((html.match(/<details class="seat" open>/g)||[]).length,4);
+  assert.equal((html.match(/<details class="seat" open>/g)||[]).length,1);
   assert.match(html,/assets\/portrait.jpeg/);
+  assert.match(html,/data-copy-email="vlad@whenintelligenceisfree.com"/);
+  assert.ok(!html.includes('Works internationally'));
+  assert.match(html,/>Book a call ↗<\/a>/);
  }
 }
 for(const old of ['about','strategy','performance','certificate','letter','investments']){

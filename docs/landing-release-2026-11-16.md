@@ -7,3 +7,12 @@ Owner explicitly chose “gross” for displayed strategy performance. Published
 The existing real portrait, research URLs, LinkedIn and Calendly are reused. Return charts, risk metrics, allocation, top five positions and as-of dates derive from the revision-resolved publication. Content and layout follow the supplied mocks; native Substack forms are retained rather than replaced by decorative fields.
 
 Validate with `npm run check` and `npm run build:release`. Merge to GitHub main for Cloudflare Pages production. Verify Home, Invest and About on the public domain. Roll back by reverting this release commit, preserving unrelated later work.
+
+Follow-up: restored the existing shared stylesheet and typography (Georgia body,
+Fraunces headings, IBM Plex Mono labels), brand palette, asset-based lighthouse
+wordmark and full-width BUILD. RESEARCH. INVEST. line. Portrait is hidden on
+mobile, only the first experience case starts open, and Contact uses Calendly
+plus a copy-email button with transient feedback. Invest uses the standard
+light Substack embed with consistent headings and removes the redundant label
+and section-link strip. The output copier now copies static file contents
+without fs.cp's post-copy chmod, avoiding intermittent Windows build failures.
