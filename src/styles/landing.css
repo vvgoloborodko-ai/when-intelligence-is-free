@@ -12,6 +12,6 @@
 .copy-email{border:0;background:none;padding:0;color:var(--ink2);font:14px/1.5 var(--mono);display:inline-flex;align-items:center;gap:12px;text-align:left;cursor:pointer;max-width:100%}
 .copy-email span{overflow-wrap:anywhere;min-width:0}.copy-email svg{fill:none;stroke:currentColor;stroke-width:1.5;flex-shrink:0}.copy-email:hover{color:var(--amber-ink)}
 .email-row{margin-top:16px}.copy-status{display:block;min-height:1.5em;font:13px/1.5 var(--mono);color:var(--ink2);margin-top:4px}
-.signup iframe{background:#fff;color-scheme:light;border:1px solid var(--line);height:180px}
+.signup iframe{background:#fff;color-scheme:light;border:1px solid var(--line);height:320px}
 .research-strip{padding-bottom:30px}.research-strip article p:last-child{margin-bottom:0}
 @media(max-width:760px){.brand{width:300px;flex-basis:300px}.brand .brand-tagline{font-size:9px;letter-spacing:.08em}.home-hero img{display:none}.btn{font-size:18px}.research-strip{grid-template-columns:1fr}.copy-email{font-size:12px}.chart svg{min-width:0}}
