@@ -16,3 +16,11 @@ plus a copy-email button with transient feedback. Invest uses the standard
 light Substack embed with consistent headings and removes the redundant label
 and section-link strip. The output copier now copies static file contents
 without fs.cp's post-copy chmod, avoiding intermittent Windows build failures.
+
+Second follow-up: removed the added brand tagline, separated and centered the
+footer disclaimer, and used the owner's exact transparent=1 Substack embed
+(480 × 150, no frame or scrolling). Restored the existing cumulative/monthly
+performance control, monthly grouped bars and expandable monthly history using
+the established renderer and keyboard interaction. Monthly chart SVG values
+are checked against the underlying publication renderer. Output copies retry
+brief transient Windows EPERM/EBUSY locks, while other errors still fail.
