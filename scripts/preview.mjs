@@ -37,17 +37,17 @@ if (partnerPreview) {
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host || "localhost"}`);
-    if (partnerPreview && ['/investments', '/investments/', '/investments/index.html'].includes(url.pathname)) {
-      response.writeHead(301, { Location: `/performance/${url.search}` });
+    if (partnerPreview && ['/about', '/about/', '/about/index.html'].includes(url.pathname)) {
+      response.writeHead(301, { Location: `/${url.search}` });
       response.end();
       return;
     }
-    if (["/advisory", "/advisory/", "/advisory/index.html"].includes(url.pathname)) {
+    if (!partnerPreview && ["/advisory", "/advisory/", "/advisory/index.html"].includes(url.pathname)) {
       response.writeHead(301, { Location: `/about/${url.search}` });
       response.end();
       return;
     }
-    if (["/research", "/research/", "/research/index.html"].includes(url.pathname)) {
+    if (!partnerPreview && ["/research", "/research/", "/research/index.html"].includes(url.pathname)) {
       response.writeHead(301, { Location: `/${url.search}` });
       response.end();
       return;

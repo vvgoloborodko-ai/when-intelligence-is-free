@@ -25,7 +25,9 @@ export function partnerMetrics(rows) {
   return {s,b,compound,annual:a=>((1+compound(a)/100)**(12/a.length)-1)*100,vol:a=>Math.sqrt(cov(a,a)*12),dd,beta:cov(s,b)/cov(b,b),correlation:cov(s,b)/Math.sqrt(cov(s,s)*cov(b,b))};
 }
 
-export async function renderPartnerPages(root, {production=false}={}) {
+export { renderPartnerPages } from './render-landing.mjs';
+
+export async function renderLegacyPartnerPages(root, {production=false}={}) {
   const read = p=>readFile(resolve(root,p),'utf8');
   const v7=JSON.parse(await read('src/content/partner-v7.json'));
   const aboutCopy=JSON.parse(await read('src/content/about-v10.json'));

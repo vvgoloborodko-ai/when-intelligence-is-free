@@ -1,20 +1,19 @@
 # When Intelligence Is Free website
 
-## Current production — partner site, October 2026
+## Current production — Home and Invest, November 2026
 
-The approved partner site has six pages: Home, Strategy, Performance,
-Certificate, About and Letter. About follows the owner's v10 “Four seats in a
-technology cycle” mockup. Shared navigation, the native Substack embed and
-direct Calendly links remain. The shared logo has no strategy subtitle.
-The publication source, calculation conventions and protected baseline remain
-unchanged. See [release approval and rollback](docs/partner-release-2026-10-27.md).
+The public site has two pages: Home for employers and partners, and Invest for
+co-investors and friends and family. Build and Contact link to Home sections;
+Research opens the publication. Only the former About URL redirects to Home.
+Other former partner pages are removed. The existing portrait, native Substack
+embeds, publication-derived charts and data, Calendly and LinkedIn remain.
+See [release approval and rollback](docs/landing-release-2026-11-16.md).
 
-`npm run check` validates sources, runs all regression and partner checks, and
-builds production. Both `npm run build` and `npm run build:release` generate the
-six-page, indexable `dist` for Cloudflare Pages. GitHub main deploys to
-`https://whenintelligenceisfree.com`. For a noindex local preview use
-`npm run preview:partner` (set `PORT=4175` for the current preview address).
-`npm run build:partner` builds that preview without starting a server.
+Run `npm run check` to validate sources, run regression and landing checks,
+and build production. `npm run build:release` produces the indexable `dist`
+for Cloudflare Pages. GitHub main deploys to
+`https://whenintelligenceisfree.com`. Use `npm run preview:partner` for a local
+noindex preview of the two-page site.
 
 The architecture and earlier release notes below document the protected
 baseline, which is still used by the publication regression suite. Their older
