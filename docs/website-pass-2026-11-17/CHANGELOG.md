@@ -66,7 +66,7 @@ to 31 October 2026, USD, gross of fees, unaudited.
 
 ## Validation and release
 
-Run npm run check and npm run build:release before publishing. The expanded
+Passed npm run check and npm run build:release before publishing. The expanded
 landing checks cover section order, anchors, assets, one embed, email ordering,
 metadata, Person data, allocation arithmetic, table groups, chart descriptions,
 monthly-chart geometry and unchanged financial values. All 64 regression tests
@@ -74,14 +74,33 @@ also run. Financial inputs, investment ranges, theme colour, portrait and
 typography are unchanged. CSS changes adapt existing components to three cards,
 the removed hero form and semantic table groups.
 
-Production verification and sharing-debugger results are recorded after release.
+Published implementation a8f1dba and asset-cache fix 75388db to origin/main.
+Cloudflare Pages and GitHub validate-and-build both completed successfully.
+Verified Home and Invest at https://whenintelligenceisfree.com: HTTP 200, Record
+navigation, en_GB, zero em dashes and one Invest subscription iframe. Browser
+checks at desktop and mobile found no horizontal page overflow. Monthly and
+cumulative toggles work, Record reaches #record, and the native Substack email
+input loads without submitting it. Favicons, apple-touch-icon, sharing card and
+the new brandmark URL all return 200. Deployed brandmark SHA-256 matches source:
+C0682BF15DE0E14EF2EA88A29FA4526C61032E46597E48DEAC6BDAC8A329EAD9.
+
+LinkedIn Post Inspector was attempted for Home and redirected to its sign-in
+page. Access to the existing signed-in Chrome window timed out at the computer
+use approval step. Thus the debugger check remains unverified for both pages;
+the production Open Graph/Twitter metadata and card asset were checked directly.
+No new login or post was created.
+
 Rollback: revert the finishing-pass implementation commit without overwriting
 later unrelated changes.
 
 ## Screenshots
 
-Captured at 1440 × 1000 desktop and 390 × 844 mobile. Baseline is the public
-site before this pass; after images show the released public site.
+Captured at 1440 × 1000 desktop and 390 × 844 mobile. Initial baseline captures
+were clipped by the browser surface. They were replaced using the exact prior
+Cloudflare deployment of commit 5ddc23e, whose URL was obtained from that
+commit's public Cloudflare check output:
+https://a6f11ee1.when-intelligence-is-free.pages.dev/.
+After images show the released public domain at commit 75388db.
 
 | Surface | Before | After |
 | --- | --- | --- |
