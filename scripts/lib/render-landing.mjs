@@ -86,7 +86,7 @@ export async function renderPartnerPages(root,{production=false}={}) {
  const original=await read('dist/index.html');
  const assetVersion=createHash('sha256').update(await read('src/styles/landing.css')).update(await read('src/scripts/landing.js')).digest('hex').slice(0,12);
  const brandFilter=(await read('src/content/approved-public-content.html')).match(/<svg class="brand-filter"[\s\S]*?<\/svg>/)[0];
- const header=key=>`${brandFilter}<a class="skip-link" href="#site-content">Skip to content</a><header id="top" class="wrap header"><a class="brand" href="/" aria-label="When Intelligence Is Free home"><img class="brand-logo" src="/assets/brand/WIF_brandmark_transparent_dark.png" width="1784" height="302" alt="When Intelligence Is Free · Build. Research. Invest."></a><nav aria-label="Main navigation"><a href="/#record">Record</a>${external(R,'Research ↗')}<a href="/invest/"${key==='invest'?' aria-current="page"':''}>Invest</a><a class="btn" href="/#contact">Contact</a></nav></header>`;
+ const header=key=>`${brandFilter}<a class="skip-link" href="#site-content">Skip to content</a><header id="top" class="wrap header"><a class="brand" href="/" aria-label="When Intelligence Is Free home"><img class="brand-logo" src="/assets/brand/WIF_brandmark_build_research_invest.png" width="1784" height="302" alt="When Intelligence Is Free · Build. Research. Invest."></a><nav aria-label="Main navigation"><a href="/#record">Record</a>${external(R,'Research ↗')}<a href="/invest/"${key==='invest'?' aria-current="page"':''}>Invest</a><a class="btn" href="/#contact">Contact</a></nav></header>`;
  const footer=`<footer class="wrap footer"><p>© 2026 When Intelligence Is Free</p><p class="footer-disclaimer">Not investment advice or an offer</p><div>${external(R,'Research ↗')}${external(L,'LinkedIn ↗')}<a href="#top">Back to top ↓</a></div></footer>`;
  // Remove old generated routes from both publishing layouts; financial inputs stay untouched.
  for(const base of ['dist','dist/client']) for(const old of ['research','advisory','investments','about','strategy','performance','certificate','letter']) await rm(resolve(root,base,old),{recursive:true,force:true});
@@ -104,6 +104,7 @@ export async function renderPartnerPages(root,{production=false}={}) {
   const dest=resolve(root,'dist',key==='home'?'':key);await mkdir(dest,{recursive:true});
   await writeFile(resolve(dest,'index.html'),`${head}<link rel="stylesheet" href="/assets/landing.css?v=${assetVersion}"></head><body>${header(key)}<main id="site-content">${body}</main>${footer}<script src="/assets/site.js?v=${assetVersion}" defer></script><script src="/assets/landing.js?v=${assetVersion}" defer></script></body></html>`);
  }
+ await copyFile(resolve(root,'src/assets/brand/WIF_brandmark_transparent_dark.png'),resolve(root,'dist/assets/brand/WIF_brandmark_build_research_invest.png'));
  await copyFile(resolve(root,'src/styles/landing.css'),resolve(root,'dist/assets/landing.css'));
  await copyFile(resolve(root,'src/scripts/landing.js'),resolve(root,'dist/assets/landing.js'));
  // A real 404 prevents Cloudflare Pages' SPA fallback serving Home at retired URLs.

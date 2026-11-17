@@ -33,7 +33,7 @@ for(const route of ['', 'invest/']){
  assert.match(html,/assets\/site.css/);
  assert.ok(!html.includes('brand-tagline'));
  assert.match(html,/<p class="footer-disclaimer">Not investment advice or an offer<\/p>/);
- assert.match(html,/WIF_brandmark_transparent_dark.png/);
+ assert.match(html,/WIF_brandmark_build_research_invest.png/);
  assert.ok(!html.includes('viewBox="0 0 36 48"'));
  if(route){
   assert.match(html,/src="https:\/\/read.whenintelligenceisfree.com\/embed\?transparent=1"/);
